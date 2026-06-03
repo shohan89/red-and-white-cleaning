@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Shield, Users, CalendarClock, MessageSquareCheck, ClipboardList, MapPin } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
@@ -50,17 +51,22 @@ export function WhyChooseUs() {
 
         {/* Left column — visual panel */}
         <div className="relative hidden lg:block">
-          <div className="aspect-4/5 rounded-2xl bg-linear-to-br from-brand-dark to-[#2d0000] overflow-hidden flex items-end p-8">
-            <div
-              className="absolute inset-0 opacity-[0.06] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-size-[20px_20px]"
-              aria-hidden="true"
+          <div className="relative aspect-4/5 rounded-2xl bg-brand-dark overflow-hidden flex items-end p-8 shadow-xl">
+            <Image
+              src="/images/why-choose-us.png"
+              alt="Professional commercial cleaner polishing a glass wall"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover object-center select-none pointer-events-none"
             />
+            {/* Blending overlay to make text readable */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" aria-hidden="true" />
             <blockquote className="relative z-10 border-l-4 border-brand-red pl-4">
               <p className="text-lg font-heading font-semibold text-white leading-snug">
                 &quot;We understand the demands of commercial and construction projects — tight
                 deadlines, strict site requirements, and zero tolerance for missed details.&quot;
               </p>
-              <footer className="mt-3 text-sm text-white/60">
+              <footer className="mt-3 text-sm text-white/70 font-medium">
                 — Red &amp; White Cleaning Services LTD
               </footer>
             </blockquote>

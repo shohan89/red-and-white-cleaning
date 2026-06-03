@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Phone } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { NAV_LINKS } from "@/config/nav";
@@ -11,15 +12,24 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-brand-dark/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-6">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-xl font-heading font-extrabold text-white leading-tight">
-            <span className="text-brand-red">Red</span>
-            <span className="text-white"> &amp; </span>
-            <span className="text-white">White</span>
-          </span>
-          <span className="hidden sm:block text-xs text-white/60 font-sans leading-tight">
-            Cleaning Services
-          </span>
+        <Link href="/" className="flex items-center gap-3 shrink-0">
+          <Image
+            src="/images/logo.jpg"
+            alt="Red and White Cleaning Services Logo"
+            width={40}
+            height={40}
+            className="rounded-full object-cover border border-white/20"
+          />
+          <div className="flex flex-col">
+            <span className="text-lg font-heading font-extrabold text-white leading-none">
+              <span className="text-brand-red">Red</span>
+              <span className="text-white"> &amp; </span>
+              <span className="text-white">White</span>
+            </span>
+            <span className="text-[10px] text-white/60 font-sans tracking-wider uppercase mt-1">
+              Cleaning Services
+            </span>
+          </div>
         </Link>
 
         {/* Desktop nav */}

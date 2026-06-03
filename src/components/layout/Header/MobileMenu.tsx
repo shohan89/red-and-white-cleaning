@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, Phone } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -29,9 +30,16 @@ export function MobileMenu() {
 
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-white/10">
-            <span className="text-lg font-heading font-bold text-white">
-              <span className="text-brand-red">Red</span> &amp; White Cleaning
+          <div className="px-6 py-5 border-b border-white/10 flex items-center gap-3">
+            <Image
+              src="/images/logo.jpg"
+              alt="Red and White Cleaning Logo"
+              width={32}
+              height={32}
+              className="rounded-full object-cover border border-white/20"
+            />
+            <span className="text-lg font-heading font-bold text-white leading-none">
+              <span className="text-brand-red">Red</span> &amp; White
             </span>
           </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, CheckCircle2, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/button";
@@ -19,19 +20,23 @@ export function HeroSection() {
       className="relative flex min-h-svh w-full items-center overflow-hidden bg-brand-dark"
       aria-label="Hero"
     >
-      {/* Background gradient — replace with Next.js <Image> once photo is available */}
-      <div
-        className="absolute inset-0 bg-linear-to-br from-brand-dark via-[#1a0000] to-[#2d0000]"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_1px_1px,white_1px,transparent_0)] bg-size-[24px_24px]"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-0 bg-linear-to-r from-black/40 via-black/20 to-transparent"
-        aria-hidden="true"
-      />
+      {/* Background image & overlays */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <Image
+          src="/images/hero-bg.png"
+          alt="Pristine modern commercial office lobby"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Dark overlays to maintain high contrast for white text */}
+        <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/55 via-black/35 to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-black/20" aria-hidden="true" />
+        {/* Subtle red brand glow overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,var(--color-brand-red),transparent_50%)] opacity-30" aria-hidden="true" />
+      </div>
 
       {/* Content */}
       <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-24 lg:px-6">
