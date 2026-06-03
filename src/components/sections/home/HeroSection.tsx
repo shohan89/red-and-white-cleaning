@@ -58,10 +58,10 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, delay: 0.25 }}
-            className="mb-6 font-heading text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem]"
+            className="mb-6 font-heading text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem]"
           >
-            Post-Construction &amp; Commercial Cleaning{" "}
-            <span className="text-brand-red">Southern Ontario Contractors Trust</span>
+            Commercial &amp; Construction Cleaning{" "}
+            <span className="text-brand-red">Done Right</span> — Across KW, Guelph, Hamilton, London and Brantford
           </motion.h1>
 
           {/* Subheadline */}
@@ -69,13 +69,10 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="mb-9 max-w-xl text-lg leading-relaxed text-white/75 sm:text-xl"
+            className="mb-9 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl"
           >
-            Professional post-construction, commercial, and deep cleaning services for
-            contractors, property managers, and developers across{" "}
-            <span className="text-white/90">
-              Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London, and Brantford, Ontario.
-            </span>
+            We clean construction sites, commercial spaces, and everything in between. Fast, thorough,
+            and built for contractors and property managers who need it done properly.
           </motion.p>
 
           {/* CTA buttons */}
@@ -94,16 +91,15 @@ export function HeroSection() {
             >
               Get a Free Quote
             </Link>
-            <a
-              href={SITE.phoneHref}
+            <Link
+              href="/portfolio"
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white hover:border-white/50 font-semibold px-8 py-6 text-base h-auto justify-center gap-2"
+                "border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white hover:border-white/50 font-semibold px-8 py-6 text-base h-auto justify-center"
               )}
             >
-              <Phone className="h-5 w-5" />
-              {SITE.phone}
-            </a>
+              See Our Work
+            </Link>
           </motion.div>
 
           {/* Trust signals */}

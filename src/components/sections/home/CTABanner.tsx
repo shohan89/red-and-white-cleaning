@@ -18,34 +18,33 @@ export function CTABanner() {
 
       <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-24">
         <h2 className="mb-4 text-3xl font-heading font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
-          Ready to Get Started?{" "}
-          <span className="block">Request Your Free Quote Today.</span>
+          Ready to Get a Clean Site?
         </h2>
         <p className="mb-8 text-base text-white/80 sm:text-lg">
-          We respond to all quote requests within 1 business day.
-          No obligation. No pressure.
+          Whether it's a one-time post-construction clean or an ongoing commercial contract — we're ready when you are.
         </p>
 
-        <Link
-          href="/contact"
-          className={cn(
-            buttonVariants({ variant: "default" }),
-            "bg-white text-brand-red hover:bg-white/95 font-bold px-10 py-6 text-base h-auto shadow-xl mb-5 border-0 inline-flex"
-          )}
-        >
-          Get Your Free Quote
-        </Link>
-
-        <p className="text-sm text-white/70">
-          Or call us directly:{" "}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-5">
+          <Link
+            href="/contact"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "bg-white text-brand-red hover:bg-white/95 font-bold px-10 py-6 text-base h-auto shadow-xl border-0 w-full sm:w-auto"
+            )}
+          >
+            Get a Free Quote
+          </Link>
           <a
             href={SITE.phoneHref}
-            className="inline-flex items-center gap-1.5 font-semibold text-white hover:text-white/90 underline underline-offset-2"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "bg-transparent border-2 border-white text-white hover:bg-white hover:text-brand-red font-bold px-10 py-6 text-base h-auto shadow-xl w-full sm:w-auto"
+            )}
           >
-            <Phone className="h-3.5 w-3.5" aria-hidden="true" />
-            {SITE.phone}
+            <Phone className="h-5 w-5 mr-2" aria-hidden="true" />
+            Call {SITE.phone}
           </a>
-        </p>
+        </div>
       </div>
     </section>
   );

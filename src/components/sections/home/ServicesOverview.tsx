@@ -19,11 +19,10 @@ export function ServicesOverview() {
           Our Services
         </p>
         <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-brand-dark sm:text-4xl">
-          Cleaning Solutions Built for Commercial Work
+          What We Clean
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-gray-600">
-          From post-construction site cleanup to ongoing facility maintenance, we deliver
-          professional results for contractors and businesses across Southern Ontario.
+          From post-construction debris to ongoing commercial maintenance — we handle the dirty work so your team doesn't have to.
         </p>
       </div>
 
@@ -60,6 +59,16 @@ export function ServicesOverview() {
             </Link>
           );
         })}
+      </div>
+
+      {/* Bottom CTA Block */}
+      <div className="mt-12 text-center">
+        <p className="text-gray-600">
+          Not sure which service fits your needs?{" "}
+          <Link href="/contact" className="font-semibold text-brand-red hover:underline">
+            Contact us and we'll figure it out together.
+          </Link>
+        </p>
       </div>
     </SectionWrapper>
   );

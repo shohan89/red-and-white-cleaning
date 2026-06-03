@@ -1,46 +1,28 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Shield, Users, CalendarClock, MessageSquareCheck, ClipboardList, MapPin } from "lucide-react";
+import { Users, HardHat, CalendarClock } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { cn } from "@/lib/utils";
 
 const FEATURES = [
   {
-    icon: Shield,
-    title: "Licensed & Fully Insured",
+    icon: Users,
+    title: "We Show Up and We Do the Work",
     description:
-      "We carry comprehensive general liability insurance. You and your clients are fully protected on every job — documentation available on request.",
+      "No subcontractors, no surprises. When you hire Red and White, you get our team on-site — people who take pride in what they do and get the job done right the first time.",
   },
   {
-    icon: Users,
-    title: "Trained Professional Teams",
+    icon: HardHat,
+    title: "We Know Construction Sites",
     description:
-      "Every team member is trained to commercial cleaning standards. Consistent results, every visit, regardless of site size or complexity.",
+      "Post-construction cleanup is different from regular cleaning. Concrete dust, drywall residue, adhesive on windows — we know what to look for and how to handle it.",
   },
   {
     icon: CalendarClock,
-    title: "Contractor-Friendly Scheduling",
+    title: "We Work Around Your Schedule",
     description:
-      "We work around your construction timeline. Early mornings, weekends, or tight handover windows — we adapt to your schedule, not the other way around.",
-  },
-  {
-    icon: MessageSquareCheck,
-    title: "Fast, Reliable Communication",
-    description:
-      "Quote requests receive a response within 1 business day. No chasing, no waiting, no surprises — we keep you informed at every stage.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Documented Cleaning Standards",
-    description:
-      "Every job is completed against a detailed checklist. You receive documentation confirming all tasks were completed — useful for handover packages.",
-  },
-  {
-    icon: MapPin,
-    title: "7 Cities Across Southern Ontario",
-    description:
-      "We serve Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London, and Brantford — one reliable team for all your regional projects.",
+      "Contractors and property managers have tight timelines. We adapt to yours, including early mornings, evenings, and weekends when needed.",
   },
 ];
 
@@ -88,7 +70,7 @@ export function WhyChooseUs() {
             Why Choose Us
           </p>
           <h2 className="mb-10 text-3xl font-extrabold tracking-tight text-brand-dark sm:text-4xl">
-            Why Contractors and Property Managers Choose Red &amp; White
+            Why Clients Keep Calling Us Back
           </h2>
 
           <ul className="space-y-7">

@@ -4,7 +4,7 @@ export const SERVICES = [
     name: "Post-Construction Cleaning",
     slug: "post-construction",
     shortDescription:
-      "Complete removal of construction dust, debris, adhesive residue, and surface marks from newly built or renovated properties — ready for occupancy inspection.",
+      "We remove dust, debris, and construction residue so your site is move-in ready. Perfect for general contractors and developers on tight timelines.",
     audience: "For: General Contractors · Developers · Project Managers",
     href: "/services#post-construction",
     icon: "hard-hat",
@@ -14,7 +14,7 @@ export const SERVICES = [
     name: "Commercial Cleaning",
     slug: "commercial",
     shortDescription:
-      "Scheduled professional cleaning for offices, retail spaces, warehouses, and commercial facilities across Southern Ontario.",
+      "Offices, retail spaces, Airbnb, warehouses — regular or one-time. We keep your business clean and presentable without disrupting your operations.",
     audience: "For: Property Managers · Business Owners · Facility Teams",
     href: "/services#commercial",
     icon: "building-2",
@@ -24,17 +24,17 @@ export const SERVICES = [
     name: "Deep Cleaning",
     slug: "deep-cleaning",
     shortDescription:
-      "Comprehensive top-to-bottom cleaning for spaces requiring intensive treatment — move-ins, move-outs, seasonal cleans, and pre-inspection preparation.",
+      "When a space needs more than a surface clean. We go top to bottom so every corner is covered.",
     audience: "For: Property Managers · Landlords · Real Estate Agents",
     href: "/services#deep-cleaning",
     icon: "sparkles",
   },
   {
     id: "ongoing-contracts",
-    name: "Ongoing Maintenance Contracts",
+    name: "Ongoing Maintenance Cleaning",
     slug: "ongoing-contracts",
     shortDescription:
-      "Customized recurring cleaning programs for commercial facilities. Flexible scheduling, consistent teams, and transparent pricing — on your schedule.",
+      "Need consistent cleaning on a schedule? We offer weekly, bi-weekly, and monthly contracts for commercial properties.",
     audience: "For: Facility Managers · Commercial Property Owners",
     href: "/contact",
     icon: "calendar-check",

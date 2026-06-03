@@ -12,11 +12,10 @@ export function ServiceAreasSection() {
           Service Areas
         </p>
         <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-brand-dark sm:text-4xl">
-          Proudly Serving Southern Ontario
+          Serving Southern Ontario
         </h2>
         <p className="mx-auto max-w-2xl text-lg text-gray-600">
-          Red &amp; White Cleaning Services LTD provides professional post-construction and
-          commercial cleaning across Southern Ontario. Contact us for service in your area.
+          We're based in the KW Region and cover a wide area across Southern Ontario — including Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London, Brantford, and surrounding communities. If you're not sure if we cover your location, just reach out.
         </p>
       </div>
 
@@ -41,13 +40,10 @@ export function ServiceAreasSection() {
       </ul>
 
       {/* Supporting copy for GEO */}
-      <p className="mx-auto max-w-2xl text-center text-sm text-gray-500">
-        Operating across the Waterloo Region, Hamilton-Halton, and surrounding areas of Southern
-        Ontario.{" "}
-        <Link href="/contact" className="font-medium text-brand-red hover:underline">
-          Not sure if we service your location? Contact us
-        </Link>{" "}
-        — we may be able to accommodate your project.
+      <p className="mx-auto max-w-2xl text-center text-sm font-medium">
+        <Link href="/contact" className="text-brand-red hover:underline">
+          [ Check if we service your area — contact us ]
+        </Link>
       </p>
     </SectionWrapper>
   );
