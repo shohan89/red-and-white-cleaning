@@ -5,6 +5,7 @@ import { ServicePostConstruction } from '@/components/sections/services/ServiceP
 import { ServiceCommercial } from '@/components/sections/services/ServiceCommercial';
 import { ServiceDeepCleaning } from '@/components/sections/services/ServiceDeepCleaning';
 import { ServiceMaintenance } from '@/components/sections/services/ServiceMaintenance';
+import { ServiceResidential } from '@/components/sections/services/ServiceResidential';
 import { ServicesCTA } from '@/components/sections/services/ServicesCTA';
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function ServicesPage() {
       <ServiceCommercial />
       <ServiceDeepCleaning />
       <ServiceMaintenance />
+      <ServiceResidential />
       <ServicesCTA />
     </main>
   );

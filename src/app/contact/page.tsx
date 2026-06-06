@@ -97,7 +97,7 @@ export default function ContactPage() {
               <p className="text-muted-foreground mt-2">Proudly serving Southern Ontario.</p>
             </div>
             <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d185449.60838127494!2d-80.57591605969562!3d43.43126042971261!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882bf48c03ee5105%3A0x9525f8e6df5f544b!2sKitchener%2C%20ON!5e0!3m2!1sen!2sca!4v1700000000000!5m2!1sen!2sca" 
+              src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d800000.0!2d-80.5!3d43.2!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sca!4v1700000000000" 
               width="100%" 
               height="450" 
               style={{ border: 0 }} 

@@ -4,7 +4,7 @@ import { Sparkles, Truck, CalendarCheck, Building, Home } from 'lucide-react';
 const scenarios = [
   {
     title: "Move In / Move Out",
-    desc: "Before or after a commercial tenant moves in or out of a space, making it pristine and ready for handover.",
+    desc: "Before or after a tenant moves in or out — commercial or residential. Whether you're handing a unit back to a landlord, welcoming new tenants, just purchased a home, or preparing to list your property for sale, we make the space pristine and ready.",
     icon: Truck
   },
   {
@@ -31,7 +31,7 @@ const scenarios = [
 
 export function ServiceDeepCleaning() {
   return (
-    <section className="py-20 lg:py-32 bg-background relative overflow-hidden">
+    <section id="deep-cleaning" className="py-20 lg:py-32 bg-background relative overflow-hidden">
       {/* Visual abstract details */}
       <div className="absolute left-10 bottom-10 w-[300px] h-[300px] bg-brand-red/5 rounded-full blur-[100px] pointer-events-none" />
 

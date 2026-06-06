@@ -1,5 +1,27 @@
 import React from 'react';
+import Image from 'next/image';
 import { HardHat, CheckCircle2, Eye, Key } from 'lucide-react';
+
+const phaseImages = [
+  {
+    phase: "Phase 1",
+    label: "Phase 1 — Post-Construction Clean",
+    src: "/images/portfolio/residential-bathroom-ba.png",
+    alt: "Before and after bathroom restoration — Phase 1 post-construction clean",
+  },
+  {
+    phase: "Phase 2",
+    label: "Phase 2 — PDI Clean",
+    src: "/images/portfolio/residential-kitchen-ba.png",
+    alt: "Before and after kitchen transformation — Phase 2 PDI clean",
+  },
+  {
+    phase: "Phase 3",
+    label: "Phase 3 — Occupancy Clean",
+    src: "/images/portfolio/residential-sink-ba.png",
+    alt: "Before and after under-sink cabinet — Phase 3 occupancy clean",
+  },
+];
 
 const phases = [
   {
@@ -25,13 +47,12 @@ const includedItems = [
   "Window and glass cleaning (construction film and adhesive removal)",
   "Floor cleaning and polishing — concrete, tile, hardwood, LVP",
   "Kitchen and bathroom scrub-out",
-  "HVAC vent and duct cleaning (dust removal)",
-  "Final walk-through clean before handoff"
+"Final walk-through clean before handoff"
 ];
 
 export function ServicePostConstruction() {
   return (
-    <section className="py-20 lg:py-32 bg-background">
+    <section id="post-construction" className="py-20 lg:py-32 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         <div className="mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-red/10 border border-brand-red/20 text-brand-red font-medium mb-4">
@@ -106,6 +127,32 @@ export function ServicePostConstruction() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Phase example photos */}
+        <div className="mt-20">
+          <h3 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
+            <span className="h-8 w-1.5 rounded bg-brand-red" />
+            Phase Clean Examples
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {phaseImages.map((img) => (
+              <div key={img.phase} className="rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md hover:border-brand-red/30 transition-all duration-300">
+                <div className="relative w-full aspect-[4/3] bg-gray-50">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-contain p-2"
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                  />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground text-center py-3 px-4 bg-card">
+                  {img.label}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </div>

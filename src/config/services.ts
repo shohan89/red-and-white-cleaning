@@ -34,10 +34,20 @@ export const SERVICES = [
     name: "Ongoing Maintenance Cleaning",
     slug: "ongoing-contracts",
     shortDescription:
-      "Need consistent cleaning on a schedule? We offer weekly, bi-weekly, and monthly contracts for commercial properties.",
-    audience: "For: Facility Managers · Commercial Property Owners",
-    href: "/contact",
+      "Need consistent cleaning on a schedule? We offer weekly, bi-weekly, and monthly contracts for commercial properties and residential homes.",
+    audience: "For: Facility Managers · Property Owners · Homeowners",
+    href: "/services#ongoing-contracts",
     icon: "calendar-check",
     ctaLabel: "Get a Quote",
+  },
+  {
+    id: "residential",
+    name: "Residential Cleaning",
+    slug: "residential",
+    shortDescription:
+      "Full home cleans for move-ins, move-outs, regular maintenance, and everything in between. Whether you just bought a house, are listing it for sale, or want a spotless home on a schedule — we've got you covered.",
+    audience: "For: Homeowners · New Buyers · Home Sellers · Landlords",
+    href: "/services#residential",
+    icon: "home",
   },
 ] as const;

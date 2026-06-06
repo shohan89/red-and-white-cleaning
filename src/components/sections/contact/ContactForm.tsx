@@ -44,16 +44,19 @@ export function ContactForm() {
 
   const onSubmit = async (data: ContactFormValues) => {
     setIsSubmitting(true);
-    // Simulate API request delay
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-    
-    // Form submission logic would go here (e.g., POST to API or Resend)
-    console.log("Form submitted:", data);
-    
-    setIsSubmitting(false);
-    
-    // Redirect to Thank You page for Google Analytics conversion tracking
-    router.push("/thank-you");
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('Failed to send');
+      router.push("/thank-you");
+    } catch {
+      alert('Something went wrong sending your message. Please call us directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

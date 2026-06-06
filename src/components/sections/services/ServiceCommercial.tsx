@@ -14,7 +14,7 @@ const includedItems = [
 
 export function ServiceCommercial() {
   return (
-    <section className="py-20 lg:py-32 bg-muted/30 border-y border-border relative overflow-hidden">
+    <section id="commercial" className="py-20 lg:py-32 bg-muted/30 border-y border-border relative overflow-hidden">
       {/* Background glow overlay */}
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-brand-red/5 rounded-full blur-[100px] pointer-events-none" />
 

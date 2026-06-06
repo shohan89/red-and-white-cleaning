@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HardHat, Building2, Sparkles, CalendarCheck, ArrowRight } from "lucide-react";
+import { HardHat, Building2, Sparkles, CalendarCheck, Home, ArrowRight } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { SERVICES } from "@/config/services";
 
@@ -8,6 +8,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   "building-2":     Building2,
   "sparkles":       Sparkles,
   "calendar-check": CalendarCheck,
+  "home":           Home,
 };
 
 export function ServicesOverview() {
@@ -27,7 +28,7 @@ export function ServicesOverview() {
       </div>
 
       {/* Service cards */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {SERVICES.map((service) => {
           const Icon = ICON_MAP[service.icon];
           const ctaLabel = "ctaLabel" in service ? service.ctaLabel : "Learn More";
@@ -36,7 +37,7 @@ export function ServicesOverview() {
             <Link
               key={service.id}
               href={service.href}
-              className="group flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:border-brand-red/40 hover:shadow-md transition-all duration-200"
+              className="group flex flex-col text-left rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:border-brand-red/40 hover:shadow-md transition-all duration-200"
             >
               {/* Red top accent */}
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-brand-red/10 group-hover:bg-brand-red/20 transition-colors">

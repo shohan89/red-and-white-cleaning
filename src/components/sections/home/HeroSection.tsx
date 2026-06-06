@@ -17,23 +17,23 @@ const TRUST_SIGNALS = [
 export function HeroSection() {
   return (
     <section
-      className="relative flex min-h-svh w-full items-center overflow-hidden bg-brand-dark"
+      className="relative flex min-h-svh w-full items-center overflow-hidden bg-white"
       aria-label="Hero"
     >
       {/* Background image & overlays */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <Image
-          src="/images/hero-bg.png"
-          alt="Pristine modern commercial office lobby"
+          src="/images/hero-bg.jpeg"
+          alt="Red and White Cleaning team at work in a professional building corridor"
           fill
           priority
           sizes="100vw"
           className="object-cover object-center"
         />
-        {/* Dark overlays to maintain high contrast for white text */}
-        <div className="absolute inset-0 bg-black/65" aria-hidden="true" />
-        <div className="absolute inset-0 bg-linear-to-r from-black/55 via-black/35 to-transparent" aria-hidden="true" />
-        <div className="absolute inset-0 bg-linear-to-t from-brand-dark via-transparent to-black/20" aria-hidden="true" />
+        {/* Overlays to maintain readability over background image */}
+        <div className="absolute inset-0 bg-black/25" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-r from-black/35 via-black/15 to-transparent" aria-hidden="true" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" aria-hidden="true" />
         {/* Subtle red brand glow overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,var(--color-brand-red),transparent_50%)] opacity-30" aria-hidden="true" />
       </div>
@@ -95,7 +95,7 @@ export function HeroSection() {
               href="/portfolio"
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white hover:border-white/50 font-semibold px-8 py-6 text-base h-auto justify-center"
+                "border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white hover:border-white/60 font-semibold px-8 py-6 text-base h-auto justify-center"
               )}
             >
               See Our Work

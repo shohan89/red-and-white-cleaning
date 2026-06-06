@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { BeforeAfterSlider } from "@/components/shared/BeforeAfterSlider";
-import { Sparkles, HardHat, Building2, Calendar, MapPin, Eye } from "lucide-react";
+import { Sparkles, HardHat, Building2, Calendar, MapPin, Eye, Home, Zap } from "lucide-react";
 
 interface GalleryItem {
   id: string;
-  category: "post-construction" | "commercial" | "deep-clean" | "before-after";
+  category: "post-construction" | "commercial" | "deep-clean" | "before-after" | "residential" | "specialty";
   title: string;
   desc: string;
   location: string;
@@ -22,50 +22,300 @@ interface GalleryItem {
 const CATEGORIES = [
   { id: "all", label: "All Cleans", icon: Sparkles },
   { id: "post-construction", label: "Post-Construction", icon: HardHat },
-  { id: "commercial", label: "Commercial Office", icon: Building2 },
+  { id: "commercial", label: "Commercial", icon: Building2 },
+  { id: "residential", label: "Residential", icon: Home },
   { id: "before-after", label: "Before & After", icon: Eye },
   { id: "deep-clean", label: "Deep Cleans", icon: Calendar },
+  { id: "specialty", label: "Specialty Cleans", icon: Zap },
 ] as const;
 
 const GALLERY_ITEMS: GalleryItem[] = [
+  // ── Post-Construction ──────────────────────────────────────────────────────
   {
-    id: "pc-1",
+    id: "tricar-1",
     category: "post-construction",
-    title: "Luxury Condo Complex Occupancy Clean",
-    desc: "Detailed multi-phase cleanup of a newly built 120-unit luxury condominium. Drywall dust, construction residues, and paint films were fully removed before final handover.",
-    location: "Kitchener, ON",
-    image: "/images/portfolio/post-construction-1.png",
-    alt: "Post-construction cleaning completed by Red and White Cleaning Services in Kitchener Ontario"
-  },
-  {
-    id: "ba-1",
-    category: "before-after",
-    title: "Downtown Commercial Suite Renovation Turnaround",
-    desc: "Drag the slider handles to see the dramatic transition from rough post-construction drywall plaster dust to a pristine, move-in-ready corporate workspace.",
-    location: "Hamilton, ON",
-    beforeImage: "/images/portfolio/before-1.png",
-    afterImage: "/images/portfolio/after-1.png",
-    beforeAlt: "Renovation site with drywall dust before cleanup by Red and White Cleaning in Hamilton Ontario",
-    afterAlt: "Sparkling clean commercial office after post-construction cleaning by Red and White Cleaning in Hamilton Ontario"
-  },
-  {
-    id: "comm-1",
-    category: "commercial",
-    title: "Tech Hub Main Entrance & Lobby Care",
-    desc: "Ongoing maintenance contract for a modern corporate office, highlighting polished concrete floors, reflective glass panels, and dust-free communal zones.",
-    location: "Waterloo, ON",
-    image: "/images/portfolio/commercial-1.png",
-    alt: "Commercial office cleaning performed by Red and White Cleaning Services in Waterloo Ontario"
-  },
-  {
-    id: "deep-1",
-    category: "deep-clean",
-    title: "Bistro 1876 Restaurant Deep Kitchen Scrub",
-    desc: "Deep sanitation clean-out of kitchen stations, grease traps, high-intensity stainless steel prep lines, and anti-slip tiled flooring for inspection compliance.",
+    title: "Tricar — 1882 Gordon Street",
+    desc: "Multi-phase post-construction clean for Tricar's residential development. Full dust extraction, window film removal, floor polishing, and suite-by-suite occupancy prep.",
     location: "Guelph, ON",
-    image: "/images/portfolio/deep-clean-1.png",
-    alt: "Industrial deep cleaning of a commercial kitchen by Red and White Cleaning Services in Guelph Ontario"
-  }
+    image: "/images/portfolio/tricar-guelph-common.jpeg",
+    alt: "Team cleaning the common area corridor at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-const-1",
+    category: "post-construction",
+    title: "Tricar — Phase 1 Construction Clean",
+    desc: "Phase 1 post-construction clean underway — debris cleared, drywall dust extracted, and surfaces prepped before PDI.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-const-1.jpeg",
+    alt: "Phase 1 post-construction clean in progress at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-const-2",
+    category: "post-construction",
+    title: "Tricar — Construction Debris Removal",
+    desc: "Bathroom scrub-out during Phase 1 clean — construction debris, concrete dust, and surface residue fully removed before handoff.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-const-2.jpeg",
+    alt: "Bathroom construction debris removal during Phase 1 clean at Tricar Guelph"
+  },
+  {
+    id: "tricar-pdi-2",
+    category: "post-construction",
+    title: "Tricar — PDI Clean in Progress",
+    desc: "Phase 2 PDI clean — LVP floors swept and detailed, suite fully prepped for owner walkthrough.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-pdi-2.jpg",
+    alt: "PDI clean in progress at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-pdi-3",
+    category: "post-construction",
+    title: "Tricar — Pre-Delivery Inspection Ready",
+    desc: "Suite prepped and cleaned for the pre-delivery inspection — every surface spotless before the new owner's walkthrough.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-pdi-3.jpg",
+    alt: "Suite ready for pre-delivery inspection at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-pdi-4",
+    category: "post-construction",
+    title: "Tricar — Exterior Window Clean",
+    desc: "Exterior window cleaning from the balcony level — construction film and adhesive removed for a crystal-clear finish.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-pdi-4.jpeg",
+    alt: "Worker cleaning exterior windows at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-1b",
+    category: "post-construction",
+    title: "Tricar — Occupancy Clean (Bathroom)",
+    desc: "Phase 3 occupancy clean — bathroom and suite interiors prepped and sanitized before handover to new residents.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-occupancy.jpeg",
+    alt: "Pristine bathroom after occupancy clean at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-occ-1",
+    category: "post-construction",
+    title: "Tricar — Suite Ready for Move-In",
+    desc: "Phase 3 occupancy clean complete — suite entry and living area spotless and move-in ready.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-occ-1.jpeg",
+    alt: "Clean suite entry ready for move-in at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-occ-2",
+    category: "post-construction",
+    title: "Tricar — Laundry Area After Occupancy Clean",
+    desc: "Laundry room detailed and sanitized as part of the Phase 3 occupancy clean — appliances wiped down, floors polished.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-occ-2.jpeg",
+    alt: "Clean laundry room with stacked washer dryer after occupancy clean at Tricar Guelph"
+  },
+  {
+    id: "tricar-occ-3",
+    category: "post-construction",
+    title: "Tricar — Bedroom Ready for Handover",
+    desc: "Master bedroom with floor-to-ceiling windows cleaned and polished — spotless and staged for the new resident.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-occ-3.jpeg",
+    alt: "Clean bedroom with large window view after occupancy clean at Tricar Guelph"
+  },
+  {
+    id: "tricar-2",
+    category: "post-construction",
+    title: "Tricar — 25 Sportsworld Tower 2",
+    desc: "Phase 1, 2, and 3 cleans coordinated with the Tricar project schedule. Construction debris removal, PDI cleaning, and final occupancy prep completed on time.",
+    location: "Kitchener, ON",
+    image: "/images/portfolio/tricar-sportsworld.png",
+    alt: "Tricar 25 Sportsworld Tower 2 Kitchener Ontario post-construction cleaning by Red and White Cleaning"
+  },
+  {
+    id: "sylk-1",
+    category: "post-construction",
+    title: "Zehr Group — Sylk Towers",
+    desc: "Full post-construction cleaning program for the Sylk Towers development by Zehr Group. Coordinated all three phases across multiple floors and unit types.",
+    location: "3241 King Street East, Kitchener, ON",
+    image: "/images/portfolio/zehr-sylk.png",
+    alt: "Zehr Group Sylk Towers Kitchener Ontario post-construction cleaning by Red and White Cleaning"
+  },
+
+  // ── Commercial ─────────────────────────────────────────────────────────────
+  {
+    id: "tricar-area-1",
+    category: "commercial",
+    title: "Tricar — Lobby Corridor After Clean",
+    desc: "Finished common area lobby corridor — marble-finish tile floors polished, walls wiped, and lighting surrounds detailed.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-area-1.jpeg",
+    alt: "Clean modern lobby corridor at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-area-2",
+    category: "commercial",
+    title: "Tricar — Common Area Clean in Progress",
+    desc: "Crew working through the common area corridor — floor scrubbing, wall wipe-down, and wet-floor safety protocol in place.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-area-2.jpeg",
+    alt: "Worker cleaning common area corridor at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-area-3",
+    category: "commercial",
+    title: "Tricar — Corridor Completed",
+    desc: "Long common area hallway after a thorough clean — every surface wiped, floors polished edge-to-edge.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-area-3.jpeg",
+    alt: "Long clean corridor at Tricar 1882 Gordon Street Guelph Ontario"
+  },
+  {
+    id: "tricar-win-1",
+    category: "commercial",
+    title: "Tricar — Window Clean Team (Interior)",
+    desc: "Full window cleaning crew tackling high-rise balcony glazing from inside — three cleaners working simultaneously on floor-to-ceiling windows.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-win-1.jpeg",
+    alt: "Three cleaners cleaning large balcony windows from inside at Tricar Guelph high-rise"
+  },
+  {
+    id: "tricar-win-2",
+    category: "commercial",
+    title: "Tricar — Exterior Window Crew",
+    desc: "Window cleaning team working the exterior balcony level with squeegees — construction film removed for a spotless finish.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-win-2.jpg",
+    alt: "Window cleaning crew on exterior balcony at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-win-3",
+    category: "commercial",
+    title: "Tricar — Balcony & Sliding Door Clean",
+    desc: "Pressure washing and detail cleaning of balcony tiles and sliding door track — thorough post-construction clean of all exterior surfaces.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-win-3.jpg",
+    alt: "Worker pressure washing balcony at Tricar 1882 Gordon Street Guelph"
+  },
+  {
+    id: "tricar-win-4",
+    category: "commercial",
+    title: "Tricar — Full Window Cleaning Team",
+    desc: "Four-person crew cleaning floor-to-ceiling windows in a high-rise suite — construction adhesive removed, glass polished to crystal clarity with a panoramic winter view.",
+    location: "Guelph, ON",
+    image: "/images/portfolio/tricar-guelph-win-4.jpg",
+    alt: "Four cleaners working floor-to-ceiling windows at Tricar Guelph with winter panorama outside"
+  },
+  {
+    id: "colonia-1",
+    category: "commercial",
+    title: "Colonia Treuhand — Commercial Unit",
+    desc: "Ongoing commercial cleaning contract for CTPM's commercial unit. Regular scheduled maintenance keeping the space presentable and professionally clean.",
+    location: "609 Kumpf Drive, Unit 106, Kitchener, ON",
+    image: "/images/portfolio/ctpm-commercial.jpeg",
+    alt: "Commercial cleaning at 609 Kumpf Drive Unit 106 Kitchener Ontario by Red and White Cleaning"
+  },
+  {
+    id: "ctpm-2",
+    category: "commercial",
+    title: "CTPM — Office Space After Clean",
+    desc: "LVP floors cleaned and polished, industrial-window glass wiped down — clean and professional workspace ready for use.",
+    location: "609 Kumpf Drive, Kitchener, ON",
+    image: "/images/portfolio/ctpm-2.jpeg",
+    alt: "Clean commercial office space with LVP floors at CTPM Kitchener"
+  },
+  {
+    id: "ctpm-3",
+    category: "commercial",
+    title: "CTPM — Post-Construction Office Clean",
+    desc: "Commercial unit after construction — debris removed, surfaces cleaned, and floors restored to working condition.",
+    location: "609 Kumpf Drive, Kitchener, ON",
+    image: "/images/portfolio/ctpm-3.jpeg",
+    alt: "Post-construction clean of commercial office space at CTPM 609 Kumpf Drive Kitchener"
+  },
+  {
+    id: "ctpm-4",
+    category: "commercial",
+    title: "CTPM — Epoxy Floor Commercial Space",
+    desc: "Commercial unit with epoxy-coated floors cleaned and buffed — a two-zone layout detailed end to end.",
+    location: "609 Kumpf Drive, Kitchener, ON",
+    image: "/images/portfolio/ctpm-4.jpeg",
+    alt: "Clean commercial space with epoxy floor at CTPM Kitchener Ontario"
+  },
+  {
+    id: "ctpm-5",
+    category: "commercial",
+    title: "CTPM — Kitchenette & Break Room",
+    desc: "Commercial kitchenette area cleaned top to bottom — cabinets wiped, sink sanitized, and speckled floors polished.",
+    location: "609 Kumpf Drive, Kitchener, ON",
+    image: "/images/portfolio/ctpm-5.jpeg",
+    alt: "Clean commercial kitchenette with dark cabinets at CTPM 609 Kumpf Drive Kitchener"
+  },
+
+  // ── Residential ────────────────────────────────────────────────────────────
+  {
+    id: "res-bathroom",
+    category: "residential",
+    title: "Residential Deep Clean — Bathroom",
+    desc: "Complete before-and-after bathroom transformation. Tile scrub-out, tub restoration, toilet sanitization, and full surface wipe-down.",
+    location: "Southern Ontario",
+    image: "/images/portfolio/residential-bathroom-ba.png",
+    alt: "Before and after bathroom deep clean by Red and White Cleaning Services"
+  },
+  {
+    id: "res-kitchen",
+    category: "residential",
+    title: "Residential Deep Clean — Kitchen",
+    desc: "Full kitchen deep clean — cabinets degreased and wiped down, appliances scrubbed, counters restored, and floors cleaned to a spotless finish.",
+    location: "Southern Ontario",
+    image: "/images/portfolio/residential-kitchen-ba.png",
+    alt: "Before and after kitchen deep clean by Red and White Cleaning Services"
+  },
+  {
+    id: "res-sink",
+    category: "residential",
+    title: "Residential Deep Clean — Under-Sink",
+    desc: "Even the spaces no one sees — under-sink cabinet completely cleaned out and sanitized as part of a full residential deep clean.",
+    location: "Southern Ontario",
+    image: "/images/portfolio/residential-sink-ba.png",
+    alt: "Before and after under-sink cabinet clean by Red and White Cleaning Services"
+  },
+
+  // ── Specialty / Mechanical ─────────────────────────────────────────────────
+  {
+    id: "gen-1",
+    category: "specialty",
+    title: "71 Wyndham — Generator Room Clean",
+    desc: "Mechanical room deep clean — generator units detailed, floors swept and mopped, and all surfaces wiped around active equipment.",
+    location: "71 Wyndham Street, Guelph, ON",
+    image: "/images/portfolio/generator-1.jpg",
+    alt: "Worker cleaning generator equipment in mechanical room at 71 Wyndham Guelph"
+  },
+  {
+    id: "gen-2",
+    category: "specialty",
+    title: "71 Wyndham — Mechanical Room Piping",
+    desc: "Industrial piping system cleaned — white PVC pipes, red pump motors, and surrounding concrete floor all detailed.",
+    location: "71 Wyndham Street, Guelph, ON",
+    image: "/images/portfolio/generator-2.jpg",
+    alt: "Clean white industrial piping and red pump in mechanical room at 71 Wyndham Guelph"
+  },
+  {
+    id: "gen-3",
+    category: "specialty",
+    title: "71 Wyndham — Industrial Chiller Units",
+    desc: "Two large industrial chillers cleaned and detailed — surrounding floors swept and mopped, all surfaces dust-free.",
+    location: "71 Wyndham Street, Guelph, ON",
+    image: "/images/portfolio/generator-3.jpg",
+    alt: "Two industrial chiller units in clean mechanical room at 71 Wyndham Guelph"
+  },
+  {
+    id: "gen-4",
+    category: "specialty",
+    title: "71 Wyndham — Full Mechanical Room",
+    desc: "Entire mechanical room cleaned from floor to ceiling — generators, fire suppression systems, piping, and epoxy floors all restored to pristine condition.",
+    location: "71 Wyndham Street, Guelph, ON",
+    image: "/images/portfolio/generator-4.jpg",
+    alt: "Full clean mechanical room with generators and fire suppression at 71 Wyndham Guelph"
+  },
 ];
 
 export function PortfolioGallery() {
@@ -150,14 +400,14 @@ export function PortfolioGallery() {
               >
                 <div>
                   {/* Image container */}
-                  <div className="relative w-full h-[250px] sm:h-[320px] overflow-hidden rounded-2xl bg-muted mb-6">
+                  <div className="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-muted mb-6">
                     {item.image && (
                       <Image
                         src={item.image}
                         alt={item.alt || ""}
                         fill
-                        sizes="(max-w-768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                       />
                     )}
                     
