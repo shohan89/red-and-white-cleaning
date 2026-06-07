@@ -6,20 +6,20 @@ const phaseImages = [
   {
     phase: "Phase 1",
     label: "Phase 1 — Post-Construction Clean",
-    src: "/images/portfolio/residential-bathroom-ba.png",
-    alt: "Before and after bathroom restoration — Phase 1 post-construction clean",
+    src: "/images/portfolio/tricar-guelph-phase1-debris.jpeg",
+    alt: "Construction debris in bathtub — typical Phase 1 post-construction cleanup at Tricar Guelph",
   },
   {
     phase: "Phase 2",
     label: "Phase 2 — PDI Clean",
-    src: "/images/portfolio/residential-kitchen-ba.png",
-    alt: "Before and after kitchen transformation — Phase 2 PDI clean",
+    src: "/images/portfolio/tricar-guelph-pdi-3.jpg",
+    alt: "Spotless suite with floor-to-ceiling windows ready for pre-delivery inspection at Tricar Guelph",
   },
   {
     phase: "Phase 3",
     label: "Phase 3 — Occupancy Clean",
-    src: "/images/portfolio/residential-sink-ba.png",
-    alt: "Before and after under-sink cabinet — Phase 3 occupancy clean",
+    src: "/images/portfolio/tricar-guelph-phase3-staged.jpeg",
+    alt: "Move-in ready living space after Phase 3 occupancy clean at Tricar Guelph",
   },
 ];
 
