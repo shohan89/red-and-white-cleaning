@@ -22,9 +22,9 @@ export function Footer() {
               />
               <div>
                 <span className="text-lg font-heading font-bold text-white tracking-tight leading-none block">
-                  <span className="text-brand-red">Red</span> and White
+                  Red and White
                 </span>
-                <p className="text-xs font-semibold text-white/80 mt-1.5 uppercase tracking-wider">Cleaning Services LTD</p>
+                <p className="text-xs font-semibold text-white mt-1.5 uppercase tracking-wider">Cleaning Services LTD</p>
               </div>
             </Link>
             <div className="space-y-1.5 text-sm leading-relaxed text-white/70">
@@ -76,11 +76,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:Redandwhiteclean@gmail.com" className="flex items-center gap-3 hover:text-white transition-colors group">
+                <a href="mailto:redandwhiteclean@gmail.com" className="flex items-center gap-3 hover:text-white transition-colors group">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-red/10 group-hover:bg-brand-red/20 transition-colors">
                     <Mail className="h-4 w-4 text-brand-red" />
                   </div>
-                  <span className="break-all">Email: Redandwhiteclean@gmail.com</span>
+                  <span className="break-all">Email: redandwhiteclean@gmail.com</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 mt-4">

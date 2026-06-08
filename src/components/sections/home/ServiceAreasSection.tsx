@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { SERVICE_CITIES } from "@/config/cities";
@@ -23,27 +22,20 @@ export function ServiceAreasSection() {
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 mb-10">
         {SERVICE_CITIES.map((city) => (
           <li key={city.slug}>
-            <Link
-              href={`/service-area/${city.slug}`}
-              className="group flex items-center gap-2.5 rounded-lg border border-gray-200 bg-brand-gray px-4 py-3.5 hover:border-brand-red/40 hover:bg-brand-red/5 transition-all duration-200"
-            >
+            <div className="flex items-center gap-2.5 rounded-lg border border-gray-200 bg-brand-gray px-4 py-3.5">
               <MapPin className="h-4 w-4 shrink-0 text-brand-red" aria-hidden="true" />
               <div>
-                <p className="text-sm font-semibold text-brand-dark group-hover:text-brand-red transition-colors">
-                  {city.name}
-                </p>
+                <p className="text-sm font-semibold text-brand-dark">{city.name}</p>
                 <p className="text-xs text-gray-400">{city.province}</p>
               </div>
-            </Link>
+            </div>
           </li>
         ))}
       </ul>
 
       {/* Supporting copy for GEO */}
-      <p className="mx-auto max-w-2xl text-center text-sm font-medium">
-        <Link href="/contact" className="text-brand-red hover:underline">
-          [ Check if we service your area — contact us ]
-        </Link>
+      <p className="mx-auto max-w-2xl text-center text-sm font-medium text-brand-red">
+        [ Check if we service your area — contact us ]
       </p>
     </SectionWrapper>
   );

@@ -33,7 +33,7 @@ export function ContactInfo() {
 
         {/* Email Card */}
         <a 
-          href="mailto:Redandwhiteclean@gmail.com"
+          href="mailto:redandwhiteclean@gmail.com"
           className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-brand-red/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-red/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -43,7 +43,7 @@ export function ContactInfo() {
             </div>
             <h3 className="text-lg font-bold text-foreground mb-1">Email</h3>
             <p className="text-muted-foreground font-medium group-hover:text-brand-red transition-colors text-sm sm:text-base break-words">
-              Redandwhiteclean@gmail.com
+              redandwhiteclean@gmail.com
             </p>
           </div>
         </a>
