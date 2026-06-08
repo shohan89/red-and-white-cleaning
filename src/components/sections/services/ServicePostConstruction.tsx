@@ -138,19 +138,20 @@ export function ServicePostConstruction() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {phaseImages.map((img) => (
-              <div key={img.phase} className="rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-md hover:border-brand-red/30 transition-all duration-300">
-                <div className="relative w-full aspect-[4/3] bg-gray-50">
+              <div key={img.phase} className="group rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg hover:border-brand-red/40 transition-all duration-300">
+                <div className="relative w-full aspect-[4/3]">
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
-                    className="object-contain p-2"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                     sizes="(max-width: 640px) 100vw, 33vw"
                   />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+                  <p className="absolute bottom-0 left-0 right-0 text-sm font-semibold text-white text-center py-3 px-4">
+                    {img.label}
+                  </p>
                 </div>
-                <p className="text-sm font-medium text-muted-foreground text-center py-3 px-4 bg-card">
-                  {img.label}
-                </p>
               </div>
             ))}
           </div>
