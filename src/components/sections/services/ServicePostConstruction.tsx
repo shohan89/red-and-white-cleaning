@@ -8,18 +8,21 @@ const phaseImages = [
     label: "Phase 1 — Post-Construction Clean",
     src: "/images/portfolio/tricar-guelph-phase1-debris.jpeg",
     alt: "Construction debris in bathtub — typical Phase 1 post-construction cleanup at Tricar Guelph",
+    objectPosition: "center",
   },
   {
     phase: "Phase 2",
     label: "Phase 2 — PDI Clean",
     src: "/images/portfolio/tricar-guelph-pdi-3.jpg",
     alt: "Spotless suite with floor-to-ceiling windows ready for pre-delivery inspection at Tricar Guelph",
+    objectPosition: "top",
   },
   {
     phase: "Phase 3",
     label: "Phase 3 — Occupancy Clean",
     src: "/images/portfolio/tricar-guelph-phase3-staged.jpeg",
     alt: "Move-in ready living space after Phase 3 occupancy clean at Tricar Guelph",
+    objectPosition: "center",
   },
 ];
 
@@ -139,16 +142,16 @@ export function ServicePostConstruction() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             {phaseImages.map((img) => (
               <div key={img.phase} className="group rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg hover:border-brand-red/40 transition-all duration-300">
-                <div className="relative w-full aspect-[4/3]">
+                <div className="relative w-full aspect-4/3">
                   <Image
                     src={img.src}
                     alt={img.alt}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    style={{ objectPosition: img.objectPosition }}
                     sizes="(max-width: 640px) 100vw, 33vw"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
-                  <p className="absolute bottom-0 left-0 right-0 text-sm font-semibold text-white text-center py-3 px-4">
+                  <p className="absolute bottom-0 left-0 right-0 text-sm font-semibold text-white text-center py-3 px-4 backdrop-blur-md bg-white/10 border-t border-white/20">
                     {img.label}
                   </p>
                 </div>
