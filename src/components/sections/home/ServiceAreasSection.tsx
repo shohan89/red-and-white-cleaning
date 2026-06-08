@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { SERVICE_CITIES } from "@/config/cities";
@@ -34,8 +35,10 @@ export function ServiceAreasSection() {
       </ul>
 
       {/* Supporting copy for GEO */}
-      <p className="mx-auto max-w-2xl text-center text-sm font-medium text-brand-red">
-        [ Check if we service your area — contact us ]
+      <p className="mx-auto max-w-2xl text-center text-sm font-medium">
+        <Link href="/contact" className="text-brand-red hover:underline">
+          [ Check if we service your area — contact us ]
+        </Link>
       </p>
     </SectionWrapper>
   );

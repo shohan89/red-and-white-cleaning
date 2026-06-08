@@ -51,6 +51,11 @@ export const metadata: Metadata = {
     title: `${SITE.name} | Commercial Cleaning Southern Ontario`,
     description: "Post-construction and commercial cleaning in Southern Ontario.",
   },
+  icons: {
+    icon: [{ url: "/images/logo.jpg", type: "image/jpeg" }],
+    shortcut: "/images/logo.jpg",
+    apple: "/images/logo.jpg",
+  },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
 };
