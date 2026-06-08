@@ -8,7 +8,7 @@ export async function POST(request: Request) {
 
   const { error } = await resend.emails.send({
     from: 'Red & White Cleaning <onboarding@resend.dev>',
-    to: ['maffin.killer007@gmail.com'],
+    to: ['redandwhiteclean@gmail.com'],
     subject: `New Quote Request — ${serviceType} (${name})`,
     html: `
       <h2 style="color:#c0392b;">New Contact Form Submission</h2>
