@@ -1,7 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 
-export function ServicesHeader() {
+interface ServicesHeroContent {
+  heading?: string
+  subheading?: string
+}
+
+export function ServicesHeader({ content = {} }: { content?: ServicesHeroContent }) {
+  const heading = content.heading ?? "Professional Cleaning Services for Contractors & Commercial Clients"
+  const subheading = content.subheading ?? "We handle everything from rough-clean on active construction sites to ongoing janitorial services for commercial spaces. Here's what we do:"
+
   return (
     <section className="relative overflow-hidden bg-brand-dark pt-32 pb-20 lg:pt-48 lg:pb-32">
       {/* Background image & overlays */}
@@ -28,10 +36,10 @@ export function ServicesHeader() {
           </div>
 
           <h1 className="text-4xl font-bold tracking-tight text-brand-white sm:text-5xl md:text-6xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-75 leading-tight">
-            Professional Cleaning Services for Contractors & Commercial Clients
+            {heading}
           </h1>
           <p className="mt-6 text-lg leading-8 text-brand-gray/80 sm:text-xl max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-            We handle everything from rough-clean on active construction sites to ongoing janitorial services for commercial spaces. Here's what we do:
+            {subheading}
           </p>
         </div>
       </div>

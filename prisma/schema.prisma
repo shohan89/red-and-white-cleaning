@@ -1,0 +1,377 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUOTED
+  WON
+  LOST
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+// ─── LEADS (CRM) ──────────────────────────────────────────────────────────────
+
+model Lead {
+  id            String      @id @default(cuid())
+  name          String
+  companyName   String?
+  email         String
+  phone         String?
+  location      String
+  serviceType   String
+  message       String      @db.Text
+  howDidYouHear String?
+  status        LeadStatus  @default(NEW)
+  notes         String?     @db.Text
+  followUpDate  DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  timeline      LeadEvent[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+model LeadEvent {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String
+  note      String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([leadId])
+}
+
+// ─── PORTFOLIO ────────────────────────────────────────────────────────────────
+
+model PortfolioCategory {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?
+  sortOrder   Int             @default(0)
+  items       PortfolioItem[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([slug])
+  @@index([sortOrder])
+}
+
+model PortfolioItem {
+  id           String            @id @default(cuid())
+  title        String
+  description  String?           @db.Text
+  location     String?
+  categoryId   String
+  category     PortfolioCategory @relation(fields: [categoryId], references: [id])
+  imageUrl     String?
+  imageAlt     String?
+  imageCaption String?
+  imageTitle   String?
+  beforeImage  String?
+  afterImage   String?
+  beforeAlt    String?
+  afterAlt     String?
+  sortOrder    Int               @default(0)
+  featured     Boolean           @default(false)
+  seoTitle     String?
+  seoDesc      String?
+  ogImage      String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@index([categoryId])
+  @@index([sortOrder])
+  @@index([featured])
+}
+
+// ─── FAQS ─────────────────────────────────────────────────────────────────────
+
+model FaqCategory {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  icon      String?
+  sortOrder Int      @default(0)
+  faqs      Faq[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+model Faq {
+  id         String      @id @default(cuid())
+  question   String
+  answer     String      @db.Text
+  categoryId String
+  category   FaqCategory @relation(fields: [categoryId], references: [id])
+  sortOrder  Int         @default(0)
+  published  Boolean     @default(true)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([categoryId])
+  @@index([sortOrder])
+  @@index([published])
+}
+
+// ─── SERVICES ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id                 String                @id @default(cuid())
+  name               String
+  slug               String                @unique
+  label              String?
+  title              String
+  description        String                @db.Text
+  targetAudienceText String?               @db.Text
+  sortOrder          Int                   @default(0)
+  icon               String?
+  phases             ServicePhase[]
+  includedItems      ServiceIncludedItem[]
+  images             ServiceImage[]
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  @@index([slug])
+  @@index([sortOrder])
+}
+
+model ServicePhase {
+  id          String  @id @default(cuid())
+  serviceId   String
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  phaseNumber Int
+  title       String
+  description String  @db.Text
+  icon        String?
+  sortOrder   Int     @default(0)
+
+  @@index([serviceId])
+}
+
+model ServiceIncludedItem {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  text      String
+  sortOrder Int     @default(0)
+
+  @@index([serviceId])
+}
+
+model ServiceImage {
+  id             String  @id @default(cuid())
+  serviceId      String
+  service        Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  phaseLabel     String?
+  imageUrl       String
+  altText        String?
+  caption        String?
+  objectPosition String?
+  sortOrder      Int     @default(0)
+
+  @@index([serviceId])
+}
+
+// ─── MEDIA LIBRARY ────────────────────────────────────────────────────────────
+
+model MediaAsset {
+  id          String   @id @default(cuid())
+  url         String   @unique
+  filename    String
+  mimeType    String
+  size        Int
+  width       Int?
+  height      Int?
+  altText     String?
+  caption     String?
+  description String?
+  title       String?
+  bucket      String   @default("media")
+  path        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([mimeType])
+}
+
+// ─── PAGE CONTENT (Flexible CMS) ──────────────────────────────────────────────
+
+model PageContent {
+  id         String   @id @default(cuid())
+  pageKey    String
+  sectionKey String
+  content    Json
+  updatedAt  DateTime @updatedAt
+
+  @@unique([pageKey, sectionKey])
+  @@index([pageKey])
+}
+
+// ─── SEO ──────────────────────────────────────────────────────────────────────
+
+model GlobalSeo {
+  id                   String   @id @default(cuid())
+  siteName             String?
+  siteUrl              String?
+  defaultTitleTemplate String?
+  defaultMetaDesc      String?
+  defaultOgImage       String?
+  brandName            String?
+  businessPhone        String?
+  businessEmail        String?
+  businessAddress      String?
+  ga4Id                String?
+  gscVerification      String?
+  gtmId                String?
+  googleBusinessUrl    String?
+  updatedAt            DateTime @updatedAt
+}
+
+model PageSeo {
+  id           String   @id @default(cuid())
+  pageKey      String   @unique
+  metaTitle    String?
+  metaDesc     String?
+  focusKeyword String?
+  canonicalUrl String?
+  robots       String?
+  ogTitle      String?
+  ogDesc       String?
+  ogImage      String?
+  twitterTitle String?
+  twitterDesc  String?
+  twitterImage String?
+  updatedAt    DateTime @updatedAt
+
+  @@index([pageKey])
+}
+
+model SchemaConfig {
+  id        String   @id @default(cuid())
+  type      String   @unique
+  enabled   Boolean  @default(true)
+  config    Json
+  updatedAt DateTime @updatedAt
+}
+
+model SitemapEntry {
+  id              String   @id @default(cuid())
+  url             String   @unique
+  priority        Float    @default(0.5)
+  changeFrequency String   @default("monthly")
+  included        Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+}
+
+model Redirect {
+  id          String   @id @default(cuid())
+  source      String   @unique
+  destination String
+  type        Int      @default(301)
+  createdAt   DateTime @default(now())
+
+  @@index([source])
+}
+
+model RobotsConfig {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+// ─── GEO / AI SEO ─────────────────────────────────────────────────────────────
+
+model GeoContent {
+  id               String   @id @default(cuid())
+  entityType       String
+  entityId         String?
+  entityKeywords   String[]
+  serviceKeywords  String[]
+  locationKeywords String[]
+  aiSummary        String?  @db.Text
+  whatIsService    String?  @db.Text
+  whoNeedsService  String?  @db.Text
+  whyChooseCompany String?  @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([entityType])
+}
+
+// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id              String   @id @default(cuid())
+  companyName     String?
+  legalName       String?
+  phone           String?
+  email           String?
+  addressStreet   String?
+  addressCity     String?
+  addressProvince String?
+  addressPostal   String?
+  businessHours   String?
+  foundedYear     Int?
+  facebook        String?
+  instagram       String?
+  linkedin        String?
+  footerText      String?  @db.Text
+  googleMapsEmbed String?  @db.Text
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── EMAIL TEMPLATES ──────────────────────────────────────────────────────────
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  subject   String
+  htmlBody  String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+// ─── SERVICE CITIES (future expansion) ───────────────────────────────────────
+
+model ServiceCity {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  province  String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

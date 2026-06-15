@@ -1,15 +1,28 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const body = await request.json();
   const { name, companyName, email, phone, serviceType, location, message, howDidYouHear } = body;
 
+  // Save lead to DB (non-blocking — don't fail the request if this errors)
+  try {
+    const lead = await prisma.lead.create({
+      data: { name, companyName, email, phone, serviceType, location, message, howDidYouHear, status: 'NEW' },
+    });
+    await prisma.leadEvent.create({
+      data: { leadId: lead.id, type: 'created', note: 'Lead created via contact form' },
+    });
+  } catch (dbError) {
+    console.error('Failed to save lead to DB:', dbError);
+  }
+
   const { error } = await resend.emails.send({
     from: 'Red & White Cleaning <onboarding@resend.dev>',
     to: ['redandwhiteclean@gmail.com'],
-    subject: `New Quote Request — ${serviceType} (${name})`,
+    subject: `New Quote Request – ${serviceType} (${name})`,
     html: `
       <h2 style="color:#c0392b;">New Contact Form Submission</h2>
       <table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:15px;">

@@ -1,22 +1,34 @@
 import React from "react";
 import { Phone, Mail, MapPin, MessageSquare } from "lucide-react";
 
-export function ContactInfo() {
+interface ContactSettings {
+  heading?: string
+  subheading?: string
+  phone?: string
+  email?: string
+}
+
+export function ContactInfo({ settings = {} }: { settings?: ContactSettings }) {
+  const heading = settings.heading ?? "Get in Touch"
+  const subheading = settings.subheading ?? "Whether you need a post-construction quote, want to discuss a commercial cleaning contract, or have a general inquiry, our team is ready to help."
+  const phone = settings.phone ?? "519-574-1552"
+  const email = settings.email ?? "redandwhiteclean@gmail.com"
+
   return (
     <div className="space-y-8 h-full flex flex-col">
       <div>
         <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-4">
-          Get in Touch
+          {heading}
         </h2>
         <p className="text-lg text-muted-foreground leading-relaxed">
-          Whether you need a post-construction quote, want to discuss a commercial cleaning contract, or have a general inquiry, our team is ready to help.
+          {subheading}
         </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
         {/* Phone Card */}
-        <a 
-          href="tel:519-574-1552"
+        <a
+          href={`tel:${phone}`}
           className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-brand-red/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-red/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -26,14 +38,14 @@ export function ContactInfo() {
             </div>
             <h3 className="text-lg font-bold text-foreground mb-1">Phone</h3>
             <p className="text-muted-foreground font-medium group-hover:text-brand-red transition-colors">
-              519-574-1552
+              {phone}
             </p>
           </div>
         </a>
 
         {/* Email Card */}
-        <a 
-          href="mailto:redandwhiteclean@gmail.com"
+        <a
+          href={`mailto:${email}`}
           className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-brand-red/40 hover:shadow-md transition-all duration-300 hover:-translate-y-1"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-brand-red/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -43,7 +55,7 @@ export function ContactInfo() {
             </div>
             <h3 className="text-lg font-bold text-foreground mb-1">Email</h3>
             <p className="text-muted-foreground font-medium group-hover:text-brand-red transition-colors text-sm sm:text-base break-words">
-              redandwhiteclean@gmail.com
+              {email}
             </p>
           </div>
         </a>

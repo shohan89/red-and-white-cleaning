@@ -4,7 +4,15 @@ import { buttonVariants } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-export function CTABanner() {
+interface CTAContent {
+  heading?: string
+  subheading?: string
+}
+
+export function CTABanner({ content = {} }: { content?: CTAContent }) {
+  const heading = content.heading ?? "Ready to Get a Clean Site?"
+  const subheading = content.subheading ?? "Whether it's a one-time post-construction clean or an ongoing commercial contract — we're ready when you are."
+
   return (
     <section
       className="relative w-full overflow-hidden bg-brand-red"
@@ -18,10 +26,10 @@ export function CTABanner() {
 
       <div className="relative mx-auto max-w-3xl px-4 py-20 text-center md:py-24">
         <h2 className="mb-4 text-3xl font-heading font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl">
-          Ready to Get a Clean Site?
+          {heading}
         </h2>
         <p className="mb-8 text-base text-white/80 sm:text-lg">
-          Whether it's a one-time post-construction clean or an ongoing commercial contract — we're ready when you are.
+          {subheading}
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-5">

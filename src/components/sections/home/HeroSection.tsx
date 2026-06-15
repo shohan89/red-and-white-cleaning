@@ -8,13 +8,41 @@ import { buttonVariants } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-const TRUST_SIGNALS = [
+const DEFAULT_TRUST_SIGNALS = [
   "Fully Licensed & Insured",
   "Free Quotes — No Obligation",
   "Response Within 1 Business Day",
 ];
 
-export function HeroSection() {
+interface HeroContent {
+  heading?: string
+  subheading?: string
+  cta1Text?: string
+  cta2Text?: string
+}
+
+interface TrustContent {
+  signal1?: string
+  signal2?: string
+  signal3?: string
+}
+
+export function HeroSection({
+  heroContent = {},
+  trustContent = {},
+}: {
+  heroContent?: HeroContent
+  trustContent?: TrustContent
+}) {
+  const heading = heroContent.heading ?? "Commercial & Construction Cleaning Done Right — Across KW, Guelph, Hamilton, London and Brantford"
+  const subheading = heroContent.subheading ?? "We clean construction sites, commercial spaces, and everything in between. Fast, thorough, and built for contractors and property managers who need it done properly."
+  const cta1Text = heroContent.cta1Text ?? "Get a Free Quote"
+  const cta2Text = heroContent.cta2Text ?? "See Our Work"
+  const TRUST_SIGNALS = [
+    trustContent.signal1 ?? DEFAULT_TRUST_SIGNALS[0],
+    trustContent.signal2 ?? DEFAULT_TRUST_SIGNALS[1],
+    trustContent.signal3 ?? DEFAULT_TRUST_SIGNALS[2],
+  ]
   return (
     <section
       className="relative flex min-h-svh w-full items-center overflow-hidden bg-white"
@@ -60,8 +88,7 @@ export function HeroSection() {
             transition={{ duration: 0.55, delay: 0.25 }}
             className="mb-6 font-heading text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem]"
           >
-            Commercial &amp; Construction Cleaning{" "}
-            <span className="text-brand-red">Done Right</span> — Across KW, Guelph, Hamilton, London and Brantford
+            {heading}
           </motion.h1>
 
           {/* Subheadline */}
@@ -71,8 +98,7 @@ export function HeroSection() {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="mb-9 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl"
           >
-            We clean construction sites, commercial spaces, and everything in between. Fast, thorough,
-            and built for contractors and property managers who need it done properly.
+            {subheading}
           </motion.p>
 
           {/* CTA buttons */}
@@ -89,7 +115,7 @@ export function HeroSection() {
                 "bg-brand-red hover:bg-brand-red/90 text-white font-semibold px-8 py-6 text-base h-auto shadow-lg border-0 justify-center"
               )}
             >
-              Get a Free Quote
+              {cta1Text}
             </Link>
             <Link
               href="/portfolio"
@@ -98,7 +124,7 @@ export function HeroSection() {
                 "border-white/40 bg-white/10 text-white hover:bg-white/20 hover:text-white hover:border-white/60 font-semibold px-8 py-6 text-base h-auto justify-center"
               )}
             >
-              See Our Work
+              {cta2Text}
             </Link>
           </motion.div>
 

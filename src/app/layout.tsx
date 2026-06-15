@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Montserrat, Inter } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/layout/Header/Header";
-import { Footer } from "@/components/layout/Footer/Footer";
-import { MobileCTABar } from "@/components/layout/MobileCTABar";
 import { Toaster } from "@/components/ui/sonner";
 import { SITE } from "@/config/site";
 
@@ -69,10 +66,7 @@ export default function RootLayout({
       className={`${montserrat.variable} ${inter.variable} h-full scroll-smooth`}
     >
       <body className="min-h-full flex flex-col antialiased">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <MobileCTABar />
+        {children}
         <Toaster />
       </body>
     </html>

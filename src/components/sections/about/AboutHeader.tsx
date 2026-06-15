@@ -1,7 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
 
-export function AboutHeader() {
+interface AboutHeroContent {
+  heading?: string
+  subheading?: string
+}
+
+export function AboutHeader({ content = {} }: { content?: AboutHeroContent }) {
+  const heading = content.heading ?? "We're a Commercial and Construction Cleaning Company That Gets It Done"
+  const subheading = content.subheading ?? "Red and White Cleaning Services LTD is a locally operated cleaning company based in the KW Region, serving contractors, property managers, and businesses across Southern Ontario."
+
   return (
     <section className="relative overflow-hidden bg-brand-dark pt-32 pb-20 lg:pt-48 lg:pb-32">
       {/* Background image & overlays */}
@@ -22,10 +30,10 @@ export function AboutHeader() {
       <div className="container relative z-10 mx-auto px-4 md:px-6">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-4xl font-bold tracking-tight text-brand-white sm:text-5xl md:text-6xl animate-in fade-in slide-in-from-bottom-8 duration-700">
-            We're a Commercial and Construction Cleaning Company That Gets It Done
+            {heading}
           </h1>
           <p className="mt-6 text-lg leading-8 text-brand-gray/80 sm:text-xl max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-            Red and White Cleaning Services LTD is a locally operated cleaning company based in the KW Region, serving contractors, property managers, and businesses across Southern Ontario.
+            {subheading}
           </p>
         </div>
       </div>
