@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
 import { supabaseAdmin } from "@/lib/supabase"
 import { prisma } from "@/lib/prisma"
-import sharp from "sharp"
-
 export async function POST(req: NextRequest) {
   const session = await auth()
   if (!session?.user) {
@@ -25,28 +23,14 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
 
-      let finalBuffer = buffer
-      let finalMimeType = file.type
-      let finalName = file.name
-
-      const isConvertible = file.type.startsWith("image/") && file.type !== "image/svg+xml"
-      if (isConvertible) {
-        finalBuffer = await sharp(buffer)
-          .resize({ width: 1920, withoutEnlargement: true })
-          .webp({ quality: 85 })
-          .toBuffer()
-        finalMimeType = "image/webp"
-        finalName = file.name.replace(/\.[^.]+$/, ".webp")
-      }
-
       const timestamp = Date.now()
-      const safeName = finalName.replace(/[^a-zA-Z0-9._-]/g, "_")
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_")
       const storagePath = `${timestamp}-${safeName}`
 
       const { error: uploadError } = await supabaseAdmin.storage
         .from("media")
-        .upload(storagePath, finalBuffer, {
-          contentType: finalMimeType,
+        .upload(storagePath, buffer, {
+          contentType: file.type,
           upsert: false,
         })
 
@@ -60,9 +44,9 @@ export async function POST(req: NextRequest) {
       const asset = await prisma.mediaAsset.create({
         data: {
           url: urlData.publicUrl,
-          filename: finalName,
-          mimeType: finalMimeType,
-          size: finalBuffer.length,
+          filename: file.name,
+          mimeType: file.type,
+          size: buffer.length,
           bucket: "media",
           path: storagePath,
         },

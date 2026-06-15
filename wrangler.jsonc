@@ -1,0 +1,21 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"main": ".open-next/worker.js",
+	"name": "rw-cleaning",
+	"compatibility_date": "2026-06-15",
+	"compatibility_flags": ["nodejs_compat_v2", "global_fetch_strictly_public"],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		{
+			// Self-reference binding required by OpenNext for internal routing
+			"binding": "WORKER_SELF_REFERENCE",
+			"service": "rw-cleaning"
+		}
+	],
+	"vars": {
+		"NEXT_PUBLIC_SITE_URL": "https://redandwhitecleaningservices.com"
+	}
+}

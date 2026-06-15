@@ -1,8 +1,5 @@
 "use server"
 
-import fs from "fs"
-import nodePath from "path"
-import sharp from "sharp"
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { supabaseAdmin } from "@/lib/supabase"
@@ -90,9 +87,7 @@ export async function syncStaticImages() {
 
   let synced = 0
   for (const imgPath of staticImages) {
-    const fullPath = nodePath.join(process.cwd(), "public", imgPath)
-    let size = 0
-    try { size = fs.statSync(fullPath).size } catch {}
+    const size = 0
     const ext = imgPath.split(".").pop()?.toLowerCase() ?? ""
     const mimeType = MIME[ext] ?? "image/jpeg"
     const filename = imgPath.split("/").pop() ?? imgPath
@@ -135,85 +130,9 @@ export async function updateMediaSeoFields(
 
 export async function convertAllToWebP() {
   await requireAdmin()
-
-  const assets = await prisma.mediaAsset.findMany({
-    where: { mimeType: { not: "image/webp" } },
-  })
-
-  const processable = assets.filter(
-    (a) => a.mimeType.startsWith("image/") && a.mimeType !== "image/svg+xml"
-  )
-
-  let converted = 0
-  const errors: string[] = []
-
-  for (const asset of processable) {
-    try {
-      let inputBuffer: Buffer
-
-      if (asset.bucket === "static") {
-        const fullPath = nodePath.join(process.cwd(), "public", asset.url)
-        inputBuffer = fs.readFileSync(fullPath)
-      } else {
-        const { data, error } = await supabaseAdmin.storage
-          .from(asset.bucket)
-          .download(asset.path)
-        if (error || !data) throw new Error(`Download failed: ${error?.message}`)
-        inputBuffer = Buffer.from(await data.arrayBuffer())
-      }
-
-      const webpBuffer = await sharp(inputBuffer)
-        .resize({ width: 1920, withoutEnlargement: true })
-        .webp({ quality: 85 })
-        .toBuffer()
-
-      const newFilename = asset.filename.replace(/\.[^.]+$/, ".webp")
-      let newUrl: string
-      let newPath: string
-
-      if (asset.bucket === "static") {
-        const publicDir = nodePath.join(process.cwd(), "public")
-        const originalAbs = nodePath.join(publicDir, asset.url)
-        const dir = nodePath.dirname(originalAbs)
-        const newAbs = nodePath.join(dir, newFilename)
-        fs.writeFileSync(newAbs, webpBuffer)
-        newPath = "/" + nodePath.relative(publicDir, newAbs).replace(/\\/g, "/")
-        newUrl = newPath
-      } else {
-        const newStoragePath = asset.path.replace(/\.[^.]+$/, ".webp")
-        const { error: uploadError } = await supabaseAdmin.storage
-          .from(asset.bucket)
-          .upload(newStoragePath, webpBuffer, { contentType: "image/webp", upsert: true })
-        if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`)
-
-        if (asset.path !== newStoragePath) {
-          await supabaseAdmin.storage.from(asset.bucket).remove([asset.path])
-        }
-
-        const { data: urlData } = supabaseAdmin.storage
-          .from(asset.bucket)
-          .getPublicUrl(newStoragePath)
-        newUrl = urlData.publicUrl
-        newPath = newStoragePath
-      }
-
-      await prisma.mediaAsset.update({
-        where: { id: asset.id },
-        data: {
-          url: newUrl,
-          path: newPath,
-          filename: newFilename,
-          mimeType: "image/webp",
-          size: webpBuffer.length,
-        },
-      })
-
-      converted++
-    } catch (err) {
-      errors.push(`${asset.filename}: ${err instanceof Error ? err.message : "Unknown error"}`)
-    }
+  return {
+    converted: 0,
+    total: 0,
+    errors: ["Image conversion requires a local development environment with sharp installed."],
   }
-
-  revalidatePath("/admin/media")
-  return { converted, total: processable.length, errors }
 }
