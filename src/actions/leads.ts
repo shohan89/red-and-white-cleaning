@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
-import type { LeadStatus } from "@prisma/client"
+import type { LeadStatus } from "@/types"
 
 async function requireAdmin() {
   const session = await auth()

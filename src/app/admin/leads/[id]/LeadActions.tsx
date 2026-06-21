@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select"
 import { useRouter } from "next/navigation"
 import { Loader2, Trash2 } from "lucide-react"
-import type { LeadStatus } from "@prisma/client"
+import type { LeadStatus } from "@/types"
 
 const STATUS_OPTIONS: { value: LeadStatus; label: string }[] = [
   { value: "NEW", label: "New" },

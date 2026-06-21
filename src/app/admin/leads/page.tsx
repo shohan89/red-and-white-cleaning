@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table"
 import { LeadsFilters, CsvExportButton } from "./LeadsClient"
 import { ExternalLink } from "lucide-react"
-import type { LeadStatus } from "@prisma/client"
+import type { LeadStatus } from "@/types"
 
 export const metadata = { title: "Leads" }
 

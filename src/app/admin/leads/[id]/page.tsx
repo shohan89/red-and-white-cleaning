@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft } from "lucide-react"
 import { StatusUpdater, NoteForm, FollowUpForm, DeleteLeadButton } from "./LeadActions"
-import type { LeadStatus } from "@prisma/client"
+import type { LeadStatus } from "@/types"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

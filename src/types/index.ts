@@ -1,6 +1,5 @@
-import type { Role, LeadStatus } from "@prisma/client"
-
-export type { Role, LeadStatus }
+export type Role = "SUPER_ADMIN" | "ADMIN"
+export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST"
 
 export interface AdminUser {
   id: string

@@ -1,4 +1,3 @@
-import type { PrismaClient as PrismaClientType } from "@prisma/client"
 import { Pool } from "pg"
 
 const globalForPg = globalThis as unknown as { __pgPool: Pool }
@@ -449,4 +448,4 @@ export const prisma = {
   siteSettings: makeModel("SiteSettings"),
   emailTemplate: makeModel("EmailTemplate"),
   serviceCity: makeModel("ServiceCity"),
-} as unknown as PrismaClientType
+}
