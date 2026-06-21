@@ -2,20 +2,17 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
 	"name": "rw-cleaning",
+	"account_id": "45626a3f0c852a113bc5c894686e9195",
 	"compatibility_date": "2026-06-15",
-	"compatibility_flags": ["nodejs_compat_v2", "global_fetch_strictly_public"],
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
 	},
-	"services": [
-		{
-			// Self-reference binding required by OpenNext for internal routing
-			"binding": "WORKER_SELF_REFERENCE",
-			"service": "rw-cleaning"
-		}
-	],
 	"vars": {
-		"NEXT_PUBLIC_SITE_URL": "https://redandwhitecleaningservices.com"
+		"NEXT_PUBLIC_SITE_URL": "https://redandwhitecleaningservices.com",
+		"NEXT_PUBLIC_SUPABASE_URL": "https://yunjsitjhhjxpkrgjmgp.supabase.co",
+		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1bmpzaXRqaGhqeHBrcmdqbWdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MDg4NzgsImV4cCI6MjA5Njk4NDg3OH0.JMKyoSyUPSvzeLpCuQ9L1hSLODU0Q6jz-17OgeX_BIQ",
+		"AUTH_TRUST_HOST": "true"
 	}
 }
