@@ -167,7 +167,10 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       if (!parentIds.length) { result.forEach((r) => { r[key] = [] }); continue }
 
       const params: Params = [parentIds]
-      let sql = `SELECT ${buildSelect((opts as any).select)} FROM ${col(rel.table)} WHERE ${col(rel.foreignKey)} = ANY($1)`
+      // Always include foreignKey so results can be grouped by parent, even when caller uses select
+      const hasManySelect = (opts as any).select as Record<string, unknown> | undefined
+      const hasManyClause = hasManySelect ? buildSelect({ [rel.foreignKey]: true, ...hasManySelect }) : "*"
+      let sql = `SELECT ${hasManyClause} FROM ${col(rel.table)} WHERE ${col(rel.foreignKey)} = ANY($1)`
 
       if ((opts as any).where) {
         const wParams: Params = []
@@ -192,8 +195,11 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
     } else if (rel.type === "belongsTo") {
       const refIds = [...new Set(result.map((r) => r[rel.foreignKey]).filter(Boolean))]
       if (!refIds.length) { result.forEach((r) => { r[key] = null }); continue }
+      // Always include "id" so the lookup map can be keyed correctly, even when caller uses select
+      const callerSelect = (opts as any).select as Record<string, unknown> | undefined
+      const selectClause = callerSelect ? buildSelect({ id: true, ...callerSelect }) : "*"
       const { rows: relRows } = await getPool().query(
-        `SELECT ${buildSelect((opts as any).select)} FROM ${col(rel.table)} WHERE "id" = ANY($1)`,
+        `SELECT ${selectClause} FROM ${col(rel.table)} WHERE "id" = ANY($1)`,
         [refIds]
       )
       const relMap = new Map(relRows.map((r) => [r.id, r]))
