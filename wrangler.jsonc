@@ -13,6 +13,7 @@
 		"NEXT_PUBLIC_SITE_URL": "https://redandwhitecleaningservices.com",
 		"NEXT_PUBLIC_SUPABASE_URL": "https://yunjsitjhhjxpkrgjmgp.supabase.co",
 		"NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl1bmpzaXRqaGhqeHBrcmdqbWdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0MDg4NzgsImV4cCI6MjA5Njk4NDg3OH0.JMKyoSyUPSvzeLpCuQ9L1hSLODU0Q6jz-17OgeX_BIQ",
-		"AUTH_TRUST_HOST": "true"
+		"AUTH_TRUST_HOST": "true",
+		"AUTH_URL": "https://redandwhitecleaningservices.com"
 	}
 }
