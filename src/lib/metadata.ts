@@ -16,7 +16,7 @@ export async function getPageMetadata(
     ])
 
     const siteName = global?.siteName ?? "Red and White Cleaning Services"
-    const siteUrl = global?.siteUrl ?? "https://redandwhitecleaning.ca"
+    const siteUrl = global?.siteUrl ?? "https://redandwhitecleaningservices.com"
     const title = seo?.metaTitle || fallback.title
     const description = seo?.metaDesc || fallback.description
     const canonical = seo?.canonicalUrl || (fallback.canonical ?? `${siteUrl}/${pageKey === "home" ? "" : pageKey}`)

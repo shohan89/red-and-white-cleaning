@@ -23,23 +23,24 @@ const STATUS_COLOR: Record<string, string> = {
 }
 
 export default async function AdminDashboard() {
-  const [
-    totalLeads,
-    newLeads,
-    portfolioItems,
-    faqs,
-    recentLeads,
-  ] = await Promise.all([
-    prisma.lead.count(),
-    prisma.lead.count({ where: { status: "NEW" } }),
-    prisma.portfolioItem.count(),
-    prisma.faq.count({ where: { published: true } }),
-    prisma.lead.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 6,
-      select: { id: true, name: true, companyName: true, serviceType: true, status: true, createdAt: true },
-    }),
-  ])
+  let totalLeads = 0, newLeads = 0, portfolioItems = 0, faqs = 0
+  let recentLeads: Array<{ id: string; name: string; companyName: string | null; serviceType: string; status: string; createdAt: Date }> = []
+
+  try {
+    ;[totalLeads, newLeads, portfolioItems, faqs, recentLeads] = await Promise.all([
+      prisma.lead.count(),
+      prisma.lead.count({ where: { status: "NEW" } }),
+      prisma.portfolioItem.count(),
+      prisma.faq.count({ where: { published: true } }),
+      prisma.lead.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 6,
+        select: { id: true, name: true, companyName: true, serviceType: true, status: true, createdAt: true },
+      }),
+    ])
+  } catch (err) {
+    console.error("[admin/dashboard] DB error:", err)
+  }
 
   const stats = [
     { label: "Total Leads", value: totalLeads, sub: `${newLeads} new`, icon: Users, href: "/admin/leads", color: "text-blue-600 bg-blue-50" },

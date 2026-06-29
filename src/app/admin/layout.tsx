@@ -12,7 +12,12 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
+  let session: Awaited<ReturnType<typeof auth>> | null = null
+  try {
+    session = await auth()
+  } catch {
+    // non-fatal; middleware already verified the session
+  }
   const user = session?.user as
     | { email?: string | null; name?: string | null; role?: string }
     | undefined
