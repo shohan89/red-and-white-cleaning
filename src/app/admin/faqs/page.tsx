@@ -8,12 +8,17 @@ import { PublishToggle, DeleteFaqButton } from "./FaqsClient"
 export const metadata = { title: "FAQs" }
 
 export default async function FaqsPage() {
-  const categories = await prisma.faqCategory.findMany({
-    orderBy: { sortOrder: "asc" },
-    include: {
-      faqs: { orderBy: { sortOrder: "asc" } },
-    },
-  })
+  let categories: Array<{ id: string; name: string; faqs: Array<{ id: string; question: string; answer: string; published: boolean; sortOrder: number }> }> = []
+  try {
+    categories = await prisma.faqCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: {
+        faqs: { orderBy: { sortOrder: "asc" } },
+      },
+    })
+  } catch (err) {
+    console.error("[admin/faqs] DB error:", err)
+  }
 
   const totalFaqs = categories.reduce((sum, c) => sum + c.faqs.length, 0)
 

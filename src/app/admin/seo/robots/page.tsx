@@ -16,7 +16,12 @@ Disallow: /api/
 Sitemap: https://redandwhitecleaning.ca/sitemap.xml`
 
 export default async function RobotsPage() {
-  const config = await prisma.robotsConfig.findFirst()
+  let config: Awaited<ReturnType<typeof prisma.robotsConfig.findFirst>> = null
+  try {
+    config = await prisma.robotsConfig.findFirst()
+  } catch (err) {
+    console.error("[admin/seo/robots] DB error:", err)
+  }
 
   async function handleSave(formData: FormData) {
     "use server"

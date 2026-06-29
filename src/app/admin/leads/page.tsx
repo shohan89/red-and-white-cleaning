@@ -48,27 +48,33 @@ export default async function LeadsPage({
       : {}),
   }
 
-  const [leads, total] = await Promise.all([
-    prisma.lead.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      select: {
-        id: true,
-        name: true,
-        companyName: true,
-        email: true,
-        phone: true,
-        serviceType: true,
-        location: true,
-        status: true,
-        createdAt: true,
-        followUpDate: true,
-      },
-    }),
-    prisma.lead.count({ where }),
-  ])
+  let leads: Array<{ id: string; name: string; companyName: string | null; email: string; phone: string | null; serviceType: string; location: string; status: LeadStatus; createdAt: Date; followUpDate: Date | null }> = []
+  let total = 0
+  try {
+    ;[leads, total] = await Promise.all([
+      prisma.lead.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        select: {
+          id: true,
+          name: true,
+          companyName: true,
+          email: true,
+          phone: true,
+          serviceType: true,
+          location: true,
+          status: true,
+          createdAt: true,
+          followUpDate: true,
+        },
+      }),
+      prisma.lead.count({ where }),
+    ])
+  } catch (err) {
+    console.error("[admin/leads] DB error:", err)
+  }
 
   const totalPages = Math.ceil(total / pageSize)
 

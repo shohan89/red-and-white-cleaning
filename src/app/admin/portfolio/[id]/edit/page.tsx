@@ -21,7 +21,10 @@ export default async function EditPortfolioItemPage({
   const [item, categories] = await Promise.all([
     prisma.portfolioItem.findUnique({ where: { id } }),
     prisma.portfolioCategory.findMany({ orderBy: { sortOrder: "asc" } }),
-  ])
+  ]).catch((err: unknown) => {
+    console.error("[admin/portfolio/edit] DB error:", err)
+    throw err
+  })
 
   if (!item) notFound()
 

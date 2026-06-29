@@ -7,12 +7,17 @@ import { Pencil, ExternalLink } from "lucide-react"
 export const metadata = { title: "Services" }
 
 export default async function ServicesAdminPage() {
-  const services = await prisma.service.findMany({
-    orderBy: { sortOrder: "asc" },
-    include: {
-      _count: { select: { phases: true, includedItems: true } },
-    },
-  })
+  let services: Array<{ id: string; name: string; slug: string; description: string; sortOrder: number; _count: { phases: number; includedItems: number } }> = []
+  try {
+    services = await prisma.service.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: {
+        _count: { select: { phases: true, includedItems: true } },
+      },
+    })
+  } catch (err) {
+    console.error("[admin/services] DB error:", err)
+  }
 
   return (
     <div className="space-y-6">

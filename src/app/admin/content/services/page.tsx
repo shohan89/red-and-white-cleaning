@@ -10,7 +10,12 @@ import { redirect } from "next/navigation"
 export const metadata = { title: "Page: Services" }
 
 export default async function ServicesContentPage() {
-  const records = await prisma.pageContent.findMany({ where: { pageKey: "services" } })
+  let records: Awaited<ReturnType<typeof prisma.pageContent.findMany>> = []
+  try {
+    records = await prisma.pageContent.findMany({ where: { pageKey: "services" } })
+  } catch (err) {
+    console.error("[admin/content/services] DB error:", err)
+  }
   const content: Record<string, Record<string, string>> = {}
   for (const r of records) {
     content[r.sectionKey] = r.content as Record<string, string>

@@ -10,7 +10,12 @@ import { redirect } from "next/navigation"
 export const metadata = { title: "Site Settings" }
 
 export default async function SettingsPage() {
-  const settings = await prisma.siteSettings.findFirst()
+  let settings: Awaited<ReturnType<typeof prisma.siteSettings.findFirst>> = null
+  try {
+    settings = await prisma.siteSettings.findFirst()
+  } catch (err) {
+    console.error("[admin/settings] DB error:", err)
+  }
 
   async function handleSave(formData: FormData) {
     "use server"

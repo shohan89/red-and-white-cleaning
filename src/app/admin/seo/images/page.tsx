@@ -4,10 +4,15 @@ import { ImageSeoClient } from "./ImageSeoClient"
 export const metadata = { title: "Image SEO" }
 
 export default async function ImageSeoPage() {
-  const assets = await prisma.mediaAsset.findMany({
-    orderBy: { createdAt: "desc" },
-    select: { id: true, url: true, filename: true, mimeType: true, altText: true, title: true, caption: true },
-  })
+  let assets: Array<{ id: string; url: string; filename: string; mimeType: string; altText: string | null; title: string | null; caption: string | null }> = []
+  try {
+    assets = await prisma.mediaAsset.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { id: true, url: true, filename: true, mimeType: true, altText: true, title: true, caption: true },
+    })
+  } catch (err) {
+    console.error("[admin/seo/images] DB error:", err)
+  }
 
   const missing = assets.filter((a) => !a.altText).length
 

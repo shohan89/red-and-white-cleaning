@@ -14,13 +14,19 @@ const PAGES = [
 ]
 
 export default async function PageSeoPage() {
-  const [seoRecords, globalSeo] = await Promise.all([
-    prisma.pageSeo.findMany(),
-    prisma.globalSeo.findFirst(),
-  ])
+  let seoRecords: Awaited<ReturnType<typeof prisma.pageSeo.findMany>> = []
+  let globalSeo: Awaited<ReturnType<typeof prisma.globalSeo.findFirst>> = null
+  try {
+    ;[seoRecords, globalSeo] = await Promise.all([
+      prisma.pageSeo.findMany(),
+      prisma.globalSeo.findFirst(),
+    ])
+  } catch (err) {
+    console.error("[admin/seo/pages] DB error:", err)
+  }
 
   const seoByKey = Object.fromEntries(seoRecords.map((s) => [s.pageKey, s]))
-  const baseUrl = globalSeo?.siteUrl ?? "https://redandwhitecleaning.ca"
+  const baseUrl = globalSeo?.siteUrl ?? "https://redandwhitecleaningservices.com"
 
   return (
     <div className="space-y-4">

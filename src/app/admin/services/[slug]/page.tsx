@@ -21,6 +21,9 @@ export default async function ServiceEditorPage({
       includedItems: { orderBy: { sortOrder: "asc" } },
       phases: { orderBy: { sortOrder: "asc" } },
     },
+  }).catch((err: unknown) => {
+    console.error("[admin/services/slug] DB error:", err)
+    throw err
   })
 
   if (!service) notFound()

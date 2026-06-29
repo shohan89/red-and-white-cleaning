@@ -22,7 +22,10 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
   const [faq, categories] = await Promise.all([
     prisma.faq.findUnique({ where: { id } }),
     prisma.faqCategory.findMany({ orderBy: { sortOrder: "asc" } }),
-  ])
+  ]).catch((err: unknown) => {
+    console.error("[admin/faqs/edit] DB error:", err)
+    throw err
+  })
 
   if (!faq) notFound()
 

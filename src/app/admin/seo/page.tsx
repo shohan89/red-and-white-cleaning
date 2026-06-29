@@ -8,7 +8,12 @@ import { Textarea } from "@/components/ui/textarea"
 export const metadata = { title: "Global SEO" }
 
 export default async function GlobalSeoPage() {
-  const seo = await prisma.globalSeo.findFirst()
+  let seo: Awaited<ReturnType<typeof prisma.globalSeo.findFirst>> = null
+  try {
+    seo = await prisma.globalSeo.findFirst()
+  } catch (err) {
+    console.error("[admin/seo] DB error:", err)
+  }
 
   async function handleSave(formData: FormData) {
     "use server"

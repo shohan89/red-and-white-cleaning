@@ -17,7 +17,12 @@ import { SitemapIncludedToggle, DeleteSitemapButton } from "./SitemapClient"
 export const metadata = { title: "Sitemap" }
 
 export default async function SitemapPage() {
-  const entries = await prisma.sitemapEntry.findMany({ orderBy: { priority: "desc" } })
+  let entries: Awaited<ReturnType<typeof prisma.sitemapEntry.findMany>> = []
+  try {
+    entries = await prisma.sitemapEntry.findMany({ orderBy: { priority: "desc" } })
+  } catch (err) {
+    console.error("[admin/seo/sitemap] DB error:", err)
+  }
 
   async function handleAdd(formData: FormData) {
     "use server"

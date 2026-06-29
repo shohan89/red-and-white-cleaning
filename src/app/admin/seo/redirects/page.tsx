@@ -18,7 +18,12 @@ import { DeleteRedirectButton } from "./RedirectsClient"
 export const metadata = { title: "Redirects" }
 
 export default async function RedirectsPage() {
-  const redirects = await prisma.redirect.findMany({ orderBy: { createdAt: "desc" } })
+  let redirects: Awaited<ReturnType<typeof prisma.redirect.findMany>> = []
+  try {
+    redirects = await prisma.redirect.findMany({ orderBy: { createdAt: "desc" } })
+  } catch (err) {
+    console.error("[admin/seo/redirects] DB error:", err)
+  }
 
   async function handleCreate(formData: FormData) {
     "use server"

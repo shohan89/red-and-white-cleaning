@@ -15,7 +15,12 @@ const SCHEMA_DESCRIPTIONS: Record<string, { label: string; desc: string }> = {
 }
 
 export default async function SchemaPage() {
-  const configs = await prisma.schemaConfig.findMany({ orderBy: { type: "asc" } })
+  let configs: Awaited<ReturnType<typeof prisma.schemaConfig.findMany>> = []
+  try {
+    configs = await prisma.schemaConfig.findMany({ orderBy: { type: "asc" } })
+  } catch (err) {
+    console.error("[admin/seo/schema] DB error:", err)
+  }
 
   return (
     <div className="space-y-4">

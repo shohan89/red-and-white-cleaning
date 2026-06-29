@@ -8,9 +8,13 @@ import { StatusUpdater, NoteForm, FollowUpForm, DeleteLeadButton } from "./LeadA
 import type { LeadStatus } from "@/types"
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const lead = await prisma.lead.findUnique({ where: { id }, select: { name: true } })
-  return { title: lead ? `Lead: ${lead.name}` : "Lead" }
+  try {
+    const { id } = await params
+    const lead = await prisma.lead.findUnique({ where: { id }, select: { name: true } })
+    return { title: lead ? `Lead: ${lead.name}` : "Lead" }
+  } catch {
+    return { title: "Lead" }
+  }
 }
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
@@ -33,6 +37,9 @@ export default async function LeadDetailPage({ params }: { params: Promise<{ id:
   const lead = await prisma.lead.findUnique({
     where: { id },
     include: { timeline: { orderBy: { createdAt: "desc" } } },
+  }).catch((err: unknown) => {
+    console.error("[admin/leads/detail] DB error:", err)
+    throw err
   })
 
   if (!lead) notFound()

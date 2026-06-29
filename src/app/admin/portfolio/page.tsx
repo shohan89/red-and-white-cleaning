@@ -9,13 +9,19 @@ import { FeaturedToggle, DeleteItemButton } from "./PortfolioClient"
 export const metadata = { title: "Portfolio" }
 
 export default async function PortfolioAdminPage() {
-  const [items, categories] = await Promise.all([
-    prisma.portfolioItem.findMany({
-      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
-      include: { category: { select: { name: true, slug: true } } },
-    }),
-    prisma.portfolioCategory.findMany({ orderBy: { sortOrder: "asc" } }),
-  ])
+  let items: Array<{ id: string; title: string; featured: boolean; imageUrl: string | null; imageAlt: string | null; beforeImage: string | null; afterImage: string | null; location: string | null; sortOrder: number; createdAt: Date; categoryId: string; category: { name: string; slug: string } }> = []
+  let categories: Array<{ id: string; name: string; slug: string; sortOrder: number }> = []
+  try {
+    ;[items, categories] = await Promise.all([
+      prisma.portfolioItem.findMany({
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        include: { category: { select: { name: true, slug: true } } },
+      }),
+      prisma.portfolioCategory.findMany({ orderBy: { sortOrder: "asc" } }),
+    ])
+  } catch (err) {
+    console.error("[admin/portfolio] DB error:", err)
+  }
 
   return (
     <div className="space-y-6">

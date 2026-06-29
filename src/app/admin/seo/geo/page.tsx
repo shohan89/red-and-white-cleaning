@@ -4,7 +4,12 @@ import { GeoClient } from "./GeoClient"
 export const metadata = { title: "GEO / AI SEO" }
 
 export default async function GeoSeoPage() {
-  const records = await prisma.geoContent.findMany({ orderBy: { createdAt: "desc" } })
+  let records: Awaited<ReturnType<typeof prisma.geoContent.findMany>> = []
+  try {
+    records = await prisma.geoContent.findMany({ orderBy: { createdAt: "desc" } })
+  } catch (err) {
+    console.error("[admin/seo/geo] DB error:", err)
+  }
 
   return (
     <div className="space-y-6">

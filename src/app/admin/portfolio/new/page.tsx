@@ -13,7 +13,12 @@ import { ChevronLeft } from "lucide-react"
 export const metadata = { title: "New Portfolio Item" }
 
 export default async function NewPortfolioItemPage() {
-  const categories = await prisma.portfolioCategory.findMany({ orderBy: { sortOrder: "asc" } })
+  let categories: Array<{ id: string; name: string }> = []
+  try {
+    categories = await prisma.portfolioCategory.findMany({ orderBy: { sortOrder: "asc" } })
+  } catch (err) {
+    console.error("[admin/portfolio/new] DB error:", err)
+  }
 
   async function handleCreate(formData: FormData) {
     "use server"

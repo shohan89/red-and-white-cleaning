@@ -18,7 +18,12 @@ import { ChevronLeft } from "lucide-react"
 export const metadata = { title: "New FAQ" }
 
 export default async function NewFaqPage() {
-  const categories = await prisma.faqCategory.findMany({ orderBy: { sortOrder: "asc" } })
+  let categories: Array<{ id: string; name: string }> = []
+  try {
+    categories = await prisma.faqCategory.findMany({ orderBy: { sortOrder: "asc" } })
+  } catch (err) {
+    console.error("[admin/faqs/new] DB error:", err)
+  }
 
   async function handleCreate(formData: FormData) {
     "use server"

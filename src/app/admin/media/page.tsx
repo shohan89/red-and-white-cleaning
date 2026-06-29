@@ -18,13 +18,18 @@ export default async function MediaPage({
 }) {
   const { q } = await searchParams
 
-  const assets = await prisma.mediaAsset.findMany({
-    where: q
-      ? { filename: { contains: q, mode: "insensitive" } }
-      : undefined,
-    orderBy: { createdAt: "desc" },
-    take: 200,
-  })
+  let assets: Array<{ id: string; url: string; filename: string; mimeType: string; altText: string | null; size: number; createdAt: Date }> = []
+  try {
+    assets = await prisma.mediaAsset.findMany({
+      where: q
+        ? { filename: { contains: q, mode: "insensitive" } }
+        : undefined,
+      orderBy: { createdAt: "desc" },
+      take: 200,
+    })
+  } catch (err) {
+    console.error("[admin/media] DB error:", err)
+  }
 
   const totalSize = assets.reduce((sum, a) => sum + a.size, 0)
 

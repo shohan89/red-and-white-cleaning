@@ -30,21 +30,31 @@ function AuditRow({ label, status, detail, fix }: { label: string; status: "pass
 }
 
 export default async function SeoAuditPage() {
-  const [globalSeo, pageSeoRecords, schemaConfigs, missingAlt, robotsConfig, sitemapCount] = await Promise.all([
-    prisma.globalSeo.findFirst(),
-    prisma.pageSeo.findMany(),
-    prisma.schemaConfig.findMany(),
-    prisma.mediaAsset.count({ where: { altText: null } }),
-    prisma.robotsConfig.findFirst(),
-    prisma.sitemapEntry.count(),
-  ])
+  let globalSeo: Awaited<ReturnType<typeof prisma.globalSeo.findFirst>> = null
+  let pageSeoRecords: Awaited<ReturnType<typeof prisma.pageSeo.findMany>> = []
+  let schemaConfigs: Awaited<ReturnType<typeof prisma.schemaConfig.findMany>> = []
+  let missingAlt = 0
+  let robotsConfig: Awaited<ReturnType<typeof prisma.robotsConfig.findFirst>> = null
+  let sitemapCount = 0
+  let totalAssets = 0
+  try {
+    ;[globalSeo, pageSeoRecords, schemaConfigs, missingAlt, robotsConfig, sitemapCount] = await Promise.all([
+      prisma.globalSeo.findFirst(),
+      prisma.pageSeo.findMany(),
+      prisma.schemaConfig.findMany(),
+      prisma.mediaAsset.count({ where: { altText: null } }),
+      prisma.robotsConfig.findFirst(),
+      prisma.sitemapEntry.count(),
+    ])
+    totalAssets = await prisma.mediaAsset.count()
+  } catch (err) {
+    console.error("[admin/seo/audit] DB error:", err)
+  }
 
   const PAGE_KEYS = ["home", "services", "portfolio", "faq", "about", "contact", "privacy"]
   const pageSeoMap = Object.fromEntries(pageSeoRecords.map((p) => [p.pageKey, p]))
 
   const schemaMap = Object.fromEntries(schemaConfigs.map((s) => [s.type, s.enabled]))
-
-  const totalAssets = await prisma.mediaAsset.count()
 
   return (
     <div className="space-y-8">

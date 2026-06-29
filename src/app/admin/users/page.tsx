@@ -21,7 +21,12 @@ export const metadata = { title: "Users" }
 export default async function UsersPage() {
   await requireSuperAdmin()
 
-  const users = await prisma.user.findMany({ orderBy: { createdAt: "asc" } })
+  let users: Array<{ id: string; name: string | null; email: string; role: string; createdAt: Date }> = []
+  try {
+    users = await prisma.user.findMany({ orderBy: { createdAt: "asc" } })
+  } catch (err) {
+    console.error("[admin/users] DB error:", err)
+  }
 
   async function handleCreate(formData: FormData) {
     "use server"

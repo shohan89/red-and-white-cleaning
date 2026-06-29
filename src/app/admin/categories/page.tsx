@@ -12,10 +12,15 @@ import { ChevronLeft } from "lucide-react"
 export const metadata = { title: "Portfolio Categories" }
 
 export default async function CategoriesPage() {
-  const categories = await prisma.portfolioCategory.findMany({
-    orderBy: { sortOrder: "asc" },
-    include: { _count: { select: { items: true } } },
-  })
+  let categories: Array<{ id: string; name: string; slug: string; _count: { items: number } }> = []
+  try {
+    categories = await prisma.portfolioCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+      include: { _count: { select: { items: true } } },
+    })
+  } catch (err) {
+    console.error("[admin/categories] DB error:", err)
+  }
 
   async function handleCreate(formData: FormData) {
     "use server"
