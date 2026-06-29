@@ -1,7 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "rw-cleaning",
+	"name": "red-and-white-cleaning",
 	"account_id": "45626a3f0c852a113bc5c894686e9195",
 	"compatibility_date": "2026-06-15",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
