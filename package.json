@@ -11,7 +11,7 @@
     "db:seed": "dotenv -e .env.local -- prisma db seed",
     "db:studio": "dotenv -e .env.local -- prisma studio",
     "db:generate": "prisma generate",
-    "build:cf": "opennextjs-cloudflare build",
+    "build:cf": "node scripts/patch-next-for-workers.cjs && opennextjs-cloudflare build",
     "preview:cf": "opennextjs-cloudflare preview",
     "deploy:cf": "opennextjs-cloudflare deploy"
   },
