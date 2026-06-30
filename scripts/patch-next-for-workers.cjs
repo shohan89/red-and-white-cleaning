@@ -1,21 +1,26 @@
 /**
- * Pre-build patch for Cloudflare Workers compatibility.
+ * Pre-build patches for Cloudflare Workers compatibility.
  *
- * The @opennextjs/cloudflare esbuild bundler aliases `require('module')` to a custom
- * shims/module.js file that exports an ESM module with `export default Module`.
+ * Patch 1 — module.js shim (require-hook crash):
+ *   The @opennextjs/cloudflare esbuild bundler aliases `require('module')` to a custom
+ *   shims/module.js file that exports an ESM module with `export default Module`.
+ *   When require-hook.js (CJS) does `const mod = require('module')`, esbuild wraps the
+ *   ESM shim in a namespace object: `{ __esModule: true, default: Module, ... }`.
+ *   Accessing `mod.prototype.require` crashes because `.prototype` is not a named export.
+ *   Fix: add `export const prototype = Module.prototype` so the namespace wrapper exposes
+ *   it. The shim is only used by esbuild, never by `next build`.
  *
- * Problem: when require-hook.js (CJS) does `const mod = require('module')`, esbuild
- * wraps the ESM shim in a namespace object: `{ __esModule: true, default: Module, ... }`.
- * The code then does `mod.prototype.require` which is `undefined.require` → crash.
- *
- * Fix: add `export const prototype = Module.prototype` to the shim so that the
- * namespace wrapper's `.prototype.require` resolves to the noop function.
- * This shim is ONLY used by the esbuild bundler step, not by `next build`, so it is
- * safe to patch before opennextjs-cloudflare runs.
+ * Patch 2 — normalizeUrl optional chaining (null-normalizer guard):
+ *   AppPageRouteModule.normalizeUrl() calls this.normalizers.segmentPrefetchRSC.match()
+ *   and this.normalizers.rsc.match() without null-guards. If minimalMode=false on the
+ *   base server the normalizers can be undefined, causing a TypeError on RSC navigation.
+ *   Fix: replace .match() with ?.match() in the compiled app-page runtime used by esbuild.
  */
 
 const { readFileSync, writeFileSync, existsSync } = require("fs");
 const path = require("path");
+
+// ── Patch 1: module.js shim ──────────────────────────────────────────────────
 
 const shimPath = path.join(
   __dirname,
@@ -23,38 +28,68 @@ const shimPath = path.join(
 );
 
 if (!existsSync(shimPath)) {
-  console.warn("⚠️  module.js shim not found, skipping patch");
-  process.exit(0);
-}
+  console.warn("⚠️  module.js shim not found, skipping patch 1");
+} else {
+  const content = readFileSync(shimPath, "utf8");
 
-const content = readFileSync(shimPath, "utf8");
-
-if (content.includes("Workers compat patch")) {
-  // Already patched — overwrite anyway to ensure correct version (removes old bad patch)
-  const badVersion = "export const _resolveFilename";
-  if (!content.includes(badVersion)) {
-    console.log("ℹ️  module.js shim already patched correctly, skipping");
-    process.exit(0);
+  if (content.includes("Workers compat patch")) {
+    const badVersion = "export const _resolveFilename";
+    if (!content.includes(badVersion)) {
+      console.log("ℹ️  module.js shim already patched correctly, skipping patch 1");
+    } else {
+      console.log("⚠️  Old bad patch detected in module.js, re-patching...");
+      applyModuleShimPatch(shimPath, content);
+    }
+  } else {
+    applyModuleShimPatch(shimPath, content);
   }
-  console.log("⚠️  Old bad patch detected, re-patching...");
 }
 
-// Strip any previous (possibly incorrect) patch and re-apply the correct one.
-const base = content.includes("Workers compat patch")
-  ? content.substring(0, content.indexOf("\n// Workers compat patch"))
-  : content;
+function applyModuleShimPatch(filePath, content) {
+  const base = content.includes("Workers compat patch")
+    ? content.substring(0, content.indexOf("\n// Workers compat patch"))
+    : content;
+  const patched =
+    base +
+    `\n// Workers compat patch: expose prototype as a named export so that esbuild's CJS→ESM\n// namespace wrapper satisfies require-hook.js's \`mod.prototype.require\` accessor.\n// Do NOT export _resolveFilename — require-hook.js tries to SET mod._resolveFilename,\n// which would throw if it is a getter-only property on the namespace wrapper.\nexport const prototype = Module.prototype;\n`;
+  writeFileSync(filePath, patched, "utf8");
+  console.log("✅ Patch 1: module.js shim → added prototype export");
+}
 
-const patched =
-  base +
-  `
-// Workers compat patch: expose prototype as a named export so that esbuild's CJS→ESM
-// namespace wrapper satisfies require-hook.js's \`mod.prototype.require\` accessor.
-// Do NOT export _resolveFilename — require-hook.js tries to SET mod._resolveFilename,
-// which would throw if it is a getter-only property on the namespace wrapper.
-export const prototype = Module.prototype;
-`;
+// ── Patch 2: app-page.runtime.prod.js normalizeUrl optional chaining ─────────
 
-writeFileSync(shimPath, patched, "utf8");
-console.log(
-  "✅ Patched @opennextjs/cloudflare shims/module.js → added prototype export"
+const runtimePath = path.join(
+  __dirname,
+  "../node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js"
 );
+
+if (!existsSync(runtimePath)) {
+  console.warn("⚠️  app-page.runtime.prod.js not found, skipping patch 2");
+} else {
+  let runtime = readFileSync(runtimePath, "utf8");
+  let changed = false;
+
+  // Guard segmentPrefetchRSC.match() with optional chaining
+  const segBefore = 'this.normalizers.segmentPrefetchRSC.match(';
+  const segAfter  = 'this.normalizers.segmentPrefetchRSC?.match(';
+  if (runtime.includes(segBefore)) {
+    runtime = runtime.split(segBefore).join(segAfter);
+    changed = true;
+  }
+
+  // Guard rsc.match() with optional chaining (only inside normalizeUrl context)
+  // Use a narrow replacement to avoid affecting unrelated .match() calls
+  const rscBefore = 'this.normalizers.rsc.match(';
+  const rscAfter  = 'this.normalizers.rsc?.match(';
+  if (runtime.includes(rscBefore)) {
+    runtime = runtime.split(rscBefore).join(rscAfter);
+    changed = true;
+  }
+
+  if (changed) {
+    writeFileSync(runtimePath, runtime, "utf8");
+    console.log("✅ Patch 2: app-page.runtime.prod.js normalizeUrl → added optional chaining");
+  } else {
+    console.log("ℹ️  Patch 2: app-page.runtime.prod.js already patched or pattern not found, skipping");
+  }
+}
