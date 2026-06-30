@@ -56,6 +56,41 @@ function applyModuleShimPatch(filePath, content) {
   console.log("✅ Patch 1: module.js shim → added prototype export");
 }
 
+// ── Patch 3: worker.js template — catch uncaught exceptions for diagnostics ──
+
+const workerPath = path.join(
+  __dirname,
+  "../node_modules/@opennextjs/cloudflare/dist/cli/templates/worker.js"
+);
+
+if (!existsSync(workerPath)) {
+  console.warn("⚠️  worker.js template not found, skipping patch 3");
+} else {
+  const workerContent = readFileSync(workerPath, "utf8");
+  // Wrap the handler call to catch uncaught exceptions.
+  // Without this, any unhandled throw becomes a Cloudflare 1101 error with no body.
+  // With this, the error message is returned in the 500 response for easy diagnosis.
+  const targetLine = "return handler(reqOrResp, env, ctx, request.signal);";
+  const replacement = [
+    "try {",
+    "                return await handler(reqOrResp, env, ctx, request.signal);",
+    "            } catch (err) {",
+    "                const msg = (err && err.stack) || (err && err.message) || String(err);",
+    "                console.error('[Worker crash]', msg);",
+    "                return new Response('Worker Error\\n\\n' + msg, { status: 500, headers: { 'content-type': 'text/plain' } });",
+    "            }",
+  ].join("\n                ");
+  if (workerContent.includes("Workers compat patch 3")) {
+    console.log("ℹ️  worker.js already patched (patch 3), skipping");
+  } else if (!workerContent.includes(targetLine)) {
+    console.warn("⚠️  worker.js template: target line not found, skipping patch 3");
+  } else {
+    const patched = workerContent.replace(targetLine, replacement + "\n            // Workers compat patch 3");
+    writeFileSync(workerPath, patched, "utf8");
+    console.log("✅ Patch 3: worker.js template → wrapped handler call with error catching");
+  }
+}
+
 // ── Patch 2: app-page.runtime.prod.js normalizeUrl optional chaining ─────────
 
 const runtimePath = path.join(
