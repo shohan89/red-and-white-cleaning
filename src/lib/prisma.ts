@@ -8,7 +8,7 @@ function getPool(): Pool {
       connectionString: process.env.DATABASE_URL,
       max: 3,
       idleTimeoutMillis: 5_000,
-      connectionTimeoutMillis: 9_000,
+      connectionTimeoutMillis: 5_000,
       keepAlive: true,
       keepAliveInitialDelayMillis: 5_000,
     })
@@ -19,13 +19,16 @@ function getPool(): Pool {
   return globalForPg.__pgPool
 }
 
-// Timeout for any individual DB query. Cloudflare Worker isolates can be
-// frozen between requests, leaving TCP connections in an indeterminate state
-// (NAT entries expire silently). Without a timeout, those "zombie" queries
-// hang until the Worker's 30 s wall-time limit kills the entire request.
-const QUERY_TIMEOUT_MS = 9_000
+// Cloudflare Worker isolates can be frozen between requests, leaving TCP
+// connections in an indeterminate state (NAT entries expire silently).
+// runQueryOnce: single attempt — times out after 3 s and resets the pool
+//   so the next attempt gets a fresh connection instead of the zombie socket.
+// runQuery: retries once after a zombie-connection timeout so the caller
+//   always gets a real result. Worst-case latency: ~3.5 s (3 s timeout +
+//   200 ms fresh connect) instead of a hard 9 s error.
+const QUERY_TIMEOUT_MS = 3_000
 
-async function runQuery(
+async function runQueryOnce(
   sql: string,
   params: Params
 ): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
@@ -35,8 +38,6 @@ async function runQuery(
       getPool().query(sql, params as never[]),
       new Promise<never>((_, reject) => {
         timerId = setTimeout(() => {
-          // Reset pool so the next request gets a fresh connection instead of
-          // reusing the zombie socket that caused this timeout.
           if (globalForPg.__pgPool) {
             globalForPg.__pgPool.end().catch(() => {})
             globalForPg.__pgPool = undefined
@@ -48,6 +49,21 @@ async function runQuery(
     return result as { rows: Record<string, unknown>[]; rowCount: number | null }
   } finally {
     clearTimeout(timerId)
+  }
+}
+
+async function runQuery(
+  sql: string,
+  params: Params
+): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
+  try {
+    return await runQueryOnce(sql, params)
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("timed out")) {
+      console.log("[pg] retrying after zombie connection reset")
+      return await runQueryOnce(sql, params)
+    }
+    throw err
   }
 }
 
