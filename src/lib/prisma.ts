@@ -26,7 +26,7 @@ function getPool(): Pool {
 // runQuery: retries once after a zombie-connection timeout so the caller
 //   always gets a real result. Worst-case latency: ~3.5 s (3 s timeout +
 //   200 ms fresh connect) instead of a hard 9 s error.
-const QUERY_TIMEOUT_MS = 3_000
+const QUERY_TIMEOUT_MS = 1_500
 
 async function runQueryOnce(
   sql: string,

@@ -1,4 +1,6 @@
-﻿import React from "react";
+﻿export const dynamic = 'force-dynamic'
+
+import React from "react";
 import { Metadata } from "next";
 import { getPageMetadata } from "@/lib/metadata";
 import Link from "next/link";
