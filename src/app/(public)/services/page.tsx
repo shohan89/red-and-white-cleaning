@@ -23,8 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function ServicesPage() {
   let heroContent = {}
   try {
-    const rec = await prisma.pageContent.findUnique({
-      where: { pageKey_sectionKey: { pageKey: "services", sectionKey: "hero" } },
+    const rec = await prisma.pageContent.findFirst({
+      where: { pageKey: "services", sectionKey: "hero" },
     })
     if (rec) heroContent = rec.content as object
   } catch {}

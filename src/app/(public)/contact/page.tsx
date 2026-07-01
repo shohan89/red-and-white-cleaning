@@ -21,8 +21,8 @@ export default async function ContactPage() {
   try {
     const [siteSettings, heroRecord] = await Promise.all([
       prisma.siteSettings.findFirst(),
-      prisma.pageContent.findUnique({
-        where: { pageKey_sectionKey: { pageKey: "contact", sectionKey: "hero" } },
+      prisma.pageContent.findFirst({
+        where: { pageKey: "contact", sectionKey: "hero" },
       }),
     ])
     contactSettings = {
