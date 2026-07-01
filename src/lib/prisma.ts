@@ -1,12 +1,54 @@
 import { Pool } from "pg"
 
-const globalForPg = globalThis as unknown as { __pgPool: Pool }
+const globalForPg = globalThis as unknown as { __pgPool: Pool | undefined }
 
 function getPool(): Pool {
   if (!globalForPg.__pgPool) {
-    globalForPg.__pgPool = new Pool({ connectionString: process.env.DATABASE_URL })
+    globalForPg.__pgPool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 3,
+      idleTimeoutMillis: 5_000,
+      connectionTimeoutMillis: 9_000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 5_000,
+    })
+    globalForPg.__pgPool.on("error", (err) => {
+      console.error("[pg pool error]", err.message)
+    })
   }
   return globalForPg.__pgPool
+}
+
+// Timeout for any individual DB query. Cloudflare Worker isolates can be
+// frozen between requests, leaving TCP connections in an indeterminate state
+// (NAT entries expire silently). Without a timeout, those "zombie" queries
+// hang until the Worker's 30 s wall-time limit kills the entire request.
+const QUERY_TIMEOUT_MS = 9_000
+
+async function runQuery(
+  sql: string,
+  params: Params
+): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
+  let timerId: ReturnType<typeof setTimeout> | undefined
+  try {
+    const result = await Promise.race([
+      getPool().query(sql, params as never[]),
+      new Promise<never>((_, reject) => {
+        timerId = setTimeout(() => {
+          // Reset pool so the next request gets a fresh connection instead of
+          // reusing the zombie socket that caused this timeout.
+          if (globalForPg.__pgPool) {
+            globalForPg.__pgPool.end().catch(() => {})
+            globalForPg.__pgPool = undefined
+          }
+          reject(new Error(`DB query timed out after ${QUERY_TIMEOUT_MS}ms`))
+        }, QUERY_TIMEOUT_MS)
+      }),
+    ])
+    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
+  } finally {
+    clearTimeout(timerId)
+  }
 }
 
 // Tables without updatedAt
@@ -143,7 +185,7 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       for (const [relKey] of Object.entries(countSel).filter(([, v]) => v)) {
         const rel = rels[relKey]
         if (!rel || rel.type !== "hasMany") continue
-        const { rows: cr } = await getPool().query(
+        const { rows: cr } = await runQuery(
           `SELECT ${col(rel.foreignKey)}, COUNT(*) as cnt FROM ${col(rel.table)} WHERE ${col(rel.foreignKey)} = ANY($1) GROUP BY ${col(rel.foreignKey)}`,
           [ids]
         )
@@ -184,7 +226,7 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       }
       if ((opts as any).orderBy) sql += ` ${buildOrderBy((opts as any).orderBy)}`
 
-      const { rows: relRows } = await getPool().query(sql, params)
+      const { rows: relRows } = await runQuery(sql, params)
       const relMap = new Map<unknown, Record<string, unknown>[]>()
       for (const rr of relRows) {
         const pid = rr[rel.foreignKey]
@@ -198,7 +240,7 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       // Always include "id" so the lookup map can be keyed correctly, even when caller uses select
       const callerSelect = (opts as any).select as Record<string, unknown> | undefined
       const selectClause = callerSelect ? buildSelect({ id: true, ...callerSelect }) : "*"
-      const { rows: relRows } = await getPool().query(
+      const { rows: relRows } = await runQuery(
         `SELECT ${selectClause} FROM ${col(rel.table)} WHERE "id" = ANY($1)`,
         [refIds]
       )
@@ -223,7 +265,7 @@ function makeModel(tableName: string) {
       if (ord) sql += ` ${ord}`
       if (take != null) { params.push(take); sql += ` LIMIT $${params.length}` }
       if (skip != null) { params.push(skip); sql += ` OFFSET $${params.length}` }
-      const { rows } = await getPool().query(sql, params)
+      const { rows } = await runQuery(sql, params)
       return include ? resolveIncludes(rows, tableName, include as Record<string, unknown>) : rows
     },
 
@@ -235,7 +277,7 @@ function makeModel(tableName: string) {
       const ord = buildOrderBy(orderBy)
       if (ord) sql += ` ${ord}`
       sql += ` LIMIT 1`
-      const { rows } = await getPool().query(sql, params)
+      const { rows } = await runQuery(sql, params)
       if (!rows.length) return null
       return include ? (await resolveIncludes(rows, tableName, include as Record<string, unknown>))[0] : rows[0]
     },
@@ -254,7 +296,7 @@ function makeModel(tableName: string) {
       const vals = Object.values(d)
       const cols = keys.map(col).join(", ")
       const phs = keys.map((_, i) => `$${i + 1}`).join(", ")
-      const { rows } = await getPool().query(
+      const { rows } = await runQuery(
         `INSERT INTO ${col(tableName)} (${cols}) VALUES (${phs}) RETURNING ${buildSelect(select)}`,
         vals
       )
@@ -270,7 +312,7 @@ function makeModel(tableName: string) {
         return `${col(k)} = $${params.length}`
       })
       const wSql = buildWhere(where, params)
-      const { rows } = await getPool().query(
+      const { rows } = await runQuery(
         `UPDATE ${col(tableName)} SET ${setClauses.join(", ")} WHERE ${wSql} RETURNING ${buildSelect(select)}`,
         params
       )
@@ -286,7 +328,7 @@ function makeModel(tableName: string) {
         return `${col(k)} = $${params.length}`
       })
       const wSql = buildWhere(where, params)
-      const { rowCount } = await getPool().query(
+      const { rowCount } = await runQuery(
         `UPDATE ${col(tableName)} SET ${setClauses.join(", ")} WHERE ${wSql}`,
         params
       )
@@ -296,7 +338,7 @@ function makeModel(tableName: string) {
     async delete({ where }: { where: Record<string, unknown> }): Promise<Record<string, unknown> | null> {
       const params: Params = []
       const wSql = buildWhere(where, params)
-      const { rows } = await getPool().query(
+      const { rows } = await runQuery(
         `DELETE FROM ${col(tableName)} WHERE ${wSql} RETURNING *`,
         params
       )
@@ -309,7 +351,7 @@ function makeModel(tableName: string) {
       const sql = wSql
         ? `DELETE FROM ${col(tableName)} WHERE ${wSql}`
         : `DELETE FROM ${col(tableName)}`
-      const { rowCount } = await getPool().query(sql, params)
+      const { rowCount } = await runQuery(sql, params)
       return { count: rowCount ?? 0 }
     },
 
@@ -366,7 +408,7 @@ function makeModel(tableName: string) {
         sql = `INSERT INTO ${col(tableName)} (${cols}) VALUES (${phs}) ON CONFLICT (${conflict}) DO UPDATE SET ${updateSet} RETURNING ${buildSelect(select)}`
       }
 
-      const { rows } = await getPool().query(sql, vals)
+      const { rows } = await runQuery(sql, vals)
       return rows[0]
     },
 
@@ -375,7 +417,7 @@ function makeModel(tableName: string) {
       const wSql = where ? buildWhere(where, params) : ""
       let sql = `SELECT COUNT(*) as cnt FROM ${col(tableName)}`
       if (wSql) sql += ` WHERE ${wSql}`
-      const { rows } = await getPool().query(sql, params)
+      const { rows } = await runQuery(sql, params)
       return parseInt(rows[0].cnt as string, 10)
     },
 
@@ -393,7 +435,7 @@ function makeModel(tableName: string) {
       let sql = `SELECT ${selParts.length ? selParts.join(", ") : "1"} FROM ${col(tableName)}`
       if (wSql) sql += ` WHERE ${wSql}`
 
-      const { rows } = await getPool().query(sql, params)
+      const { rows } = await runQuery(sql, params)
       const row = rows[0] ?? {}
       const result: Record<string, unknown> = {}
 
