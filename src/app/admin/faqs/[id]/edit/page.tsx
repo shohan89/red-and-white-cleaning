@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma"
 import { updateFaq } from "@/actions/faqs"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -78,9 +79,9 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
         </div>
 
         <div className="flex gap-3 pt-2">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
             Save Changes
-          </Button>
+          </SubmitButton>
           <Button type="button" variant="outline" asChild>
             <Link href="/admin/faqs">Cancel</Link>
           </Button>

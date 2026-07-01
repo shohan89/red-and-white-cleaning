@@ -1,6 +1,6 @@
 ﻿import { prisma } from "@/lib/prisma"
 import { savePageContent } from "@/actions/content"
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -102,7 +102,7 @@ export default async function HomeContentPage({
           </div>
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save Hero</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save Hero</SubmitButton>
         </div>
       </form>
 
@@ -124,7 +124,7 @@ export default async function HomeContentPage({
           <Input name="signal3" defaultValue={trust.signal3 ?? "Response Within 1 Business Day"} />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save Trust Signals</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save Trust Signals</SubmitButton>
         </div>
       </form>
 
@@ -146,7 +146,7 @@ export default async function HomeContentPage({
           />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save CTA Banner</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save CTA Banner</SubmitButton>
         </div>
       </form>
     </div>

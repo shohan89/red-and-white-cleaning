@@ -21,12 +21,12 @@ function getPool(): Pool {
 
 // Cloudflare Worker isolates can be frozen between requests, leaving TCP
 // connections in an indeterminate state (NAT entries expire silently).
-// runQueryOnce: single attempt — times out after 3 s and resets the pool
+// runQueryOnce: single attempt — times out after 800 ms and resets the pool
 //   so the next attempt gets a fresh connection instead of the zombie socket.
 // runQuery: retries once after a zombie-connection timeout so the caller
-//   always gets a real result. Worst-case latency: ~3.5 s (3 s timeout +
-//   200 ms fresh connect) instead of a hard 9 s error.
-const QUERY_TIMEOUT_MS = 1_500
+//   always gets a real result. Worst-case latency: ~1.1 s (800 ms timeout +
+//   ~300 ms fresh connect) instead of a hard 9 s error.
+const QUERY_TIMEOUT_MS = 800
 
 async function runQueryOnce(
   sql: string,

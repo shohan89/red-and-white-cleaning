@@ -1,6 +1,7 @@
 ﻿import { prisma } from "@/lib/prisma"
 import { upsertSitemapEntry } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -119,7 +120,7 @@ export default async function SitemapPage() {
             </Select>
           </div>
           <div className="col-span-4">
-            <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Add URL</Button>
+            <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Add URL</SubmitButton>
           </div>
         </form>
       </div>

@@ -1,6 +1,7 @@
 ﻿import { prisma } from "@/lib/prisma"
 import { saveRobotsConfig } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { ExternalLink } from "lucide-react"
@@ -51,9 +52,9 @@ export default async function RobotsPage() {
           defaultValue={config?.content ?? DEFAULT_ROBOTS}
           className="font-mono text-sm"
         />
-        <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">
+        <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
           Save Robots.txt
-        </Button>
+        </SubmitButton>
       </form>
     </div>
   )

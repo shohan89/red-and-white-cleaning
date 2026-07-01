@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { savePageContent } from "@/actions/content"
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -78,7 +78,7 @@ export default async function AboutContentPage({
           />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save Header</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save Header</SubmitButton>
         </div>
       </form>
 
@@ -104,7 +104,7 @@ Today, we specialize in post-construction and commercial cleaning across the KW 
           />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save Story</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save Story</SubmitButton>
         </div>
       </form>
     </div>

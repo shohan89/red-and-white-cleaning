@@ -1,6 +1,6 @@
 ﻿import { prisma } from "@/lib/prisma"
 import { saveGlobalSeo } from "@/actions/seo"
-import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -114,9 +114,9 @@ export default async function GlobalSeoPage() {
           </div>
         </section>
 
-        <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white w-full">
+        <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white w-full">
           Save Global SEO Settings
-        </Button>
+        </SubmitButton>
       </form>
     </div>
   )

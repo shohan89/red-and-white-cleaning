@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma"
 import { savePageContent } from "@/actions/content"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
@@ -67,7 +68,7 @@ export default async function ContactContentPage({
           />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">Save Header</Button>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">Save Header</SubmitButton>
         </div>
       </form>
 

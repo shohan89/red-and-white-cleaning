@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma"
 import { createPortfolioCategory } from "@/actions/portfolio"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
@@ -84,9 +85,9 @@ export default async function CategoriesPage() {
             <Label htmlFor="description">Description</Label>
             <Input id="description" name="description" placeholder="Optional description…" />
           </div>
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
             Create Category
-          </Button>
+          </SubmitButton>
         </form>
       </div>
     </div>

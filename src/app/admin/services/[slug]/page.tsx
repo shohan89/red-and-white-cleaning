@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma"
 import { updateService, createServiceIncludedItem, createServicePhase } from "@/actions/services"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -93,9 +94,9 @@ export default async function ServiceEditorPage({
               placeholder="For: General Contractors · Developers"
             />
           </div>
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
             Save Basic Info
-          </Button>
+          </SubmitButton>
         </form>
       </section>
 

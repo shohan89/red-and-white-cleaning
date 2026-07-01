@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { createPortfolioItem } from "@/actions/portfolio"
 import { Button } from "@/components/ui/button"
+import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -139,9 +140,9 @@ export default async function NewPortfolioItemPage() {
         </div>
 
         <div className="flex gap-3 pt-2">
-          <Button type="submit" className="bg-brand-red hover:bg-brand-red/90 text-white">
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
             Create Item
-          </Button>
+          </SubmitButton>
           <Button type="button" variant="outline" asChild>
             <Link href="/admin/portfolio">Cancel</Link>
           </Button>
