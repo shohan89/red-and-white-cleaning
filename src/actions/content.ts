@@ -23,6 +23,7 @@ export async function savePageContent(
     })
     revalidatePath(`/admin/content/${pageKey}`)
     revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`)
+    return { success: true }
   } catch (err) {
     console.error("[savePageContent] DB error:", err)
     return { error: "Failed to save content. Please try again." }

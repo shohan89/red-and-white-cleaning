@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import { savePageContent } from "@/actions/content"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -6,10 +6,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { redirect } from "next/navigation"
+import { SaveStatus } from "@/components/admin/SaveStatus"
 
 export const metadata = { title: "Page: About" }
 
-export default async function AboutContentPage() {
+export default async function AboutContentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ saved?: string; error?: string }>
+}) {
+  const sp = await searchParams
   let records: Awaited<ReturnType<typeof prisma.pageContent.findMany>> = []
   try {
     records = await prisma.pageContent.findMany({ where: { pageKey: "about" } })
@@ -26,24 +32,27 @@ export default async function AboutContentPage() {
 
   async function saveHero(formData: FormData) {
     "use server"
-    await savePageContent("about", "hero", {
+    const result = await savePageContent("about", "hero", {
       heading: formData.get("heading") as string,
       subheading: formData.get("subheading") as string,
     })
-    redirect("/admin/content/about")
+    if (result?.error) redirect("/admin/content/about?error=1")
+    redirect("/admin/content/about?saved=hero")
   }
 
   async function saveStory(formData: FormData) {
     "use server"
-    await savePageContent("about", "story", {
+    const result = await savePageContent("about", "story", {
       title: formData.get("title") as string,
       body: formData.get("body") as string,
     })
-    redirect("/admin/content/about")
+    if (result?.error) redirect("/admin/content/about?error=1")
+    redirect("/admin/content/about?saved=story")
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saved={sp.saved} error={!!sp.error} />
       <div>
         <h1 className="text-2xl font-heading font-bold text-brand-dark">Page: About</h1>
         <p className="text-sm text-muted-foreground mt-1">Edit the about page header and our story section.</p>

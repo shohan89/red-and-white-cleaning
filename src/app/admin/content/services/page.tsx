@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import { savePageContent } from "@/actions/content"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -6,10 +6,16 @@ import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { redirect } from "next/navigation"
+import { SaveStatus } from "@/components/admin/SaveStatus"
 
 export const metadata = { title: "Page: Services" }
 
-export default async function ServicesContentPage() {
+export default async function ServicesContentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ saved?: string; error?: string }>
+}) {
+  const sp = await searchParams
   let records: Awaited<ReturnType<typeof prisma.pageContent.findMany>> = []
   try {
     records = await prisma.pageContent.findMany({ where: { pageKey: "services" } })
@@ -25,15 +31,17 @@ export default async function ServicesContentPage() {
 
   async function saveHero(formData: FormData) {
     "use server"
-    await savePageContent("services", "hero", {
+    const result = await savePageContent("services", "hero", {
       heading: formData.get("heading") as string,
       subheading: formData.get("subheading") as string,
     })
-    redirect("/admin/content/services")
+    if (result?.error) redirect("/admin/content/services?error=1")
+    redirect("/admin/content/services?saved=hero")
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saved={sp.saved} error={!!sp.error} />
       <div>
         <h1 className="text-2xl font-heading font-bold text-brand-dark">Page: Services</h1>
         <p className="text-sm text-muted-foreground mt-1">Edit the services page header. Individual service details are managed in the Services section.</p>

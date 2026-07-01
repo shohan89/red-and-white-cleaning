@@ -6,10 +6,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { redirect } from "next/navigation"
+import { SaveStatus } from "@/components/admin/SaveStatus"
 
 export const metadata = { title: "Page: Home" }
 
-export default async function HomeContentPage() {
+export default async function HomeContentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ saved?: string; error?: string }>
+}) {
+  const sp = await searchParams
   let records: Awaited<ReturnType<typeof prisma.pageContent.findMany>> = []
   try {
     records = await prisma.pageContent.findMany({ where: { pageKey: "home" } })
@@ -27,36 +33,40 @@ export default async function HomeContentPage() {
 
   async function saveHero(formData: FormData) {
     "use server"
-    await savePageContent("home", "hero", {
+    const result = await savePageContent("home", "hero", {
       heading: formData.get("heading") as string,
       subheading: formData.get("subheading") as string,
       cta1Text: formData.get("cta1Text") as string,
       cta2Text: formData.get("cta2Text") as string,
     })
-    redirect("/admin/content/home")
+    if (result?.error) redirect("/admin/content/home?error=1")
+    redirect("/admin/content/home?saved=hero")
   }
 
   async function saveTrust(formData: FormData) {
     "use server"
-    await savePageContent("home", "trust", {
+    const result = await savePageContent("home", "trust", {
       signal1: formData.get("signal1") as string,
       signal2: formData.get("signal2") as string,
       signal3: formData.get("signal3") as string,
     })
-    redirect("/admin/content/home")
+    if (result?.error) redirect("/admin/content/home?error=1")
+    redirect("/admin/content/home?saved=trust")
   }
 
   async function saveCta(formData: FormData) {
     "use server"
-    await savePageContent("home", "cta", {
+    const result = await savePageContent("home", "cta", {
       heading: formData.get("heading") as string,
       subheading: formData.get("subheading") as string,
     })
-    redirect("/admin/content/home")
+    if (result?.error) redirect("/admin/content/home?error=1")
+    redirect("/admin/content/home?saved=cta")
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saved={sp.saved} error={!!sp.error} />
       <div>
         <h1 className="text-2xl font-heading font-bold text-brand-dark">Page: Home</h1>
         <p className="text-sm text-muted-foreground mt-1">Edit the home page hero, trust signals, and CTA banner.</p>
