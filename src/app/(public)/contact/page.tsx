@@ -69,7 +69,7 @@ export default async function ContactPage() {
         {/* Background image & overlays */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/images/contact-header.png"
+            src="/images/contact-header.webp"
             alt="Friendly and professional commercial cleaning company representative"
             fill
             priority

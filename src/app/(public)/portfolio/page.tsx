@@ -58,7 +58,7 @@ export default async function PortfolioPage() {
       <section className="relative overflow-hidden bg-brand-dark pt-32 pb-20 lg:pt-48 lg:pb-32">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/images/portfolio-header.png"
+            src="/images/portfolio-header.webp"
             alt="Professional commercial cleaning equipment"
             fill
             priority

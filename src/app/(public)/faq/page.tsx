@@ -103,7 +103,7 @@ export default async function FAQPage() {
       <section className="relative overflow-hidden bg-brand-dark pt-32 pb-20 lg:pt-48 lg:pb-32">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/images/faq-header.png"
+            src="/images/faq-header.webp"
             alt="Pristine, clean modern office workspace"
             fill
             priority

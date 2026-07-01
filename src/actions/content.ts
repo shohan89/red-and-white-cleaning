@@ -15,11 +15,16 @@ export async function savePageContent(
   content: Record<string, string | string[]>
 ) {
   await requireAdmin()
-  await prisma.pageContent.upsert({
-    where: { pageKey_sectionKey: { pageKey, sectionKey } },
-    create: { pageKey, sectionKey, content },
-    update: { content },
-  })
-  revalidatePath(`/admin/content/${pageKey}`)
-  revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`)
+  try {
+    await prisma.pageContent.upsert({
+      where: { pageKey_sectionKey: { pageKey, sectionKey } },
+      create: { pageKey, sectionKey, content },
+      update: { content },
+    })
+    revalidatePath(`/admin/content/${pageKey}`)
+    revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`)
+  } catch (err) {
+    console.error("[savePageContent] DB error:", err)
+    return { error: "Failed to save content. Please try again." }
+  }
 }

@@ -15,7 +15,7 @@ export function ServicesHeader({ content = {} }: { content?: ServicesHeroContent
       {/* Background image & overlays */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <Image
-          src="/images/services-header.png"
+          src="/images/services-header.webp"
           alt="Post-construction commercial building interior undergoing final clean"
           fill
           priority

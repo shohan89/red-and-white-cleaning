@@ -35,7 +35,7 @@ export function WhyChooseUs() {
         <div className="relative hidden lg:block">
           <div className="relative aspect-4/5 rounded-2xl bg-brand-dark overflow-hidden flex items-end p-8 shadow-xl">
             <Image
-              src="/images/why-choose-us.png"
+              src="/images/why-choose-us.webp"
               alt="Professional commercial cleaner polishing a glass wall"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

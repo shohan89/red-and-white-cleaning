@@ -15,7 +15,7 @@ export function AboutHeader({ content = {} }: { content?: AboutHeroContent }) {
       {/* Background image & overlays */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <Image
-          src="/images/about-header.png"
+          src="/images/about-header.webp"
           alt="Professional commercial cleaning team"
           fill
           priority

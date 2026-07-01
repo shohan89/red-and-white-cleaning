@@ -14,7 +14,7 @@ export function Footer() {
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-6">
               <Image
-                src="/images/logo.jpg"
+                src="/images/logo.webp"
                 alt="Red and White Cleaning Services Logo"
                 width={48}
                 height={48}

@@ -32,7 +32,7 @@ export function MobileMenu() {
           {/* Header */}
           <div className="px-6 py-5 border-b border-gray-200 flex items-center gap-3">
             <Image
-              src="/images/logo.jpg"
+              src="/images/logo.webp"
               alt="Red and White Cleaning Logo"
               width={32}
               height={32}
