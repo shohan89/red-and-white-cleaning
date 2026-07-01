@@ -1,6 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { deleteSitemapEntry, upsertSitemapEntry } from "@/actions/seo"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
@@ -12,19 +13,24 @@ export function SitemapIncludedToggle({ url, priority, changeFrequency, included
   changeFrequency: string
   included: boolean
 }) {
+  const router = useRouter()
   const [pending, startTransition] = useTransition()
   return (
     <Switch
       checked={included}
       disabled={pending}
       onCheckedChange={(v) =>
-        startTransition(() => upsertSitemapEntry({ url, priority, changeFrequency, included: v }))
+        startTransition(async () => {
+          await upsertSitemapEntry({ url, priority, changeFrequency, included: v })
+          router.refresh()
+        })
       }
     />
   )
 }
 
 export function DeleteSitemapButton({ id }: { id: string }) {
+  const router = useRouter()
   const [pending, startTransition] = useTransition()
   return (
     <Button
@@ -33,7 +39,10 @@ export function DeleteSitemapButton({ id }: { id: string }) {
       disabled={pending}
       onClick={() => {
         if (!confirm("Remove this URL from the sitemap?")) return
-        startTransition(() => deleteSitemapEntry(id))
+        startTransition(async () => {
+          await deleteSitemapEntry(id)
+          router.refresh()
+        })
       }}
       className="text-destructive hover:text-destructive"
     >

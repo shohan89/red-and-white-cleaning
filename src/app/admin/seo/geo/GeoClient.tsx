@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { createGeoContent, deleteGeoContent } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,6 +27,7 @@ function parseKeywords(raw: string): string[] {
 }
 
 export function GeoClient({ records }: { records: GeoRecord[] }) {
+  const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [expanded, setExpanded] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
@@ -44,6 +46,7 @@ export function GeoClient({ records }: { records: GeoRecord[] }) {
         whyChooseCompany: (formData.get("whyChooseCompany") as string) || undefined,
       })
       setShowForm(false)
+      router.refresh()
     } finally {
       setPending(false)
     }
@@ -52,6 +55,7 @@ export function GeoClient({ records }: { records: GeoRecord[] }) {
   async function handleDelete(id: string) {
     if (!confirm("Delete this GEO content entry?")) return
     await deleteGeoContent(id)
+    router.refresh()
   }
 
   return (

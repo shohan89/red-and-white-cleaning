@@ -1,11 +1,13 @@
 "use client"
 
 import { useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { deleteRedirect } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
 import { Trash2, Loader2 } from "lucide-react"
 
 export function DeleteRedirectButton({ id }: { id: string }) {
+  const router = useRouter()
   const [pending, startTransition] = useTransition()
   return (
     <Button
@@ -14,7 +16,10 @@ export function DeleteRedirectButton({ id }: { id: string }) {
       disabled={pending}
       onClick={() => {
         if (!confirm("Delete this redirect?")) return
-        startTransition(() => deleteRedirect(id))
+        startTransition(async () => {
+          await deleteRedirect(id)
+          router.refresh()
+        })
       }}
       className="text-destructive hover:text-destructive"
     >

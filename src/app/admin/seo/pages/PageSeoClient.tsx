@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { savePageSeo } from "@/actions/seo"
-import { ChevronDown, ChevronUp, Search } from "lucide-react"
+import { ChevronDown, ChevronUp, Search, Loader2 } from "lucide-react"
 
 type PageSeoRecord = {
   pageKey: string
@@ -45,20 +46,30 @@ export function PageSeoEditor({
   seo?: PageSeoRecord | null
   baseUrl: string
 }) {
+  const router = useRouter()
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState(seo?.metaTitle ?? "")
   const [desc, setDesc] = useState(seo?.metaDesc ?? "")
+  const [pending, startTransition] = useTransition()
+  const [savedKey, setSavedKey] = useState<string | null>(null)
 
-  async function handleSave(formData: FormData) {
-    await savePageSeo(page.key, {
-      metaTitle: formData.get("metaTitle") as string,
-      metaDesc: formData.get("metaDesc") as string,
-      focusKeyword: formData.get("focusKeyword") as string,
-      canonicalUrl: formData.get("canonicalUrl") as string,
-      robots: formData.get("robots") as string,
-      ogTitle: formData.get("ogTitle") as string,
-      ogDesc: formData.get("ogDesc") as string,
-      ogImage: formData.get("ogImage") as string,
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    startTransition(async () => {
+      await savePageSeo(page.key, {
+        metaTitle: formData.get("metaTitle") as string,
+        metaDesc: formData.get("metaDesc") as string,
+        focusKeyword: formData.get("focusKeyword") as string,
+        canonicalUrl: formData.get("canonicalUrl") as string,
+        robots: formData.get("robots") as string,
+        ogTitle: formData.get("ogTitle") as string,
+        ogDesc: formData.get("ogDesc") as string,
+        ogImage: formData.get("ogImage") as string,
+      })
+      setSavedKey(page.key)
+      router.refresh()
+      setTimeout(() => setSavedKey(null), 2500)
     })
   }
 
@@ -83,7 +94,7 @@ export function PageSeoEditor({
         <div className="border-t px-4 py-4 space-y-4">
           <SerpPreview title={title} desc={desc} url={`${baseUrl}${page.path}`} />
 
-          <form action={handleSave} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs">Meta Title</Label>
@@ -141,8 +152,17 @@ export function PageSeoEditor({
               </div>
             </div>
 
-            <Button type="submit" size="sm" className="bg-brand-red hover:bg-brand-red/90 text-white">
-              Save {page.label} SEO
+            <Button type="submit" size="sm" disabled={pending} className="bg-brand-red hover:bg-brand-red/90 text-white">
+              {pending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving…
+                </>
+              ) : savedKey === page.key ? (
+                "Saved!"
+              ) : (
+                `Save ${page.label} SEO`
+              )}
             </Button>
           </form>
         </div>

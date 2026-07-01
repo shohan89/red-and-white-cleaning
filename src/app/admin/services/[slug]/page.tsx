@@ -1,4 +1,4 @@
-﻿import { notFound } from "next/navigation"
+﻿import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { updateService, createServiceIncludedItem, createServicePhase } from "@/actions/services"
 import { Button } from "@/components/ui/button"
@@ -9,13 +9,17 @@ import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { DeleteIncludedItemButton, DeletePhaseButton } from "../ServicesClient"
+import { SaveStatus } from "@/components/admin/SaveStatus"
 
 export default async function ServiceEditorPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ saved?: string }>
 }) {
   const { slug } = await params
+  const { saved } = await searchParams
   const service = await prisma.service.findUnique({
     where: { slug },
     include: {
@@ -37,6 +41,7 @@ export default async function ServiceEditorPage({
       targetAudienceText: formData.get("targetAudienceText") as string,
       label: formData.get("label") as string,
     })
+    redirect(`/admin/services/${slug}?saved=basic`)
   }
 
   async function handleAddItem(formData: FormData) {
@@ -44,6 +49,7 @@ export default async function ServiceEditorPage({
     const text = formData.get("text") as string
     if (!text?.trim()) return
     await createServiceIncludedItem(service!.id, text.trim())
+    redirect(`/admin/services/${slug}`)
   }
 
   async function handleAddPhase(formData: FormData) {
@@ -53,10 +59,12 @@ export default async function ServiceEditorPage({
     const phaseNumber = parseInt(formData.get("phaseNumber") as string) || 1
     if (!title || !description) return
     await createServicePhase(service!.id, { title, description, phaseNumber })
+    redirect(`/admin/services/${slug}`)
   }
 
   return (
     <div className="space-y-8">
+      <SaveStatus saved={saved} />
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" asChild>
           <Link href="/admin/services">

@@ -66,7 +66,7 @@ export default function RootLayout({
       className={`${montserrat.variable} ${inter.variable} h-full scroll-smooth`}
     >
       <head>
-        <link rel="preload" as="image" href="/images/hero-bg.webp" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/hero-bg.jpeg" fetchPriority="high" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         {children}

@@ -1,7 +1,7 @@
 ﻿"use client"
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { useCallback } from "react"
+import { useCallback, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -27,6 +27,7 @@ export function LeadsFilters() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -42,15 +43,23 @@ export function LeadsFilters() {
     [router, pathname, searchParams]
   )
 
+  const updateSearch = useCallback(
+    (value: string) => {
+      if (debounceRef.current) clearTimeout(debounceRef.current)
+      debounceRef.current = setTimeout(() => updateParam("q", value), 350)
+    },
+    [updateParam]
+  )
+
   return (
     <div className="flex flex-col sm:flex-row gap-3">
       <div className="relative flex-1 max-w-sm">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search name or emailâ€¦"
+          placeholder="Search name or email…"
           defaultValue={searchParams.get("q") ?? ""}
           className="pl-8"
-          onChange={(e) => updateParam("q", e.target.value)}
+          onChange={(e) => updateSearch(e.target.value)}
         />
       </div>
       <Select

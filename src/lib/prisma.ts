@@ -1,69 +1,22 @@
-import { Pool } from "pg"
+import { Client } from "pg"
 
-const globalForPg = globalThis as unknown as { __pgPool: Pool | undefined }
-
-function getPool(): Pool {
-  if (!globalForPg.__pgPool) {
-    globalForPg.__pgPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 3,
-      idleTimeoutMillis: 5_000,
-      connectionTimeoutMillis: 5_000,
-      keepAlive: true,
-      keepAliveInitialDelayMillis: 5_000,
-    })
-    globalForPg.__pgPool.on("error", (err) => {
-      console.error("[pg pool error]", err.message)
-    })
-  }
-  return globalForPg.__pgPool
-}
-
-// Cloudflare Worker isolates can be frozen between requests, leaving TCP
-// connections in an indeterminate state (NAT entries expire silently).
-// runQueryOnce: single attempt — times out after 800 ms and resets the pool
-//   so the next attempt gets a fresh connection instead of the zombie socket.
-// runQuery: retries once after a zombie-connection timeout so the caller
-//   always gets a real result. Worst-case latency: ~1.1 s (800 ms timeout +
-//   ~300 ms fresh connect) instead of a hard 9 s error.
-const QUERY_TIMEOUT_MS = 800
-
-async function runQueryOnce(
-  sql: string,
-  params: Params
-): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
-  let timerId: ReturnType<typeof setTimeout> | undefined
-  try {
-    const result = await Promise.race([
-      getPool().query(sql, params as never[]),
-      new Promise<never>((_, reject) => {
-        timerId = setTimeout(() => {
-          if (globalForPg.__pgPool) {
-            globalForPg.__pgPool.end().catch(() => {})
-            globalForPg.__pgPool = undefined
-          }
-          reject(new Error(`DB query timed out after ${QUERY_TIMEOUT_MS}ms`))
-        }, QUERY_TIMEOUT_MS)
-      }),
-    ])
-    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
-  } finally {
-    clearTimeout(timerId)
-  }
-}
-
+// Use a fresh Client per query — no connection pool. This avoids zombie TCP
+// connections entirely: Cloudflare Worker isolates can be frozen between
+// requests and NAT/firewalls silently drop long-idle sockets. A pool would
+// hand out a dead socket on the next request; a fresh Client always connects
+// cleanly. For best performance, point DATABASE_URL at the Supabase
+// transaction-mode pooler (port 6543) so the TCP handshake is cheap.
 async function runQuery(
   sql: string,
   params: Params
 ): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
+  const client = new Client({ connectionString: process.env.DATABASE_URL })
   try {
-    return await runQueryOnce(sql, params)
-  } catch (err) {
-    if (err instanceof Error && err.message.includes("timed out")) {
-      console.log("[pg] retrying after zombie connection reset")
-      return await runQueryOnce(sql, params)
-    }
-    throw err
+    await client.connect()
+    const result = await client.query(sql, params as never[])
+    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
+  } finally {
+    client.end().catch(() => {})
   }
 }
 

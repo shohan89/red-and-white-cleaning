@@ -51,7 +51,7 @@ export function HeroSection({
       {/* Background image & overlays */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none">
         <Image
-          src="/images/hero-bg.webp"
+          src="/images/hero-bg.jpeg"
           alt="Red and White Cleaning team at work in a professional building corridor"
           fill
           priority

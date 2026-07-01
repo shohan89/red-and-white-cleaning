@@ -1,13 +1,16 @@
-﻿import { prisma } from "@/lib/prisma"
+﻿import { redirect } from "next/navigation"
+import { prisma } from "@/lib/prisma"
 import { saveGlobalSeo } from "@/actions/seo"
 import { SubmitButton } from "@/components/admin/SubmitButton"
+import { SaveStatus } from "@/components/admin/SaveStatus"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
 export const metadata = { title: "Global SEO" }
 
-export default async function GlobalSeoPage() {
+export default async function GlobalSeoPage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
+  const { saved } = await searchParams
   let seo: Awaited<ReturnType<typeof prisma.globalSeo.findFirst>> = null
   try {
     seo = await prisma.globalSeo.findFirst()
@@ -32,10 +35,12 @@ export default async function GlobalSeoPage() {
       gtmId: formData.get("gtmId") as string,
       googleBusinessUrl: formData.get("googleBusinessUrl") as string,
     })
+    redirect("/admin/seo?saved=seo")
   }
 
   return (
     <div className="space-y-6">
+      <SaveStatus saved={saved} />
       <h1 className="text-2xl font-heading font-bold text-brand-dark">Global SEO</h1>
 
       <form action={handleSave} className="space-y-6">
