@@ -43,3 +43,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dev artifacts
+.dev-server.log
+.wrangler/
+
+# raw source photos (317MB, not web assets) — export web-sized copies to public/images/portfolio instead
+/public/images/assets/

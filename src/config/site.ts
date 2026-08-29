@@ -3,6 +3,7 @@ export const SITE = {
   shortName: "Red & White Cleaning",
   legalName: "Red & White Cleaning Services LTD",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  gtmId: process.env.NEXT_PUBLIC_GTM_ID ?? "GTM-5TF6844J",
   phone: "519-574-1552",
   phoneHref: "tel:519-574-1552",
   email: "redandwhiteclean@gmail.com",
