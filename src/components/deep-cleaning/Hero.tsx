@@ -15,8 +15,8 @@ export function Hero() {
     <section className={styles.hero} aria-label="Deep cleaning services hero">
       <div className={styles.heroBgWrap}>
         <Image
-          src="/images/portfolio/deep-clean-hero-quartz.webp"
-          alt="Spotless quartz kitchen counter and sink after a professional deep clean by Red & White Cleaning Services"
+          src="/images/portfolio/deep-clean-hero-kitchen.webp"
+          alt="Bright, spotless modern kitchen with island after a professional deep clean by Red & White Cleaning Services"
           fill
           priority
           sizes="100vw"
