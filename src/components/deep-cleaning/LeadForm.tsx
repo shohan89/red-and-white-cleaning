@@ -24,6 +24,23 @@ interface FormErrors {
 
 type Status = "idle" | "submitting" | "success" | "error";
 
+declare global {
+  interface Window {
+    dataLayer?: Record<string, unknown>[];
+  }
+}
+
+/** Fire a GTM custom event on confirmed lead submission (no PII in the payload). */
+function trackLead(service: string) {
+  if (typeof window === "undefined") return;
+  window.dataLayer = window.dataLayer ?? [];
+  window.dataLayer.push({
+    event: "deep_cleaning_lead",
+    lead_source: "deep-cleaning-landing",
+    service_requested: service,
+  });
+}
+
 export function LeadForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<FormErrors>({});
@@ -71,6 +88,7 @@ export function LeadForm() {
         }),
       });
       if (!res.ok) throw new Error("Request failed");
+      trackLead(String(data.get("service") ?? ""));
       setStatus("success");
       form.reset();
     } catch {
