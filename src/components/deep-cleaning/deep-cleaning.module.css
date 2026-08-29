@@ -914,9 +914,21 @@
 
 .testimonialsNote {
   text-align: center;
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 14px;
   margin: 28px 0 0;
+}
+
+.testimonialsNoteLink {
+  color: var(--dc-white);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.testimonialsNoteLink:hover {
+  color: var(--dc-red-light);
 }
 
 /* ---------- FAQ ---------- */

@@ -8,7 +8,7 @@ export function FinalCTA() {
     <section className={styles.finalCta} aria-label="Book your deep clean">
       <div className={styles.finalCtaBgWrap} aria-hidden="true">
         <Image
-          src="/images/portfolio/deep-clean-hero.webp"
+          src="/images/portfolio/final-cta-room.webp"
           alt=""
           fill
           sizes="100vw"

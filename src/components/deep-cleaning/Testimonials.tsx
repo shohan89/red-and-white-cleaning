@@ -60,7 +60,11 @@ export function Testimonials() {
         </div>
 
         <p className={styles.testimonialsNote}>
-          Illustrative reviews shown for demonstration &mdash; verified customer reviews coming soon.
+          Want results like these in your home?{" "}
+          <a href="#lead-form" className={styles.testimonialsNoteLink}>
+            Get your free quote
+          </a>{" "}
+          in under a minute &mdash; most requests get a reply the same business day.
         </p>
       </div>
     </section>
