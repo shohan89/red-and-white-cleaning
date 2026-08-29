@@ -8,15 +8,11 @@ export function MidCTA() {
       <div className={styles.container}>
         <div className={styles.midCtaInner}>
           <div>
-            <h2 className={styles.midCtaTitle}>Looking for Commercial Cleaning Contractors Near You?</h2>
+            <h2 className={styles.midCtaTitle}>Need Commercial Cleaners Near You?</h2>
             <p className={styles.midCtaText}>
-              Searching for commercial cleaners near me or after construction
-              cleaning services near me? Get a fast quote from a commercial
-              cleaning company in Kitchener, Waterloo, Cambridge, Guelph,
-              Hamilton, London or Brantford &mdash;
-              post construction cleanup, office cleaning or a commercial
-              janitorial contract. We schedule around your trades and your
-              business hours.
+              Fast quotes for post construction cleanup, office cleaning or
+              janitorial contracts across Kitchener&ndash;Waterloo and Southern
+              Ontario.
             </p>
           </div>
           <div className={styles.midCtaActions}>

@@ -10,17 +10,10 @@ const SERVICE_AREAS = [
   "Commercial Cleaning Hamilton",
   "Commercial Cleaning Brantford",
   "Commercial Cleaners London Ontario",
-  "Office Cleaning Kitchener",
-  "Office Cleaning Waterloo",
-  "Office Cleaning Cambridge ON",
   "Office Cleaners Guelph",
-  "Office Cleaning Hamilton",
-  "Office Cleaning Brantford",
+  "Office Cleaning Kitchener",
   "Post Construction Cleaning Kitchener",
-  "Post Construction Cleaning Cambridge ON",
   "Post Construction Cleaners Guelph",
-  "Post Construction Cleaning Hamilton",
-  "Construction Cleanup London Ontario",
 ];
 
 export function Footer() {
@@ -46,7 +39,7 @@ export function Footer() {
         </div>
 
         <p className={styles.footerAreas}>
-          Commercial cleaning company serving Kitchener, Waterloo (KW), Cambridge, Guelph, Hamilton, London &amp; Brantford, Ontario &mdash; post construction cleaning, after builders cleaning, office cleaning, commercial building janitorial services, commercial property cleaning services, commercial deep cleaning and Airbnb cleaning.
+          Commercial cleaning company serving Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London &amp; Brantford &mdash; post construction cleaning, office cleaning, janitorial services and Airbnb cleaning.
         </p>
 
         <ul className={styles.footerAreaList} aria-label="Service areas">

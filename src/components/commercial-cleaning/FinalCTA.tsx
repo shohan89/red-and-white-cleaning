@@ -23,7 +23,7 @@ export function FinalCTA() {
             Ready to Hire Commercial Cleaners Near You?
           </h2>
           <p className={styles.finalCtaSubtitle}>
-            Get a free, no-obligation quote for post construction cleaning, office cleaning or commercial building janitorial services &mdash; most requests get a reply the same business day.
+            Free, no-obligation quotes for post construction, office or janitorial cleaning &mdash; replies the same business day.
           </p>
           <div className={styles.finalCtaButtons}>
             <a href="#lead-form" className={`${styles.btn} ${styles.btnPrimary}`}>

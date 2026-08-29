@@ -15,32 +15,32 @@ const REASONS = [
   {
     icon: HardHat,
     title: "Built for Construction Sites",
-    desc: "Crews arrive in PPE, follow your site safety rules, and know how to work around active trades and live equipment.",
+    desc: "PPE, site safety rules, and crews used to working around live trades.",
   },
   {
     icon: ShieldCheck,
     title: "Fully Insured",
-    desc: "Proof of insurance available on request for contractors and property managers who need documentation before booking.",
+    desc: "Proof of insurance available on request before booking.",
   },
   {
     icon: Users,
     title: "Consistent Crews",
-    desc: "The same trained team returns to your site or facility — no strangers, no re-training, no surprises.",
+    desc: "The same trained team returns every visit.",
   },
   {
     icon: CalendarClock,
     title: "Works to Your Timeline",
-    desc: "Tight or shifting schedule? We book around your build — including evenings and weekends when the job calls for it.",
+    desc: "We book around your build — evenings and weekends included.",
   },
   {
     icon: Layers,
     title: "Scales With the Project",
-    desc: "From a single commercial unit to a multi-phase tower with Phase 1, 2 and 3 cleans across dozens of suites.",
+    desc: "One unit or a multi-phase tower with dozens of suites.",
   },
   {
     icon: BadgeCheck,
     title: "Satisfaction Guarantee",
-    desc: "Something missed at walk-through? Tell us within 24 hours and we’ll come back and make it right.",
+    desc: "Missed something? Tell us within 24 hours and we fix it free.",
   },
 ];
 
@@ -71,17 +71,14 @@ export function WhyChooseUs() {
           </div>
 
           <div className={styles.whyContent}>
-            <p className={styles.eyebrow}>Why Contractors &amp; Property Managers Choose Us</p>
+            <p className={styles.eyebrow}>Why Choose Us</p>
             <h2 className={styles.sectionTitle}>
-              Southern Ontario&rsquo;s Commercial Cleaning Contractors &amp; Post Construction Cleaning Experts
+              Southern Ontario&rsquo;s Commercial &amp; Post Construction Cleaning Experts
             </h2>
             <p className={styles.whyIntro}>
-              {SITE.shortName}{" "}
-              is a commercial cleaning company based in the KW Region. Since{" "}
-              {SITE.founded}{" "}
-              our builders cleaning services and business cleaning services have
-              served general contractors, developers, property managers and
-              office managers who need the job done right &mdash; and done on time.
+              A KW-based commercial cleaning company serving contractors,
+              developers, property managers and office managers since{" "}
+              {SITE.founded}.
             </p>
 
             <div className={styles.whyGrid}>

@@ -12,32 +12,32 @@ const SERVICES = [
   {
     icon: HardHat,
     title: "Post Construction Cleaning",
-    desc: "After construction cleaning and construction clean up services for general contractors and builders: rough clean during the build, final clean once the trades are out. Dust and debris removal, construction film and adhesive removal, floor polishing, bathroom and kitchen scrub-out — the after builders cleaning that makes a site handover-ready.",
+    desc: "Rough and final cleans for contractors and builders — debris, dust, construction film removal and floor polishing. Handover-ready.",
   },
   {
     icon: ClipboardCheck,
     title: "PDI & Occupancy Cleaning",
-    desc: "Phase 2 and Phase 3 cleans for developers: suites detailed for the pre-delivery inspection, then prepped again before handover to new residents — coordinated with your project schedule, suite by suite.",
+    desc: "Suites detailed for the pre-delivery inspection, then prepped again before residents move in.",
   },
   {
     icon: Briefcase,
     title: "Office Cleaning",
-    desc: "Corporate office cleaning and commercial office cleaning services — one-time or recurring. Desks, washrooms, floors, glass, plus kitchen and lunchroom cleaning. Affordable office cleaning from an office cleaning company whose office cleaning contractors work around your business hours.",
+    desc: "Corporate office cleaning, one-time or recurring — desks, washrooms, floors, glass, kitchen and lunchroom. Affordable and after-hours.",
   },
   {
     icon: Building2,
     title: "Commercial Building & Janitorial Services",
-    desc: "Commercial building cleaning services and commercial building janitorial services on weekly, bi-weekly or monthly contracts — office and common area cleaning, lobbies, corridors, stairwells and washrooms. A cleaning company for business owners and commercial property managers.",
+    desc: "Weekly, bi-weekly or monthly janitorial contracts — office and common area cleaning, lobbies, corridors and washrooms.",
   },
   {
     icon: Sparkles,
     title: "Commercial Deep Cleaning & Airbnb Cleaning",
-    desc: "Commercial deep cleaning services for retail units, warehouses, medical and professional spaces, plus Airbnb cleaning and short-term rental turnovers — top-to-bottom resets when a space needs more than routine maintenance.",
+    desc: "Top-to-bottom resets for retail, warehouse and professional spaces, plus Airbnb turnovers.",
   },
   {
     icon: AppWindow,
     title: "Window, Common Area & Mechanical Room Cleaning",
-    desc: "Interior and exterior glazing with construction film and sticker removal, condo common areas, laundry rooms, and mechanical or generator rooms — cleaned around live equipment with wet-floor safety protocols in place.",
+    desc: "Glazing with construction film removal, condo common areas, and mechanical rooms cleaned around live equipment.",
   },
 ];
 
@@ -47,11 +47,9 @@ export function Services() {
       <div className={styles.container}>
         <div className={styles.sectionHead}>
           <p className={styles.eyebrow}>What We Do</p>
-          <h2 className={styles.sectionTitle}>Commercial Cleaning &amp; Construction Cleaning Services</h2>
+          <h2 className={styles.sectionTitle}>Commercial &amp; Construction Cleaning Services</h2>
           <p className={styles.sectionSubtitle} style={{ margin: "0 auto" }}>
-            Business cleaning services for every stage &mdash; from the first
-            rough clean on a construction site to scheduled office cleaning
-            long after handover.
+            From the first rough clean to scheduled office cleaning after handover.
           </p>
         </div>
 

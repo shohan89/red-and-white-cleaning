@@ -3,26 +3,22 @@ import styles from "../deep-cleaning/deep-cleaning.module.css";
 
 const TESTIMONIALS = [
   {
-    quote:
-      "The best after builders cleaning we have used. They handled all three phases on our tower and never once held up a handover.",
+    quote: "All three cleaning phases on our tower, and never once held up a handover.",
     name: "Site Superintendent",
-    location: "Residential tower, Guelph, ON",
+    location: "Guelph, ON",
   },
   {
-    quote:
-      "Reliable commercial cleaners in London, Ontario are hard to find. Construction film gone from every window before inspection — exactly what we needed.",
+    quote: "Construction film gone from every window before inspection. Exactly what we needed.",
     name: "Project Manager",
-    location: "Condo development, London, ON",
+    location: "London, ON",
   },
   {
-    quote:
-      "Our office cleaners show up every week without anyone noticing they were there — same crew, same standard, and the lunchroom is spotless.",
+    quote: "Same crew every week, same standard — and the lunchroom is spotless.",
     name: "Office Manager",
-    location: "Commercial unit, Kitchener, ON",
+    location: "Kitchener, ON",
   },
   {
-    quote:
-      "Insured, affordable, and easy to schedule around our trades. The only post construction cleaning company we call on new builds now.",
+    quote: "Insured, affordable, and easy to schedule around our trades.",
     name: "General Contractor",
     location: "Hamilton, ON",
   },
@@ -34,7 +30,7 @@ export function Testimonials() {
       <div className={styles.container}>
         <div className={styles.sectionHead}>
           <p className={styles.eyebrow}>Client Stories</p>
-          <h2 className={styles.sectionTitle}>Trusted by Builders &amp; Businesses Across Southern Ontario</h2>
+          <h2 className={styles.sectionTitle}>Trusted by Builders &amp; Businesses</h2>
         </div>
 
         <div className={styles.testimonialsGrid}>
@@ -60,11 +56,11 @@ export function Testimonials() {
         </div>
 
         <p className={styles.testimonialsNote}>
-          Need the same standard on your site or in your office?{" "}
+          Want the same standard on your site?{" "}
           <a href="#lead-form" className={styles.testimonialsNoteLink}>
             Get your free quote
           </a>{" "}
-          in under a minute &mdash; most requests get a reply the same business day.
+          &mdash; replies the same business day.
         </p>
       </div>
     </section>

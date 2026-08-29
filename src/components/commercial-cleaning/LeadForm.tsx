@@ -115,7 +115,7 @@ export function LeadForm() {
     <div className={styles.glassCard}>
       <h2 className={styles.glassTitle}>Get Your Free Site Quote</h2>
       <p className={styles.glassSubtitle}>
-        Tell us about your office, building or construction site — we&rsquo;ll follow up fast, usually the same business day.
+        Tell us about your site or office — we reply the same business day.
       </p>
 
       <form onSubmit={onSubmit} noValidate>

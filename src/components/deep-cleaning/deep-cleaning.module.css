@@ -314,6 +314,23 @@
     linear-gradient(180deg, rgba(10, 10, 10, 0.72) 0%, rgba(10, 10, 10, 0.38) 45%, rgba(10, 10, 10, 0.82) 100%);
 }
 
+/* Stronger overlay + text shadow for heroes with busy photos (commercial page) */
+.heroOverlayStrong {
+  background:
+    linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.78) 45%, rgba(10, 10, 10, 0.5) 100%),
+    linear-gradient(180deg, rgba(10, 10, 10, 0.35) 0%, rgba(10, 10, 10, 0) 40%, rgba(10, 10, 10, 0.6) 100%);
+}
+
+.heroTextContrast .heroTitle,
+.heroTextContrast .heroSubtitle,
+.heroTextContrast .heroBadge {
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.65), 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.heroTextContrast .heroSubtitle {
+  color: rgba(255, 255, 255, 0.92);
+}
+
 .heroGlow {
   position: absolute;
   inset: 0;

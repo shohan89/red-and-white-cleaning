@@ -17,13 +17,13 @@ export function Hero() {
           priority
           sizes="100vw"
         />
-        <div className={styles.heroOverlay} aria-hidden="true" />
+        <div className={`${styles.heroOverlay} ${styles.heroOverlayStrong}`} aria-hidden="true" />
         <div className={styles.heroGlow} aria-hidden="true" />
       </div>
 
       <div className={`${styles.container} ${styles.heroInner}`}>
         <div className={styles.heroGrid}>
-          <div className={styles.heroTextCol}>
+          <div className={`${styles.heroTextCol} ${styles.heroTextContrast}`}>
             <div className={styles.heroBadge}>
               <span className={styles.heroStars} aria-hidden="true">
                 <Star size={13} fill="currentColor" strokeWidth={0} />
@@ -36,18 +36,13 @@ export function Hero() {
             </div>
 
             <h1 className={styles.heroTitle}>
-              Professional <em>Commercial &amp; Post Construction Cleaning</em>{" "}
-              Services Near You
+              Commercial &amp; Post Construction Cleaning Near You
             </h1>
 
             <p className={styles.heroSubtitle}>
-              Searching for commercial cleaning services near me or after
-              construction cleaning near me? Our commercial cleaning company handles
-              post construction cleaning, office cleaning, commercial building
-              janitorial services and Airbnb cleaning across Kitchener, Waterloo
-              (KW), Cambridge, Guelph, Hamilton, London and Brantford. Fully
-              insured crews that work to your schedule &mdash; quoted free,
-              usually the same business day.
+              Post construction cleaning, office cleaning and commercial
+              janitorial services across Kitchener, Waterloo, Cambridge, Guelph,
+              Hamilton, London and Brantford.
             </p>
 
             <div className={styles.heroCtas}>
