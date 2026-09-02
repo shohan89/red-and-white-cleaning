@@ -20,6 +20,7 @@ interface FormErrors {
   name?: string;
   phone?: string;
   email?: string;
+  location?: string;
   service?: string;
 }
 
@@ -51,11 +52,13 @@ export function LeadForm() {
     const name = String(data.get("name") ?? "").trim();
     const phone = String(data.get("phone") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
+    const location = String(data.get("location") ?? "").trim();
     const service = String(data.get("service") ?? "").trim();
 
     if (name.length < 2) next.name = "Please enter your full name";
     if (phone.length < 7) next.phone = "Please enter a valid phone number";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Please enter a valid email";
+    if (location.length < 2) next.location = "Please enter your city or town";
     if (!service) next.service = "Please select a service";
 
     return next;
@@ -85,6 +88,7 @@ export function LeadForm() {
           name: data.get("name"),
           phone: data.get("phone"),
           email: data.get("email"),
+          location: data.get("location"),
           service: data.get("service"),
         }),
       });
@@ -168,6 +172,21 @@ export function LeadForm() {
             className={`${styles.glassInput} ${errors.email ? styles.glassInputError : ""}`}
           />
           {errors.email && <p className={styles.glassErrorText}>{errors.email}</p>}
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="location" className={styles.glassLabel}>
+            Your Location <span className={styles.glassRequired}>*</span>
+          </label>
+          <input
+            id="location"
+            name="location"
+            type="text"
+            placeholder="Kitchener, ON"
+            autoComplete="address-level2"
+            className={`${styles.glassInput} ${errors.location ? styles.glassInputError : ""}`}
+          />
+          {errors.location && <p className={styles.glassErrorText}>{errors.location}</p>}
         </div>
 
         <div className={styles.formGroup}>

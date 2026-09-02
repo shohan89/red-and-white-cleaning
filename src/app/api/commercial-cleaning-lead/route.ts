@@ -5,13 +5,14 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const body = await request.json();
-  const { name, phone, email, service } = body;
+  const { name, phone, email, service, location } = body;
 
   if (
     typeof name !== 'string' || name.trim().length < 2 ||
     typeof phone !== 'string' || phone.trim().length < 7 ||
     typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
-    typeof service !== 'string' || service.trim().length === 0
+    typeof service !== 'string' || service.trim().length === 0 ||
+    typeof location !== 'string' || location.trim().length < 2
   ) {
     return NextResponse.json({ error: 'Invalid submission' }, { status: 400 });
   }
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
         email,
         phone,
         serviceType: service,
-        location: 'Southern Ontario',
+        location: location.trim(),
         message: `Commercial & Construction Cleaning landing page request — service requested: ${service}`,
         howDidYouHear: 'Google Ads – Commercial & Construction Cleaning Landing Page',
         status: 'NEW',
@@ -48,6 +49,7 @@ export async function POST(request: Request) {
         <tr style="background:#f9f9f9;"><td style="padding:8px 12px;font-weight:bold;">Phone</td><td style="padding:8px 12px;"><a href="tel:${phone}">${phone}</a></td></tr>
         <tr><td style="padding:8px 12px;font-weight:bold;">Email</td><td style="padding:8px 12px;"><a href="mailto:${email}">${email}</a></td></tr>
         <tr style="background:#f9f9f9;"><td style="padding:8px 12px;font-weight:bold;">Service</td><td style="padding:8px 12px;">${service}</td></tr>
+        <tr><td style="padding:8px 12px;font-weight:bold;">Location</td><td style="padding:8px 12px;">${location}</td></tr>
         <tr><td style="padding:8px 12px;font-weight:bold;">Source</td><td style="padding:8px 12px;">/commercial-construction-cleaning (Google Ads landing page)</td></tr>
       </table>
     `,
