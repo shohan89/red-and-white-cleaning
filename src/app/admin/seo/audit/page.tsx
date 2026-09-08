@@ -159,13 +159,13 @@ export default async function SeoAuditPage() {
       <section className="bg-white rounded-lg border p-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-gray-900">Image SEO</h2>
-          <Link href="/admin/seo/images" className="text-xs text-brand-red hover:underline">Edit →</Link>
+          <Link href="/admin/media" className="text-xs text-brand-red hover:underline">Edit →</Link>
         </div>
         <AuditRow
           label="Media assets with alt text"
           status={missingAlt === 0 ? "pass" : missingAlt < totalAssets / 2 ? "warn" : "fail"}
           detail={totalAssets === 0 ? "No media assets uploaded yet" : `${totalAssets - missingAlt} of ${totalAssets} have alt text`}
-          fix={missingAlt > 0 ? "/admin/seo/images" : undefined}
+          fix={missingAlt > 0 ? "/admin/media" : undefined}
         />
       </section>
 

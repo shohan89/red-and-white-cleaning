@@ -17,7 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ContactPage() {
-  let contactSettings = {}
+  let contactSettings: { phone?: string; email?: string } = {}
+  let heroHeading = "Get a Free Quote — We'll Get Back to You Fast"
+  let heroSubheading = "Fill out the form below, call us, or send an email. We respond to all inquiries within the same business day."
   try {
     const [siteSettings, heroRecord] = await Promise.all([
       prisma.siteSettings.findFirst(),
@@ -26,11 +28,12 @@ export default async function ContactPage() {
       }),
     ])
     contactSettings = {
-      phone: siteSettings?.phone ?? undefined,
-      email: siteSettings?.email ?? undefined,
-      heading: (heroRecord?.content as any)?.heading,
-      subheading: (heroRecord?.content as any)?.subheading,
+      phone: (siteSettings?.phone as string | undefined) ?? undefined,
+      email: (siteSettings?.email as string | undefined) ?? undefined,
     }
+    const heroContent = heroRecord?.content as { heading?: string; subheading?: string } | undefined
+    if (heroContent?.heading) heroHeading = heroContent.heading
+    if (heroContent?.subheading) heroSubheading = heroContent.subheading
   } catch {}
 
   // Generate LocalBusiness JSON-LD Schema
@@ -87,10 +90,10 @@ export default async function ContactPage() {
         <div className="container relative z-10 mx-auto px-4 md:px-6">
           <div className="mx-auto max-w-4xl text-center">
             <h1 className="text-4xl font-bold tracking-tight text-brand-white sm:text-5xl md:text-6xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-75 leading-tight">
-              Get a Free Quote â€” We'll Get Back to You Fast
+              {heroHeading}
             </h1>
             <p className="mt-6 text-lg leading-8 text-brand-gray/80 sm:text-xl max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150">
-              Fill out the form below, call us, or send an email. We respond to all inquiries within the same business day.
+              {heroSubheading}
             </p>
           </div>
         </div>

@@ -1,29 +1,39 @@
-import { Client } from "pg"
+import { Pool } from "pg"
 
-// Use a fresh Client per query — no connection pool. This avoids zombie TCP
-// connections entirely: Cloudflare Worker isolates can be frozen between
-// requests and NAT/firewalls silently drop long-idle sockets. A pool would
-// hand out a dead socket on the next request; a fresh Client always connects
-// cleanly. For best performance, point DATABASE_URL at the Supabase
-// transaction-mode pooler (port 6543) so the TCP handshake is cheap.
+// Small pooled connection set, reused across queries within and across
+// requests. A single query-per-`new Client()` design was tried previously to
+// dodge zombie TCP connections (Cloudflare Worker isolates can be frozen
+// between requests and NAT/firewalls silently drop long-idle sockets), but it
+// paid a full TCP+TLS handshake on *every* query — including every relation
+// `include`, so a single admin list page with a belongsTo/hasMany include
+// could take 1-2s. `pg.Pool` solves the original problem better: idle
+// connections are recycled after `idleTimeoutMillis`, and if a pooled
+// connection has actually gone stale/dead, the query against it fails fast,
+// the client is evicted from the pool, and the *next* query gets a fresh one
+// — no manual re-connect logic needed. Point DATABASE_URL at the Supabase
+// transaction-mode pooler (port 6543) so each new connection is cheap.
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 5,
+  idleTimeoutMillis: 10_000,
+  connectionTimeoutMillis: 10_000,
+})
+// Idle pooled clients emit 'error' on unexpected disconnects; without a
+// listener that throws and would crash the Worker isolate.
+pool.on("error", () => {})
+
 async function runQuery(
   sql: string,
   params: Params
 ): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
-  const client = new Client({ connectionString: process.env.DATABASE_URL })
-  try {
-    await client.connect()
-    const result = await client.query(sql, params as never[])
-    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
-  } finally {
-    client.end().catch(() => {})
-  }
+  const result = await pool.query(sql, params as never[])
+  return result as { rows: Record<string, unknown>[]; rowCount: number | null }
 }
 
 // Tables without updatedAt
-const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "Redirect"])
+const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "Redirect", "PortfolioImage"])
 // Tables without createdAt
-const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent"])
+const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent", "PortfolioImage", "ServicePhase", "ServiceIncludedItem", "ServiceImage"])
 
 // Relationship definitions for include resolution
 const RELATIONS: Record<string, Record<string, {
@@ -43,6 +53,7 @@ const RELATIONS: Record<string, Record<string, {
   },
   PortfolioItem: {
     category: { type: "belongsTo", table: "PortfolioCategory", foreignKey: "categoryId", selfKey: "id" },
+    images: { type: "hasMany", table: "PortfolioImage", foreignKey: "portfolioItemId", selfKey: "id" },
   },
   Service: {
     phases: { type: "hasMany", table: "ServicePhase", foreignKey: "serviceId", selfKey: "id" },
@@ -447,6 +458,7 @@ export const prisma = {
   leadEvent: makeModel("LeadEvent"),
   portfolioCategory: makeModel("PortfolioCategory"),
   portfolioItem: makeModel("PortfolioItem"),
+  portfolioImage: makeModel("PortfolioImage"),
   faqCategory: makeModel("FaqCategory"),
   faq: makeModel("Faq"),
   service: makeModel("Service"),

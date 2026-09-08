@@ -51,7 +51,11 @@ export default async function NewFaqPage() {
       <form action={handleCreate} className="space-y-4 bg-white rounded-lg border p-6">
         <div className="space-y-1.5">
           <Label htmlFor="categoryId">Category</Label>
-          <Select name="categoryId" required>
+          <Select
+            name="categoryId"
+            required
+            items={Object.fromEntries(categories.map((cat) => [cat.id, cat.name]))}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Select category…" />
             </SelectTrigger>

@@ -16,7 +16,7 @@ Disallow: /admin/
 Disallow: /auth/
 Disallow: /api/
 
-Sitemap: https://redandwhitecleaning.ca/sitemap.xml`
+Sitemap: https://redandwhitecleaningservices.com/sitemap.xml`
 
 export default async function RobotsPage({ searchParams }: { searchParams: Promise<{ saved?: string }> }) {
   const { saved } = await searchParams

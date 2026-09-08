@@ -11,10 +11,10 @@ async function main() {
   // ─── Super Admin ────────────────────────────────────────────────────────────
   const hashedPassword = await bcrypt.hash("admin123", 12)
   const superAdmin = await prisma.user.upsert({
-    where: { email: "admin@redandwhitecleaning.ca" },
+    where: { email: "redandwhiteclean@gmail.com" },
     update: {},
     create: {
-      email: "admin@redandwhitecleaning.ca",
+      email: "redandwhiteclean@gmail.com",
       password: hashedPassword,
       name: "Super Admin",
       role: "SUPER_ADMIN",
@@ -151,17 +151,109 @@ async function main() {
 
   // ─── Services ─────────────────────────────────────────────────────────────────
   const services = [
-    { name: "Post-Construction Cleaning", slug: "post-construction", label: "Service 1", title: "Post-Construction Cleaning", description: "We specialize in all three phases of post-construction cleaning — from rough clean through PDI and final occupancy clean. Trusted by general contractors and developers across Southern Ontario.", icon: "hard-hat", sortOrder: 0 },
-    { name: "Commercial Cleaning", slug: "commercial", label: "Service 2", title: "Commercial Cleaning", description: "Professional commercial cleaning services for offices, retail, warehouses, and more — scheduled to fit your operations.", icon: "building-2", sortOrder: 1 },
-    { name: "Deep Cleaning", slug: "deep-cleaning", label: "Service 3", title: "Deep Cleaning", description: "Intensive, top-to-bottom deep cleaning services for spaces that need more than routine maintenance.", icon: "sparkles", sortOrder: 2 },
-    { name: "Ongoing Maintenance Cleaning", slug: "maintenance", label: "Service 4", title: "Ongoing Maintenance Cleaning Contracts", description: "Flexible weekly, bi-weekly, or monthly cleaning contracts for commercial clients who need consistent, reliable service.", icon: "calendar-clock", sortOrder: 3 },
-    { name: "Residential Cleaning", slug: "residential", label: "Service 5", title: "Residential Cleaning", description: "Professional residential cleaning services — from move-in/move-out cleans to regular home maintenance.", icon: "home", sortOrder: 4 },
+    {
+      name: "Post-Construction Cleaning", slug: "post-construction", label: "Service 1", title: "Post-Construction Cleaning",
+      description: "Post-construction cleaning isn't a single step — it's a three-phase process, and each one matters. We handle all three phases, and we coordinate with your project schedule so each clean happens at exactly the right time.",
+      targetAudienceText: "General contractors, developers, renovation companies, and project managers in KW Region, Guelph, Hamilton, London, Brantford, and surrounding areas.",
+      icon: "hard-hat", sortOrder: 0,
+      phases: [
+        { phaseNumber: 1, title: "Phase 1 — Post-Construction Cleaning", icon: "hard-hat", sortOrder: 0, description: "This is the heavy work. Concrete dust in every corner, drywall residue on every surface, construction adhesives stuck to windows and floors. Regular cleaning crews often aren't equipped for it. We are. We've cleaned new builds, commercial renovations, and tenant improvements across the region, and we know what contractors need — including tight handoff timelines." },
+        { phaseNumber: 2, title: "Phase 2 — PDI Cleaning (Pre-Delivery Inspection)", icon: "eye", sortOrder: 1, description: "Before a unit or space is handed over to the owner or tenant, it needs to be spotless for the walkthrough. PDI cleaning is a detailed, top-to-bottom clean specifically timed for that inspection — making sure every surface, fixture, and finish looks exactly the way it should on handover day." },
+        { phaseNumber: 3, title: "Phase 3 — Occupancy Cleaning", icon: "key", sortOrder: 2, description: "Once the keys are handed over and the new occupant is ready to move in, occupancy cleaning ensures the space is genuinely move-in ready — not just visually clean, but sanitized and safe. This is the final polish before people start living or working in the space." },
+      ],
+      includedItems: [
+        "Removal of construction debris and waste",
+        "Dust cleaning on all surfaces — ceilings, walls, fixtures, trim",
+        "Window and glass cleaning (construction film and adhesive removal)",
+        "Floor cleaning and polishing — concrete, tile, hardwood, LVP",
+        "Kitchen and bathroom scrub-out",
+        "Final walk-through clean before handoff",
+      ].map((text, sortOrder) => ({ text, sortOrder })),
+      images: [
+        { phaseLabel: "Phase 1 — Post-Construction Clean", imageUrl: "/images/portfolio/tricar-guelph-phase1-debris.webp", altText: "Construction debris in bathtub — typical Phase 1 post-construction cleanup at Tricar Guelph", objectPosition: "center", sortOrder: 0 },
+        { phaseLabel: "Phase 2 — PDI Clean", imageUrl: "/images/portfolio/tricar-guelph-pdi-3.webp", altText: "Spotless suite with floor-to-ceiling windows ready for pre-delivery inspection at Tricar Guelph", objectPosition: "top", sortOrder: 1 },
+        { phaseLabel: "Phase 3 — Occupancy Clean", imageUrl: "/images/portfolio/tricar-guelph-phase3-staged.webp", altText: "Move-in ready living space after Phase 3 occupancy clean at Tricar Guelph", objectPosition: "center", sortOrder: 2 },
+      ],
+    },
+    {
+      name: "Commercial Cleaning", slug: "commercial", label: "Service 2", title: "Commercial Cleaning",
+      description: "We clean commercial properties — offices, warehouses, retail spaces, Airbnb units and more. Whether you need a one-time deep clean or a regular schedule, we can handle it.\n\nOur commercial cleaning clients range from small offices to large commercial facilities. We work during off-hours when needed so your business operations aren't interrupted.",
+      targetAudienceText: "Property managers, business owners, and facility managers across KW Region, Guelph, Hamilton, London, Brantford, and surrounding communities.",
+      icon: "building-2", sortOrder: 1,
+      phases: [],
+      includedItems: [
+        "Office and common area cleaning",
+        "Restroom sanitizing and restocking",
+        "Kitchen and lunchroom cleaning",
+        "Floor care — vacuuming, mopping, buffing",
+        "Window cleaning (interior)",
+        "Trash removal",
+        "Dusting — desks, shelving, lighting, vents",
+        "Full Airbnb cleaning",
+      ].map((text, sortOrder) => ({ text, sortOrder })),
+      images: [],
+    },
+    {
+      name: "Deep Cleaning", slug: "deep-cleaning", label: "Service 3", title: "Deep Cleaning",
+      description: "Sometimes a space needs more than routine maintenance. A deep clean is a thorough, top-to-bottom scrub of a space that hasn't had proper attention in a while — or that needs to be returned to like-new condition.",
+      targetAudienceText: null,
+      icon: "sparkles", sortOrder: 2,
+      phases: [
+        { phaseNumber: 1, title: "Move In / Move Out", icon: "truck", sortOrder: 0, description: "Before or after a tenant moves in or out — commercial or residential. Whether you're handing a unit back to a landlord, welcoming new tenants, just purchased a home, or preparing to list your property for sale, we make the space pristine and ready." },
+        { phaseNumber: 2, title: "Seasonal / Annual Clean", icon: "calendar-check", sortOrder: 1, description: "Thorough deep cleaning to rejuvenate office spaces and maintain high health and safety standards throughout the year." },
+        { phaseNumber: 3, title: "Post-Event / Post-Reno", icon: "sparkles", sortOrder: 2, description: "Fast, comprehensive cleanup after corporate events or minor office renovations to restore order instantly." },
+        { phaseNumber: 4, title: "Pre-Sale / Pre-Inspection", icon: "building", sortOrder: 3, description: "Elevate your property's visual appeal and cleanliness ahead of critical inspections or prospective buyer walkthroughs." },
+        { phaseNumber: 5, title: "Airbnb Deep Cleanings", icon: "home", sortOrder: 4, description: "Deep visual sanitization and meticulous turnaround services specifically tailored for top-rated Airbnb properties." },
+      ],
+      includedItems: [],
+      images: [],
+    },
+    {
+      name: "Ongoing Maintenance Cleaning", slug: "ongoing-contracts", label: "Service 4", title: "Ongoing Maintenance Cleaning Contracts",
+      description: "We offer recurring cleaning contracts for both commercial properties and residential homes. Whether it's an office, retail space, or your own home — weekly, bi-weekly, or monthly — we build a schedule around your space and your needs.\n\nOngoing clients get priority scheduling and a consistent cleaning crew who know your space.",
+      targetAudienceText: null,
+      icon: "calendar-clock", sortOrder: 3,
+      phases: [
+        { phaseNumber: 1, title: "Weekly Plan", frequency: "1–5 times per week", bestFor: "Corporate offices, retail storefronts, medical clinics, gyms, and high-traffic family homes.", sortOrder: 0, description: "Maximum hygiene, sanitization, and presentation for high-traffic active environments." },
+        { phaseNumber: 2, title: "Bi-Weekly Plan", frequency: "Every two weeks", bestFor: "Mid-sized professional offices, design showrooms, local shops, and residential homes.", sortOrder: 1, description: "The ideal balance of consistent maintenance and excellent monthly value." },
+        { phaseNumber: 3, title: "Monthly Plan", frequency: "Once per month", bestFor: "Warehouses, storage facilities, archives, and quiet depots.", sortOrder: 2, description: "Comprehensive visual refresh and high-level deep cleaning for lower-traffic spaces." },
+      ],
+      includedItems: [],
+      images: [],
+    },
+    {
+      name: "Residential Cleaning", slug: "residential", label: "Service 5", title: "Residential Cleaning",
+      description: "We bring the same professional standard we apply to construction sites and commercial buildings to residential homes. Whether you need a one-time deep clean or a recurring schedule, we work around your life — not the other way around.",
+      targetAudienceText: "Homeowners, new buyers, home sellers, landlords, and renters across KW Region, Guelph, Hamilton, London, Brantford, and surrounding areas.",
+      icon: "home", sortOrder: 4,
+      phases: [
+        { phaseNumber: 1, title: "Move In / Move Out", icon: "key", sortOrder: 0, description: "Just bought a home, preparing to list, or handing back a rental? We leave the space spotless — top to bottom — so you start fresh or impress the next person who walks through the door." },
+        { phaseNumber: 2, title: "Pre-Sale / Pre-Listing Clean", icon: "tag", sortOrder: 1, description: "First impressions matter. Before listing your home, a thorough professional clean can make a real difference in how buyers perceive the space and how quickly it sells." },
+        { phaseNumber: 3, title: "Ongoing Home Maintenance", icon: "calendar-check-2", sortOrder: 2, description: "Keep your home consistently clean without the effort. We offer weekly, bi-weekly, and monthly residential cleaning schedules tailored around your routine and your home." },
+        { phaseNumber: 4, title: "Deep / Reset Clean", icon: "home", sortOrder: 3, description: "When your home needs more than a regular tidy — after a renovation, a busy stretch, or just a seasonal reset — we do a thorough top-to-bottom clean to bring it back to its best." },
+      ],
+      includedItems: [
+        "Kitchen deep clean — counters, appliances, cabinets, sink",
+        "Bathroom scrub-out — toilet, tub/shower, tiles, vanity",
+        "Floors swept, mopped, and vacuumed throughout",
+        "Dusting — baseboards, blinds, ceiling fans, light fixtures",
+        "Interior windows cleaned",
+        "Bedrooms tidied and wiped down",
+        "Garbage and recycling removed",
+      ].map((text, sortOrder) => ({ text, sortOrder })),
+      images: [],
+    },
   ]
-  for (const service of services) {
+  for (const { phases, includedItems, images, ...service } of services) {
     await prisma.service.upsert({
       where: { slug: service.slug },
-      update: {},
-      create: service,
+      update: { description: service.description, targetAudienceText: service.targetAudienceText },
+      create: {
+        ...service,
+        phases: { create: phases },
+        includedItems: { create: includedItems },
+        images: { create: images },
+      },
     })
   }
   console.log("✓ Services seeded")

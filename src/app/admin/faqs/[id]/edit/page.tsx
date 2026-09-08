@@ -54,7 +54,11 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
       <form action={handleUpdate} className="space-y-4 bg-white rounded-lg border p-6">
         <div className="space-y-1.5">
           <Label htmlFor="categoryId">Category</Label>
-          <Select name="categoryId" defaultValue={faq.categoryId}>
+          <Select
+            name="categoryId"
+            defaultValue={faq.categoryId}
+            items={Object.fromEntries(categories.map((cat) => [cat.id, cat.name]))}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>

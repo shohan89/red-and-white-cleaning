@@ -124,7 +124,6 @@ export async function updateMediaSeoFields(
 ) {
   await requireAdmin()
   await prisma.mediaAsset.update({ where: { id }, data: fields })
-  revalidatePath("/admin/seo/images")
   revalidatePath("/admin/media")
 }
 

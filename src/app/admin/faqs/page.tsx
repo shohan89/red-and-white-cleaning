@@ -29,12 +29,17 @@ export default async function FaqsPage() {
           <h1 className="text-2xl font-heading font-bold text-brand-dark">FAQs</h1>
           <p className="text-sm text-muted-foreground">{totalFaqs} total</p>
         </div>
-        <Button asChild className="bg-brand-red hover:bg-brand-red/90 text-white">
-          <Link href="/admin/faqs/new">
-            <Plus className="h-4 w-4 mr-2" />
-            New FAQ
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/admin/faqs/categories">Manage Categories</Link>
+          </Button>
+          <Button asChild className="bg-brand-red hover:bg-brand-red/90 text-white">
+            <Link href="/admin/faqs/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New FAQ
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div className="space-y-6">

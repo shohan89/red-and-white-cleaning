@@ -2,7 +2,7 @@ import Link from "next/link"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Pencil, ExternalLink } from "lucide-react"
+import { Pencil, ExternalLink, Plus } from "lucide-react"
 
 export const metadata = { title: "Services" }
 
@@ -26,12 +26,20 @@ export default async function ServicesAdminPage() {
           <h1 className="text-2xl font-heading font-bold text-brand-dark">Services</h1>
           <p className="text-sm text-muted-foreground">{services.length} services</p>
         </div>
-        <Button variant="outline" asChild>
-          <Link href="/services" target="_blank">
-            <ExternalLink className="h-4 w-4 mr-2" />
-            View Public Page
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/services" target="_blank">
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Public Page
+            </Link>
+          </Button>
+          <Button asChild className="bg-brand-red hover:bg-brand-red/90 text-white">
+            <Link href="/admin/services/new">
+              <Plus className="h-4 w-4 mr-2" />
+              New Service
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {services.length === 0 ? (

@@ -1,7 +1,6 @@
-import Image from "next/image"
 import { prisma } from "@/lib/prisma"
-import { FileImage, FileText } from "lucide-react"
-import { UploadButton, CopyUrlButton, DeleteMediaButton, MediaSearch, SyncStaticImagesButton, ConvertToWebPButton } from "./MediaClient"
+import { FileImage } from "lucide-react"
+import { UploadButton, MediaSearch, SyncStaticImagesButton, ConvertToWebPButton, MediaLibraryGrid } from "./MediaClient"
 
 export const metadata = { title: "Media Library" }
 
@@ -18,7 +17,7 @@ export default async function MediaPage({
 }) {
   const { q } = await searchParams
 
-  let assets: Array<{ id: string; url: string; filename: string; mimeType: string; altText: string | null; size: number; createdAt: Date }> = []
+  let assets: Array<{ id: string; url: string; filename: string; mimeType: string; altText: string | null; title: string | null; caption: string | null; size: number; createdAt: Date }> = []
   try {
     assets = await prisma.mediaAsset.findMany({
       where: q
@@ -58,51 +57,7 @@ export default async function MediaPage({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-          {assets.map((asset) => {
-            const isImage = asset.mimeType.startsWith("image/")
-            return (
-              <div
-                key={asset.id}
-                className="group rounded-xl border bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-              >
-                {/* Thumbnail */}
-                <div className="relative aspect-square bg-gray-50">
-                  {isImage ? (
-                    <Image
-                      src={asset.url}
-                      alt={asset.altText ?? asset.filename}
-                      fill
-                      sizes="200px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <FileText className="h-8 w-8 text-gray-300" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Info + Actions */}
-                <div className="p-2.5">
-                  <p
-                    className="text-xs font-medium text-gray-700 truncate"
-                    title={asset.filename}
-                  >
-                    {asset.filename}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {formatBytes(asset.size)}
-                  </p>
-                  <div className="flex items-center justify-between mt-2">
-                    <CopyUrlButton url={asset.url} />
-                    <DeleteMediaButton id={asset.id} filename={asset.filename} />
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+        <MediaLibraryGrid assets={assets} />
       )}
 
       <p className="text-xs text-muted-foreground text-center">

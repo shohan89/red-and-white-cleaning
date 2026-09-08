@@ -91,6 +91,8 @@ model PortfolioItem {
   title        String
   description  String?           @db.Text
   location     String?
+  clientName   String?
+  completedAt  DateTime?
   categoryId   String
   category     PortfolioCategory @relation(fields: [categoryId], references: [id])
   imageUrl     String?
@@ -101,6 +103,7 @@ model PortfolioItem {
   afterImage   String?
   beforeAlt    String?
   afterAlt     String?
+  images       PortfolioImage[]
   sortOrder    Int               @default(0)
   featured     Boolean           @default(false)
   seoTitle     String?
@@ -112,6 +115,19 @@ model PortfolioItem {
   @@index([categoryId])
   @@index([sortOrder])
   @@index([featured])
+}
+
+model PortfolioImage {
+  id              String        @id @default(cuid())
+  portfolioItemId String
+  portfolioItem   PortfolioItem @relation(fields: [portfolioItemId], references: [id], onDelete: Cascade)
+  label           String?
+  imageUrl        String
+  altText         String?
+  caption         String?
+  sortOrder       Int           @default(0)
+
+  @@index([portfolioItemId])
 }
 
 // ─── FAQS ─────────────────────────────────────────────────────────────────────
@@ -175,6 +191,8 @@ model ServicePhase {
   title       String
   description String  @db.Text
   icon        String?
+  frequency   String?
+  bestFor     String?
   sortOrder   Int     @default(0)
 
   @@index([serviceId])

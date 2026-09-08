@@ -42,19 +42,28 @@ export async function deletePortfolioCategory(id: string) {
   revalidatePath("/portfolio")
 }
 
-export async function createPortfolioItem(data: {
+interface PortfolioItemFields {
   title: string
   description?: string
   location?: string
+  clientName?: string
+  completedAt?: Date
   categoryId: string
   imageUrl?: string
   imageAlt?: string
+  imageCaption?: string
+  imageTitle?: string
   beforeImage?: string
   afterImage?: string
   beforeAlt?: string
   afterAlt?: string
   featured?: boolean
-}) {
+  seoTitle?: string
+  seoDesc?: string
+  ogImage?: string
+}
+
+export async function createPortfolioItem(data: PortfolioItemFields) {
   await requireAdmin()
   const maxSort = await prisma.portfolioItem.aggregate({ _max: { sortOrder: true } })
   const item = await prisma.portfolioItem.create({
@@ -65,22 +74,7 @@ export async function createPortfolioItem(data: {
   return item
 }
 
-export async function updatePortfolioItem(
-  id: string,
-  data: {
-    title?: string
-    description?: string
-    location?: string
-    categoryId?: string
-    imageUrl?: string
-    imageAlt?: string
-    beforeImage?: string
-    afterImage?: string
-    beforeAlt?: string
-    afterAlt?: string
-    featured?: boolean
-  }
-) {
+export async function updatePortfolioItem(id: string, data: Partial<PortfolioItemFields>) {
   await requireAdmin()
   await prisma.portfolioItem.update({ where: { id }, data })
   revalidatePath("/admin/portfolio")
@@ -97,6 +91,41 @@ export async function togglePortfolioFeatured(id: string, featured: boolean) {
 export async function deletePortfolioItem(id: string) {
   await requireAdmin()
   await prisma.portfolioItem.delete({ where: { id } })
+  revalidatePath("/admin/portfolio")
+  revalidatePath("/portfolio")
+}
+
+// ─── PORTFOLIO IMAGE GALLERY ────────────────────────────────────────────────
+
+export async function createPortfolioImage(
+  portfolioItemId: string,
+  data: { imageUrl: string; label?: string; altText?: string; caption?: string }
+) {
+  await requireAdmin()
+  const maxSort = await prisma.portfolioImage.aggregate({
+    _max: { sortOrder: true },
+    where: { portfolioItemId },
+  })
+  await prisma.portfolioImage.create({
+    data: { portfolioItemId, ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
+  })
+  revalidatePath("/admin/portfolio")
+  revalidatePath("/portfolio")
+}
+
+export async function updatePortfolioImage(
+  id: string,
+  data: { imageUrl?: string; label?: string; altText?: string; caption?: string }
+) {
+  await requireAdmin()
+  await prisma.portfolioImage.update({ where: { id }, data })
+  revalidatePath("/admin/portfolio")
+  revalidatePath("/portfolio")
+}
+
+export async function deletePortfolioImage(id: string) {
+  await requireAdmin()
+  await prisma.portfolioImage.delete({ where: { id } })
   revalidatePath("/admin/portfolio")
   revalidatePath("/portfolio")
 }

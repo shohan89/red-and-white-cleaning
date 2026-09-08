@@ -26,30 +26,44 @@ export default async function NewPortfolioItemPage() {
     const title = formData.get("title") as string
     const description = formData.get("description") as string
     const location = formData.get("location") as string
+    const clientName = formData.get("clientName") as string
+    const completedAtRaw = formData.get("completedAt") as string
     const categoryId = formData.get("categoryId") as string
     const imageUrl = formData.get("imageUrl") as string
     const imageAlt = formData.get("imageAlt") as string
+    const imageCaption = formData.get("imageCaption") as string
+    const imageTitle = formData.get("imageTitle") as string
     const beforeImage = formData.get("beforeImage") as string
     const afterImage = formData.get("afterImage") as string
     const beforeAlt = formData.get("beforeAlt") as string
     const afterAlt = formData.get("afterAlt") as string
     const featured = formData.get("featured") === "on"
+    const seoTitle = formData.get("seoTitle") as string
+    const seoDesc = formData.get("seoDesc") as string
+    const ogImage = formData.get("ogImage") as string
 
     if (!title || !categoryId) return
-    await createPortfolioItem({
+    const created = await createPortfolioItem({
       title,
       description: description || undefined,
       location: location || undefined,
+      clientName: clientName || undefined,
+      completedAt: completedAtRaw ? new Date(completedAtRaw) : undefined,
       categoryId,
       imageUrl: imageUrl || undefined,
       imageAlt: imageAlt || undefined,
+      imageCaption: imageCaption || undefined,
+      imageTitle: imageTitle || undefined,
       beforeImage: beforeImage || undefined,
       afterImage: afterImage || undefined,
       beforeAlt: beforeAlt || undefined,
       afterAlt: afterAlt || undefined,
       featured,
+      seoTitle: seoTitle || undefined,
+      seoDesc: seoDesc || undefined,
+      ogImage: ogImage || undefined,
     })
-    redirect("/admin/portfolio")
+    redirect(`/admin/portfolio/${created.id}/edit`)
   }
 
   return (
@@ -97,6 +111,17 @@ export default async function NewPortfolioItemPage() {
           <Input id="location" name="location" placeholder="City, Province" />
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="clientName">Client / Company Name</Label>
+            <Input id="clientName" name="clientName" placeholder="e.g. Tricar" />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="completedAt">Completion Date</Label>
+            <Input id="completedAt" name="completedAt" type="date" />
+          </div>
+        </div>
+
         <div className="border-t pt-5 space-y-4">
           <p className="text-sm font-semibold text-gray-700">Main Image</p>
           <div className="space-y-1.5">
@@ -106,6 +131,16 @@ export default async function NewPortfolioItemPage() {
           <div className="space-y-1.5">
             <Label htmlFor="imageAlt">Image Alt Text</Label>
             <Input id="imageAlt" name="imageAlt" placeholder="Descriptive alt text for SEO…" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="imageTitle">Image Title</Label>
+              <Input id="imageTitle" name="imageTitle" placeholder="Image title attribute…" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="imageCaption">Image Caption</Label>
+              <Input id="imageCaption" name="imageCaption" placeholder="Caption shown with the image…" />
+            </div>
           </div>
         </div>
 
@@ -129,6 +164,22 @@ export default async function NewPortfolioItemPage() {
               <Label htmlFor="afterAlt">After Alt Text</Label>
               <Input id="afterAlt" name="afterAlt" />
             </div>
+          </div>
+        </div>
+
+        <div className="border-t pt-5 space-y-4">
+          <p className="text-sm font-semibold text-gray-700">SEO (optional)</p>
+          <div className="space-y-1.5">
+            <Label htmlFor="seoTitle">SEO Title</Label>
+            <Input id="seoTitle" name="seoTitle" placeholder="Overrides the page title for this project…" />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="seoDesc">SEO Description</Label>
+            <Textarea id="seoDesc" name="seoDesc" rows={2} placeholder="Meta description for this project…" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Social Share Image (OG Image)</Label>
+            <ImageUploadField fieldName="ogImage" placeholder="/images/portfolio/…" />
           </div>
         </div>
 

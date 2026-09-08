@@ -68,7 +68,6 @@ const NAV_SECTIONS = [
       { title: "Sitemap", href: "/admin/seo/sitemap", icon: Map },
       { title: "Robots", href: "/admin/seo/robots", icon: Bot },
       { title: "Redirects", href: "/admin/seo/redirects", icon: ArrowRightLeft },
-      { title: "Image SEO", href: "/admin/seo/images", icon: ImageIcon },
       { title: "GEO / AI SEO", href: "/admin/seo/geo", icon: Sparkles },
       { title: "SEO Audit", href: "/admin/seo/audit", icon: BarChart3 },
     ],

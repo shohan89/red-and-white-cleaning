@@ -16,7 +16,20 @@ export async function createFaqCategory(data: { name: string; slug: string; icon
     data: { ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
   })
   revalidatePath("/admin/faqs")
+  revalidatePath("/admin/faqs/categories")
   return category
+}
+
+export async function deleteFaqCategory(id: string) {
+  await requireAdmin()
+  const faqCount = await prisma.faq.count({ where: { categoryId: id } })
+  if (faqCount > 0) {
+    throw new Error(`Can't delete: ${faqCount} FAQ${faqCount === 1 ? "" : "s"} still in this category. Move or delete them first.`)
+  }
+  await prisma.faqCategory.delete({ where: { id } })
+  revalidatePath("/admin/faqs")
+  revalidatePath("/admin/faqs/categories")
+  revalidatePath("/faq")
 }
 
 export async function createFaq(data: {
