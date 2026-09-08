@@ -1,4 +1,8 @@
-export const dynamic = 'force-dynamic'
+// ISR instead of force-dynamic: admin saves already call revalidatePath("/services"),
+// so edits show up immediately anyway. force-dynamic meant every visitor re-ran the
+// full DB query (main + 3 relation queries) on every request; this serves the cached
+// render instead and only re-fetches in the background after `revalidate` seconds.
+export const revalidate = 3600
 
 import React from 'react';
 import { Metadata } from 'next';
