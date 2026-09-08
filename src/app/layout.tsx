@@ -76,7 +76,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','${SITE.gtmId}');`}
         </Script>
         {/* End Google Tag Manager */}
-        <link rel="preload" as="image" href="/images/hero-bg.jpeg" fetchPriority="high" />
+        <link rel="preload" as="image" href="/images/hero-bg.webp" fetchPriority="high" />
       </head>
       <body className="min-h-full flex flex-col antialiased">
         {/* Google Tag Manager (noscript) */}

@@ -152,17 +152,21 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
   const rels = RELATIONS[tableName] ?? {}
   const result = rows.map((row) => ({ ...row }))
 
-  for (const [key, includeVal] of Object.entries(include)) {
+  // Each relation/count is an independent query against a fresh Client, so run
+  // them concurrently — sequential awaits here previously meant one full
+  // TCP+TLS handshake per relation, stacking up to several extra seconds on
+  // pages with 2-3 includes (e.g. Service.phases/includedItems/images).
+  await Promise.all(Object.entries(include).map(async ([key, includeVal]) => {
     // Handle _count: { select: { relation: true } }
     if (key === "_count") {
       const countSel = (typeof includeVal === "object" && includeVal !== null && (includeVal as any).select)
         ? (includeVal as any).select as Record<string, unknown>
         : {} as Record<string, unknown>
       const ids = result.map((r) => r.id).filter(Boolean)
-      if (!ids.length) continue
-      for (const [relKey] of Object.entries(countSel).filter(([, v]) => v)) {
+      if (!ids.length) return
+      await Promise.all(Object.entries(countSel).filter(([, v]) => v).map(async ([relKey]) => {
         const rel = rels[relKey]
-        if (!rel || rel.type !== "hasMany") continue
+        if (!rel || rel.type !== "hasMany") return
         const { rows: cr } = await runQuery(
           `SELECT ${col(rel.foreignKey)}, COUNT(*) as cnt FROM ${col(rel.table)} WHERE ${col(rel.foreignKey)} = ANY($1) GROUP BY ${col(rel.foreignKey)}`,
           [ids]
@@ -172,19 +176,19 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
           if (!row._count) row._count = {}
           ;(row._count as Record<string, number>)[relKey] = countMap.get(row.id as string) ?? 0
         }
-      }
-      continue
+      }))
+      return
     }
 
     const rel = rels[key]
-    if (!rel) continue
+    if (!rel) return
     const opts = (typeof includeVal === "object" && includeVal !== null)
       ? includeVal as Record<string, unknown>
       : {}
 
     if (rel.type === "hasMany") {
       const parentIds = result.map((r) => r[rel.selfKey]).filter(Boolean)
-      if (!parentIds.length) { result.forEach((r) => { r[key] = [] }); continue }
+      if (!parentIds.length) { result.forEach((r) => { r[key] = [] }); return }
 
       const params: Params = [parentIds]
       // Always include foreignKey so results can be grouped by parent, even when caller uses select
@@ -214,7 +218,7 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       for (const row of result) row[key] = relMap.get(row[rel.selfKey]) ?? []
     } else if (rel.type === "belongsTo") {
       const refIds = [...new Set(result.map((r) => r[rel.foreignKey]).filter(Boolean))]
-      if (!refIds.length) { result.forEach((r) => { r[key] = null }); continue }
+      if (!refIds.length) { result.forEach((r) => { r[key] = null }); return }
       // Always include "id" so the lookup map can be keyed correctly, even when caller uses select
       const callerSelect = (opts as any).select as Record<string, unknown> | undefined
       const selectClause = callerSelect ? buildSelect({ id: true, ...callerSelect }) : "*"
@@ -225,7 +229,7 @@ async function resolveIncludes(rows: Record<string, unknown>[], tableName: strin
       const relMap = new Map(relRows.map((r) => [r.id, r]))
       for (const row of result) row[key] = relMap.get(row[rel.foreignKey] as string) ?? null
     }
-  }
+  }))
   return result
 }
 
