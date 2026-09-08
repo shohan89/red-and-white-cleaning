@@ -1,33 +1,31 @@
-import { Pool } from "pg"
+import { Client } from "pg"
 
-// Small pooled connection set, reused across queries within and across
-// requests. A single query-per-`new Client()` design was tried previously to
-// dodge zombie TCP connections (Cloudflare Worker isolates can be frozen
-// between requests and NAT/firewalls silently drop long-idle sockets), but it
-// paid a full TCP+TLS handshake on *every* query — including every relation
-// `include`, so a single admin list page with a belongsTo/hasMany include
-// could take 1-2s. `pg.Pool` solves the original problem better: idle
-// connections are recycled after `idleTimeoutMillis`, and if a pooled
-// connection has actually gone stale/dead, the query against it fails fast,
-// the client is evicted from the pool, and the *next* query gets a fresh one
-// — no manual re-connect logic needed. Point DATABASE_URL at the Supabase
-// transaction-mode pooler (port 6543) so each new connection is cheap.
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  max: 5,
-  idleTimeoutMillis: 10_000,
-  connectionTimeoutMillis: 10_000,
-})
-// Idle pooled clients emit 'error' on unexpected disconnects; without a
-// listener that throws and would crash the Worker isolate.
-pool.on("error", () => {})
-
+// Fresh Client per query — no connection pool. A pooled connection was tried
+// (module-level `pg.Pool` reused across requests) to cut handshake overhead,
+// but in production on Cloudflare Workers it made things *worse*: Worker
+// isolates can be frozen and thawed between requests, and a pooled socket
+// that went stale while frozen doesn't fail fast — it hangs until the OS-level
+// TCP timeout (20s+), which is exactly the multi-second/timeout page loads
+// this caused. A fresh Client always connects cleanly, and a short
+// `connectionTimeoutMillis` below bounds the worst case. Point DATABASE_URL at
+// the Supabase transaction-mode pooler (port 6543) so each new connection is
+// cheap.
 async function runQuery(
   sql: string,
   params: Params
 ): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
-  const result = await pool.query(sql, params as never[])
-  return result as { rows: Record<string, unknown>[]; rowCount: number | null }
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    connectionTimeoutMillis: 8_000,
+    query_timeout: 10_000,
+  })
+  try {
+    await client.connect()
+    const result = await client.query(sql, params as never[])
+    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
+  } finally {
+    client.end().catch(() => {})
+  }
 }
 
 // Tables without updatedAt
