@@ -25,6 +25,7 @@ import {
   BarChart3,
   Settings,
   UserCog,
+  Newspaper,
 } from "lucide-react"
 
 const NAV_SECTIONS = [
@@ -43,6 +44,7 @@ const NAV_SECTIONS = [
   {
     label: "Content",
     items: [
+      { title: "Blog", href: "/admin/blog", icon: Newspaper },
       { title: "Portfolio", href: "/admin/portfolio", icon: Images },
       { title: "Categories", href: "/admin/categories", icon: FolderOpen },
       { title: "Services", href: "/admin/services", icon: Wrench },

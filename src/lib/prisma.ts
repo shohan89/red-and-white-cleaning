@@ -46,6 +46,12 @@ const RELATIONS: Record<string, Record<string, {
   Faq: {
     category: { type: "belongsTo", table: "FaqCategory", foreignKey: "categoryId", selfKey: "id" },
   },
+  BlogCategory: {
+    posts: { type: "hasMany", table: "BlogPost", foreignKey: "categoryId", selfKey: "id" },
+  },
+  BlogPost: {
+    category: { type: "belongsTo", table: "BlogCategory", foreignKey: "categoryId", selfKey: "id" },
+  },
   PortfolioCategory: {
     items: { type: "hasMany", table: "PortfolioItem", foreignKey: "categoryId", selfKey: "id" },
   },
@@ -463,6 +469,8 @@ export const prisma = {
   portfolioImage: makeModel("PortfolioImage"),
   faqCategory: makeModel("FaqCategory"),
   faq: makeModel("Faq"),
+  blogCategory: makeModel("BlogCategory"),
+  blogPost: makeModel("BlogPost"),
   service: makeModel("Service"),
   servicePhase: makeModel("ServicePhase"),
   serviceIncludedItem: makeModel("ServiceIncludedItem"),

@@ -381,6 +381,51 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
 }
 
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+
+model BlogCategory {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  sortOrder Int        @default(0)
+  posts     BlogPost[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([sortOrder])
+}
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model BlogPost {
+  id            String         @id @default(cuid())
+  title         String
+  slug          String         @unique
+  excerpt       String?        @db.Text
+  content       String         @db.Text
+  coverImage    String?
+  coverImageAlt String?
+  status        BlogPostStatus @default(DRAFT)
+  publishedAt   DateTime?
+  authorName    String?
+  tags          String[]
+  categoryId    String?
+  category      BlogCategory?  @relation(fields: [categoryId], references: [id])
+  seoTitle      String?
+  seoDesc       String?
+  ogImage       String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([categoryId])
+}
+
 // ─── SERVICE CITIES (future expansion) ───────────────────────────────────────
 
 model ServiceCity {

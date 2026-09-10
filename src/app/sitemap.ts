@@ -14,7 +14,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/faq`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: "weekly", priority: 0.7 },
   ]
+
+  let blogRoutes: MetadataRoute.Sitemap = []
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: { status: "PUBLISHED" },
+      select: { slug: true, updatedAt: true },
+    })
+    blogRoutes = posts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    }))
+  } catch {}
 
   try {
     // DB-managed sitemap entries (overrides)
@@ -24,14 +39,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
 
     if (dbEntries.length > 0) {
-      return dbEntries.map((entry) => ({
-        url: entry.url.startsWith("http") ? entry.url : `${baseUrl}${entry.url}`,
-        lastModified: entry.updatedAt,
-        changeFrequency: entry.changeFrequency as MetadataRoute.Sitemap[0]["changeFrequency"],
-        priority: entry.priority,
-      }))
+      return [
+        ...dbEntries.map((entry) => ({
+          url: entry.url.startsWith("http") ? entry.url : `${baseUrl}${entry.url}`,
+          lastModified: entry.updatedAt,
+          changeFrequency: entry.changeFrequency as MetadataRoute.Sitemap[0]["changeFrequency"],
+          priority: entry.priority,
+        })),
+        ...blogRoutes,
+      ]
     }
   } catch {}
 
-  return staticRoutes
+  return [...staticRoutes, ...blogRoutes]
 }
