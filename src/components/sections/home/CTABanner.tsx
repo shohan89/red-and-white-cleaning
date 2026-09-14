@@ -7,11 +7,13 @@ import { cn } from "@/lib/utils";
 interface CTAContent {
   heading?: string
   subheading?: string
+  buttonText?: string
 }
 
 export function CTABanner({ content = {} }: { content?: CTAContent }) {
   const heading = content.heading ?? "Ready to Get a Clean Site?"
   const subheading = content.subheading ?? "Whether it's a one-time post-construction clean or an ongoing commercial contract — we're ready when you are."
+  const buttonText = content.buttonText ?? "Get a Free Quote"
 
   return (
     <section
@@ -40,7 +42,7 @@ export function CTABanner({ content = {} }: { content?: CTAContent }) {
               "bg-white text-brand-red hover:bg-white/95 font-bold px-10 py-6 text-base h-auto shadow-xl border-0 w-full sm:w-auto"
             )}
           >
-            Get a Free Quote
+            {buttonText}
           </Link>
           <a
             href={SITE.phoneHref}

@@ -24,13 +24,29 @@ export default async function HomePage() {
   let heroContent = {}
   let trustContent = {}
   let ctaContent = {}
+  let whyChooseUsContent = {}
+  let faqPreviewContent = {}
+  let homeFaqs: Array<{ id: string; question: string; answer: string }> = []
+
   try {
     const records = await prisma.pageContent.findMany({ where: { pageKey: "home" } })
     for (const r of records) {
       if (r.sectionKey === "hero") heroContent = r.content as object
       if (r.sectionKey === "trust") trustContent = r.content as object
       if (r.sectionKey === "cta") ctaContent = r.content as object
+      if (r.sectionKey === "whyChooseUs") whyChooseUsContent = r.content as object
+      if (r.sectionKey === "faqPreview") faqPreviewContent = r.content as object
     }
+  } catch {}
+
+  try {
+    const faqs = await prisma.faq.findMany({
+      where: { published: true },
+      orderBy: { sortOrder: "asc" },
+      take: 4,
+      select: { id: true, question: true, answer: true },
+    })
+    homeFaqs = faqs as Array<{ id: string; question: string; answer: string }>
   } catch {}
 
   return (
@@ -45,13 +61,13 @@ export default async function HomePage() {
       <ServicesOverview />
 
       {/* 4. Why Choose Us */}
-      <WhyChooseUs />
+      <WhyChooseUs content={whyChooseUsContent} />
 
       {/* 5. Service Areas */}
       <ServiceAreasSection />
 
       {/* 6. FAQ Preview */}
-      <FAQPreview />
+      <FAQPreview content={faqPreviewContent} faqs={homeFaqs} />
 
       {/* 7. CTA Banner */}
       <CTABanner content={ctaContent} />

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 
-const HOME_FAQS = [
+const DEFAULT_FAQS = [
   {
     id: "faq-1",
     question: "Do you do post-construction cleaning?",
@@ -37,11 +37,28 @@ const HOME_FAQS = [
   },
 ];
 
-export function FAQPreview() {
+export interface FAQPreviewContent {
+  eyebrow?: string
+  title?: string
+  subtext?: string
+}
+
+export function FAQPreview({
+  content = {},
+  faqs,
+}: {
+  content?: FAQPreviewContent
+  faqs?: Array<{ id: string; question: string; answer: string }>
+}) {
+  const eyebrow = content.eyebrow ?? "Frequently Asked Questions";
+  const title = content.title ?? "Common Questions";
+  const subtext = content.subtext ?? "Can't find your answer?";
+  const items = faqs && faqs.length > 0 ? faqs : DEFAULT_FAQS;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: HOME_FAQS.map((faq) => ({
+    mainEntity: items.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
@@ -60,13 +77,13 @@ export function FAQPreview() {
       {/* Header */}
       <div className="mb-10 text-center">
         <p className="mb-3 text-xs font-heading font-semibold uppercase tracking-[0.12em] text-brand-red">
-          Frequently Asked Questions
+          {eyebrow}
         </p>
         <h2 className="mb-2 text-3xl font-extrabold tracking-tight text-brand-dark sm:text-4xl">
-          Common Questions
+          {title}
         </h2>
         <p className="text-gray-500 text-sm">
-          Can&apos;t find your answer?{" "}
+          {subtext}{" "}
           <Link href="/contact" className="text-brand-red hover:underline font-medium">
             Contact us directly.
           </Link>
@@ -75,8 +92,8 @@ export function FAQPreview() {
 
       {/* Accordion */}
       <div className="mx-auto max-w-3xl">
-        <Accordion multiple defaultValue={["faq-1"]} className="space-y-3">
-          {HOME_FAQS.map((faq) => (
+        <Accordion multiple defaultValue={[items[0]?.id]} className="space-y-3">
+          {items.map((faq) => (
             <AccordionItem
               key={faq.id}
               value={faq.id}
