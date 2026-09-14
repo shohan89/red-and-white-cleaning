@@ -1,12 +1,20 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
 async function requireAdmin() {
   const session = await auth()
   if (!session?.user) throw new Error("Unauthorized")
+}
+
+function revalidateFaqs(id?: string) {
+  revalidatePath("/admin/faqs")
+  if (id) revalidatePath(`/admin/faqs/${id}/edit`)
+  revalidatePath("/faq")
+  revalidatePath("/")
+  refresh()
 }
 
 export async function createFaqCategory(data: { name: string; slug: string; icon?: string }) {
@@ -37,6 +45,7 @@ export async function createFaq(data: {
   answer: string
   categoryId: string
   published?: boolean
+  featuredOnHome?: boolean
 }) {
   await requireAdmin()
   const maxSort = await prisma.faq.aggregate({
@@ -46,37 +55,39 @@ export async function createFaq(data: {
   const faq = await prisma.faq.create({
     data: { ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1, published: data.published ?? true },
   })
-  revalidatePath("/admin/faqs")
-  revalidatePath("/faq")
+  revalidateFaqs()
   return faq
 }
 
 export async function updateFaq(
   id: string,
-  data: { question?: string; answer?: string; categoryId?: string; published?: boolean }
+  data: { question?: string; answer?: string; categoryId?: string; published?: boolean; featuredOnHome?: boolean }
 ) {
   await requireAdmin()
   const faq = await prisma.faq.update({
     where: { id },
     data: { ...data, updatedAt: new Date() },
   })
-  revalidatePath("/admin/faqs")
-  revalidatePath("/faq")
+  revalidateFaqs(id)
   return faq
 }
 
 export async function toggleFaqPublished(id: string, published: boolean) {
   await requireAdmin()
   await prisma.faq.update({ where: { id }, data: { published, updatedAt: new Date() } })
-  revalidatePath("/admin/faqs")
-  revalidatePath("/faq")
+  revalidateFaqs(id)
+}
+
+export async function toggleFaqFeaturedOnHome(id: string, featuredOnHome: boolean) {
+  await requireAdmin()
+  await prisma.faq.update({ where: { id }, data: { featuredOnHome, updatedAt: new Date() } })
+  revalidateFaqs(id)
 }
 
 export async function deleteFaq(id: string) {
   await requireAdmin()
   await prisma.faq.delete({ where: { id } })
-  revalidatePath("/admin/faqs")
-  revalidatePath("/faq")
+  revalidateFaqs()
 }
 
 export async function reorderFaqs(orderedIds: string[]) {
@@ -86,6 +97,5 @@ export async function reorderFaqs(orderedIds: string[]) {
       prisma.faq.update({ where: { id }, data: { sortOrder: index } })
     )
   )
-  revalidatePath("/admin/faqs")
-  revalidatePath("/faq")
+  revalidateFaqs()
 }

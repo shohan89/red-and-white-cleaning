@@ -146,19 +146,21 @@ model FaqCategory {
 }
 
 model Faq {
-  id         String      @id @default(cuid())
-  question   String
-  answer     String      @db.Text
-  categoryId String
-  category   FaqCategory @relation(fields: [categoryId], references: [id])
-  sortOrder  Int         @default(0)
-  published  Boolean     @default(true)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id             String      @id @default(cuid())
+  question       String
+  answer         String      @db.Text
+  categoryId     String
+  category       FaqCategory @relation(fields: [categoryId], references: [id])
+  sortOrder      Int         @default(0)
+  published      Boolean     @default(true)
+  featuredOnHome Boolean     @default(false)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   @@index([categoryId])
   @@index([sortOrder])
   @@index([published])
+  @@index([featuredOnHome])
 }
 
 // ─── SERVICES ─────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
@@ -11,9 +11,11 @@ async function requireAdmin() {
 
 function revalidateBlog(slug?: string) {
   revalidatePath("/admin/blog")
+  revalidatePath("/admin/blog/[id]/edit", "page")
   revalidatePath("/blog")
   if (slug) revalidatePath(`/blog/${slug}`)
   revalidatePath("/sitemap.xml")
+  refresh()
 }
 
 export async function createBlogCategory(data: { name: string; slug: string }) {

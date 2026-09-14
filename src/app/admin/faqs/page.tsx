@@ -3,12 +3,12 @@ import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Pencil } from "lucide-react"
-import { PublishToggle, DeleteFaqButton } from "./FaqsClient"
+import { PublishToggle, FeaturedOnHomeToggle, DeleteFaqButton } from "./FaqsClient"
 
 export const metadata = { title: "FAQs" }
 
 export default async function FaqsPage() {
-  let categories: Array<{ id: string; name: string; faqs: Array<{ id: string; question: string; answer: string; published: boolean; sortOrder: number }> }> = []
+  let categories: Array<{ id: string; name: string; faqs: Array<{ id: string; question: string; answer: string; published: boolean; featuredOnHome: boolean; sortOrder: number }> }> = []
   try {
     categories = await prisma.faqCategory.findMany({
       orderBy: { sortOrder: "asc" },
@@ -65,8 +65,15 @@ export default async function FaqsPage() {
                       </p>
                       <p className="text-xs text-muted-foreground mt-0.5 truncate">{faq.answer}</p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <PublishToggle id={faq.id} published={faq.published} />
+                    <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-[9px] font-medium text-gray-400 uppercase tracking-wide">Published</span>
+                        <PublishToggle id={faq.id} published={faq.published} />
+                      </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-[9px] font-medium text-gray-400 uppercase tracking-wide">On Home</span>
+                        <FeaturedOnHomeToggle id={faq.id} featuredOnHome={faq.featuredOnHome} />
+                      </div>
                       <Button variant="ghost" size="sm" asChild>
                         <Link href={`/admin/faqs/${faq.id}/edit`}>
                           <Pencil className="h-4 w-4" />

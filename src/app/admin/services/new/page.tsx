@@ -46,6 +46,11 @@ export default function NewServicePage() {
         <h1 className="text-xl font-heading font-bold text-brand-dark">New Service</h1>
       </div>
 
+      <p className="text-sm text-muted-foreground bg-blue-50 border border-blue-100 rounded-md px-4 py-2.5">
+        Fill in the basic info below to create the service. After saving, you&apos;ll land on its
+        edit page where you can add included items, phases, and images.
+      </p>
+
       <form action={handleCreate} className="space-y-5 bg-white rounded-lg border p-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">

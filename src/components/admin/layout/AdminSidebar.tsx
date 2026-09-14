@@ -92,14 +92,14 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="w-60 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
+    <aside className="w-60 shrink-0 sticky top-0 h-screen bg-white border-r border-gray-200 flex flex-col overflow-hidden">
       <div className="h-14 flex items-center px-5 border-b border-gray-200 shrink-0">
         <span className="font-heading font-bold text-brand-dark text-sm">
           R&amp;W Admin
         </span>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-5">
+      <nav className="flex-1 overflow-y-auto py-2.5 px-2 space-y-4">
         {NAV_SECTIONS.map((section, si) => (
           <div key={si}>
             {section.label && (

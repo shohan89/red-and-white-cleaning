@@ -6,6 +6,7 @@ import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Select,
   SelectContent,
@@ -35,7 +36,8 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
     const question = formData.get("question") as string
     const answer = formData.get("answer") as string
     const categoryId = formData.get("categoryId") as string
-    await updateFaq(id, { question, answer, categoryId })
+    const featuredOnHome = formData.get("featuredOnHome") === "on"
+    await updateFaq(id, { question, answer, categoryId, featuredOnHome })
     redirect("/admin/faqs")
   }
 
@@ -80,6 +82,13 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
         <div className="space-y-1.5">
           <Label htmlFor="answer">Answer</Label>
           <Textarea id="answer" name="answer" required rows={6} defaultValue={faq.answer} />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Checkbox id="featuredOnHome" name="featuredOnHome" defaultChecked={faq.featuredOnHome} />
+          <Label htmlFor="featuredOnHome" className="cursor-pointer">
+            Show on homepage FAQ preview
+          </Label>
         </div>
 
         <div className="flex gap-3 pt-2">

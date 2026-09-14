@@ -241,6 +241,7 @@ function MediaDetailPanel({ asset, onClose }: { asset: MediaAssetLite; onClose: 
       await updateMediaSeoFields(asset.id, values)
       setSaved(true)
       toast.success("Image SEO saved")
+      router.refresh()
     } catch {
       toast.error("Failed to save")
     } finally {

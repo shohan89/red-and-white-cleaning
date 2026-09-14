@@ -40,13 +40,24 @@ export default async function HomePage() {
   } catch {}
 
   try {
-    const faqs = await prisma.faq.findMany({
-      where: { published: true },
+    const featured = await prisma.faq.findMany({
+      where: { published: true, featuredOnHome: true },
       orderBy: { sortOrder: "asc" },
-      take: 4,
       select: { id: true, question: true, answer: true },
     })
-    homeFaqs = faqs as Array<{ id: string; question: string; answer: string }>
+    if (featured.length > 0) {
+      homeFaqs = featured as Array<{ id: string; question: string; answer: string }>
+    } else {
+      // No FAQs picked yet — fall back to the first 4 published, so the
+      // section still shows something sensible out of the box.
+      const fallback = await prisma.faq.findMany({
+        where: { published: true },
+        orderBy: { sortOrder: "asc" },
+        take: 4,
+        select: { id: true, question: true, answer: true },
+      })
+      homeFaqs = fallback as Array<{ id: string; question: string; answer: string }>
+    }
   } catch {}
 
   return (

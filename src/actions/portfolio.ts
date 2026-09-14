@@ -1,12 +1,19 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
 async function requireAdmin() {
   const session = await auth()
   if (!session?.user) throw new Error("Unauthorized")
+}
+
+function revalidatePortfolio() {
+  revalidatePath("/admin/portfolio")
+  revalidatePath("/admin/portfolio/[id]/edit", "page")
+  revalidatePath("/portfolio")
+  refresh()
 }
 
 export async function createPortfolioCategory(data: {
@@ -69,30 +76,26 @@ export async function createPortfolioItem(data: PortfolioItemFields) {
   const item = await prisma.portfolioItem.create({
     data: { ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
   })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
   return item
 }
 
 export async function updatePortfolioItem(id: string, data: Partial<PortfolioItemFields>) {
   await requireAdmin()
   await prisma.portfolioItem.update({ where: { id }, data })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }
 
 export async function togglePortfolioFeatured(id: string, featured: boolean) {
   await requireAdmin()
   await prisma.portfolioItem.update({ where: { id }, data: { featured } })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }
 
 export async function deletePortfolioItem(id: string) {
   await requireAdmin()
   await prisma.portfolioItem.delete({ where: { id } })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }
 
 // ─── PORTFOLIO IMAGE GALLERY ────────────────────────────────────────────────
@@ -109,8 +112,7 @@ export async function createPortfolioImage(
   await prisma.portfolioImage.create({
     data: { portfolioItemId, ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
   })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }
 
 export async function updatePortfolioImage(
@@ -119,13 +121,11 @@ export async function updatePortfolioImage(
 ) {
   await requireAdmin()
   await prisma.portfolioImage.update({ where: { id }, data })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }
 
 export async function deletePortfolioImage(id: string) {
   await requireAdmin()
   await prisma.portfolioImage.delete({ where: { id } })
-  revalidatePath("/admin/portfolio")
-  revalidatePath("/portfolio")
+  revalidatePortfolio()
 }

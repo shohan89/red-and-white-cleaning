@@ -2,7 +2,7 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { toggleFaqPublished, deleteFaq, deleteFaqCategory } from "@/actions/faqs"
+import { toggleFaqPublished, toggleFaqFeaturedOnHome, deleteFaq, deleteFaqCategory } from "@/actions/faqs"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Trash2, Loader2 } from "lucide-react"
@@ -18,6 +18,23 @@ export function PublishToggle({ id, published }: { id: string; published: boolea
       onCheckedChange={(v) =>
         startTransition(async () => {
           await toggleFaqPublished(id, v)
+          router.refresh()
+        })
+      }
+    />
+  )
+}
+
+export function FeaturedOnHomeToggle({ id, featuredOnHome }: { id: string; featuredOnHome: boolean }) {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+  return (
+    <Switch
+      checked={featuredOnHome}
+      disabled={pending}
+      onCheckedChange={(v) =>
+        startTransition(async () => {
+          await toggleFaqFeaturedOnHome(id, v)
           router.refresh()
         })
       }

@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
@@ -11,7 +11,9 @@ async function requireAdmin() {
 
 function revalidateService() {
   revalidatePath("/admin/services")
+  revalidatePath("/admin/services/[slug]", "page")
   revalidatePath("/services")
+  refresh()
 }
 
 interface ServiceFields {

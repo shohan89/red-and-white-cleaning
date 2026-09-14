@@ -181,7 +181,7 @@ function PhasesSplitLayout({ service, alt }: { service: ServiceSectionData; alt:
             {service.title}
           </h2>
           {paras.map((p, i) => (
-            <p key={i} className="mt-4 text-lg text-muted-foreground max-w-3xl">
+            <p key={i} className="mt-4 text-lg text-muted-foreground">
               {p}
             </p>
           ))}
