@@ -98,7 +98,6 @@ export default async function EditPortfolioItemPage({
       label: label || undefined,
       altText: altText || undefined,
     })
-    redirect(`/admin/portfolio/${id}/edit`)
   }
 
   return (

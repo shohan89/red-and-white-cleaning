@@ -25,6 +25,7 @@ export async function createBlogCategory(data: { name: string; slug: string }) {
     data: { ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
   })
   revalidatePath("/admin/blog/categories")
+  refresh()
   return category
 }
 
@@ -36,6 +37,7 @@ export async function deleteBlogCategory(id: string) {
   }
   await prisma.blogCategory.delete({ where: { id } })
   revalidatePath("/admin/blog/categories")
+  refresh()
 }
 
 interface BlogPostFields {

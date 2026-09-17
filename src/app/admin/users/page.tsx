@@ -1,7 +1,6 @@
 ﻿import { requireSuperAdmin } from "@/lib/rbac"
 import { prisma } from "@/lib/prisma"
 import { createUser } from "@/actions/users"
-import { redirect } from "next/navigation"
 import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -31,7 +30,6 @@ export default async function UsersPage() {
   async function handleCreate(formData: FormData) {
     "use server"
     await createUser(formData)
-    redirect("/admin/users")
   }
 
   return (

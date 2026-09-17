@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
-import { redirect } from "next/navigation"
 
 export const metadata = { title: "Site Settings" }
 
@@ -20,7 +19,6 @@ export default async function SettingsPage() {
   async function handleSave(formData: FormData) {
     "use server"
     await saveSiteSettings(formData)
-    redirect("/admin/settings")
   }
 
   const v = (key: string) => ((settings as any)?.[key] ?? "") as string

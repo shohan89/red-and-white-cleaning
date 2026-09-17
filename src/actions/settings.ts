@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { requireAdmin } from "@/lib/rbac"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 
 export async function saveSiteSettings(formData: FormData) {
   await requireAdmin()
@@ -33,4 +33,5 @@ export async function saveSiteSettings(formData: FormData) {
   }
 
   revalidatePath("/admin/settings")
+  refresh()
 }

@@ -28,6 +28,7 @@ export async function createPortfolioCategory(data: {
   })
   revalidatePath("/admin/categories")
   revalidatePath("/portfolio")
+  refresh()
   return category
 }
 
@@ -39,6 +40,7 @@ export async function updatePortfolioCategory(
   const category = await prisma.portfolioCategory.update({ where: { id }, data })
   revalidatePath("/admin/categories")
   revalidatePath("/portfolio")
+  refresh()
   return category
 }
 
@@ -47,6 +49,7 @@ export async function deletePortfolioCategory(id: string) {
   await prisma.portfolioCategory.delete({ where: { id } })
   revalidatePath("/admin/categories")
   revalidatePath("/portfolio")
+  refresh()
 }
 
 interface PortfolioItemFields {

@@ -1,5 +1,4 @@
-﻿import { redirect } from "next/navigation"
-import { prisma } from "@/lib/prisma"
+﻿import { prisma } from "@/lib/prisma"
 import { upsertSitemapEntry } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/admin/SubmitButton"
@@ -33,7 +32,6 @@ export default async function SitemapPage() {
     const changeFrequency = formData.get("changeFrequency") as string
     if (!url) return
     await upsertSitemapEntry({ url, priority, changeFrequency: changeFrequency || "monthly", included: true })
-    redirect("/admin/seo/sitemap")
   }
 
   return (

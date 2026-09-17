@@ -1,6 +1,6 @@
 "use server"
 
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
 
@@ -32,6 +32,7 @@ export async function saveGlobalSeo(data: {
     await prisma.globalSeo.create({ data })
   }
   revalidatePath("/admin/seo")
+  refresh()
 }
 
 export async function savePageSeo(
@@ -58,12 +59,14 @@ export async function savePageSeo(
   })
   revalidatePath("/admin/seo/pages")
   revalidatePath("/")
+  refresh()
 }
 
 export async function toggleSchemaConfig(type: string, enabled: boolean) {
   await requireAdmin()
   await prisma.schemaConfig.updateMany({ where: { type }, data: { enabled } })
   revalidatePath("/admin/seo/schema")
+  refresh()
 }
 
 export async function saveRobotsConfig(content: string) {
@@ -75,6 +78,7 @@ export async function saveRobotsConfig(content: string) {
     await prisma.robotsConfig.create({ data: { content } })
   }
   revalidatePath("/robots.txt")
+  refresh()
 }
 
 export async function createRedirect(data: {
@@ -85,12 +89,14 @@ export async function createRedirect(data: {
   await requireAdmin()
   await prisma.redirect.create({ data: { source: data.source, destination: data.destination, type: data.type ?? 301 } })
   revalidatePath("/admin/seo/redirects")
+  refresh()
 }
 
 export async function deleteRedirect(id: string) {
   await requireAdmin()
   await prisma.redirect.delete({ where: { id } })
   revalidatePath("/admin/seo/redirects")
+  refresh()
 }
 
 export async function upsertSitemapEntry(data: {
@@ -107,6 +113,7 @@ export async function upsertSitemapEntry(data: {
   })
   revalidatePath("/admin/seo/sitemap")
   revalidatePath("/sitemap.xml")
+  refresh()
 }
 
 export async function deleteSitemapEntry(id: string) {
@@ -114,6 +121,7 @@ export async function deleteSitemapEntry(id: string) {
   await prisma.sitemapEntry.delete({ where: { id } })
   revalidatePath("/admin/seo/sitemap")
   revalidatePath("/sitemap.xml")
+  refresh()
 }
 
 // ─── GEO / AI SEO ──────────────────────────────────────────────────────────
@@ -131,6 +139,7 @@ export async function createGeoContent(data: {
   await requireAdmin()
   await prisma.geoContent.create({ data })
   revalidatePath("/admin/seo/geo")
+  refresh()
 }
 
 export async function updateGeoContent(
@@ -149,10 +158,12 @@ export async function updateGeoContent(
   await requireAdmin()
   await prisma.geoContent.update({ where: { id }, data })
   revalidatePath("/admin/seo/geo")
+  refresh()
 }
 
 export async function deleteGeoContent(id: string) {
   await requireAdmin()
   await prisma.geoContent.delete({ where: { id } })
   revalidatePath("/admin/seo/geo")
+  refresh()
 }

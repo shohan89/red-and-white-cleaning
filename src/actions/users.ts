@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import { requireSuperAdmin } from "@/lib/rbac"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, refresh } from "next/cache"
 import bcrypt from "bcryptjs"
 
 export async function createUser(formData: FormData) {
@@ -21,16 +21,19 @@ export async function createUser(formData: FormData) {
   })
 
   revalidatePath("/admin/users")
+  refresh()
 }
 
 export async function updateUserRole(id: string, role: "SUPER_ADMIN" | "ADMIN") {
   await requireSuperAdmin()
   await prisma.user.update({ where: { id }, data: { role } })
   revalidatePath("/admin/users")
+  refresh()
 }
 
 export async function deleteUser(id: string) {
   await requireSuperAdmin()
   await prisma.user.delete({ where: { id } })
   revalidatePath("/admin/users")
+  refresh()
 }

@@ -1,5 +1,4 @@
-﻿import { redirect } from "next/navigation"
-import { prisma } from "@/lib/prisma"
+﻿import { prisma } from "@/lib/prisma"
 import { createRedirect } from "@/actions/seo"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/admin/SubmitButton"
@@ -33,7 +32,6 @@ export default async function RedirectsPage() {
     const type = parseInt(formData.get("type") as string) || 301
     if (!source || !destination) return
     await createRedirect({ source, destination, type })
-    redirect("/admin/seo/redirects")
   }
 
   return (

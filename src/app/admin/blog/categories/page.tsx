@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { createBlogCategory } from "@/actions/blog"
 import { Button } from "@/components/ui/button"
@@ -29,7 +28,6 @@ export default async function BlogCategoriesPage() {
     const slug = formData.get("slug") as string
     if (!name || !slug) return
     await createBlogCategory({ name, slug })
-    redirect("/admin/blog/categories")
   }
 
   return (

@@ -202,9 +202,14 @@ export function MediaLibraryGrid({ assets }: { assets: MediaAssetLite[] }) {
                 )}
               </div>
               <div className="p-2.5">
-                <p className="text-xs font-medium text-gray-700 truncate" title={asset.filename}>
-                  {asset.filename}
+                <p className="text-xs font-medium text-gray-700 truncate" title={asset.title || asset.filename}>
+                  {asset.title || asset.filename}
                 </p>
+                {asset.title && (
+                  <p className="text-[10px] text-muted-foreground truncate" title={asset.filename}>
+                    {asset.filename}
+                  </p>
+                )}
                 <p className="text-xs text-muted-foreground mt-0.5">{formatBytes(asset.size)}</p>
               </div>
             </button>

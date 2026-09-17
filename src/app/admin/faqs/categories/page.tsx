@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { createFaqCategory } from "@/actions/faqs"
 import { Button } from "@/components/ui/button"
@@ -30,7 +29,6 @@ export default async function FaqCategoriesPage() {
     const icon = formData.get("icon") as string
     if (!name || !slug) return
     await createFaqCategory({ name, slug, icon: icon || undefined })
-    redirect("/admin/faqs/categories")
   }
 
   return (

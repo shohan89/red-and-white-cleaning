@@ -74,7 +74,6 @@ export default async function ServiceEditorPage({
     const text = formData.get("text") as string
     if (!text?.trim()) return
     await createServiceIncludedItem(service!.id, text.trim())
-    redirect(`/admin/services/${slug}`)
   }
 
   async function handleAddPhase(formData: FormData) {
@@ -94,7 +93,6 @@ export default async function ServiceEditorPage({
       frequency: frequency || undefined,
       bestFor: bestFor || undefined,
     })
-    redirect(`/admin/services/${slug}`)
   }
 
   async function handleUpdateItem(formData: FormData) {
@@ -103,7 +101,6 @@ export default async function ServiceEditorPage({
     const text = formData.get("text") as string
     if (!itemId || !text?.trim()) return
     await updateServiceIncludedItem(itemId, text.trim())
-    redirect(`/admin/services/${slug}`)
   }
 
   async function handleUpdatePhase(formData: FormData) {
@@ -124,7 +121,6 @@ export default async function ServiceEditorPage({
       frequency: frequency || undefined,
       bestFor: bestFor || undefined,
     })
-    redirect(`/admin/services/${slug}`)
   }
 
   async function handleAddImage(formData: FormData) {
@@ -140,7 +136,6 @@ export default async function ServiceEditorPage({
       altText: altText || undefined,
       objectPosition: objectPosition || undefined,
     })
-    redirect(`/admin/services/${slug}`)
   }
 
   return (

@@ -1,5 +1,4 @@
-﻿import { redirect } from "next/navigation"
-import { prisma } from "@/lib/prisma"
+﻿import { prisma } from "@/lib/prisma"
 import { createPortfolioCategory } from "@/actions/portfolio"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/admin/SubmitButton"
@@ -30,7 +29,6 @@ export default async function CategoriesPage() {
     const description = formData.get("description") as string
     if (!name || !slug) return
     await createPortfolioCategory({ name, slug, description: description || undefined })
-    redirect("/admin/categories")
   }
 
   return (

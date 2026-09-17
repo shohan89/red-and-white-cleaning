@@ -25,6 +25,7 @@ export async function createFaqCategory(data: { name: string; slug: string; icon
   })
   revalidatePath("/admin/faqs")
   revalidatePath("/admin/faqs/categories")
+  refresh()
   return category
 }
 
@@ -38,6 +39,7 @@ export async function deleteFaqCategory(id: string) {
   revalidatePath("/admin/faqs")
   revalidatePath("/admin/faqs/categories")
   revalidatePath("/faq")
+  refresh()
 }
 
 export async function createFaq(data: {
