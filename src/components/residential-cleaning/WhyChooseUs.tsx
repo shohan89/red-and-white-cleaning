@@ -52,8 +52,8 @@ export function WhyChooseUs() {
           <div className={styles.whyMedia}>
             <div className={styles.whyImageWrap}>
               <Image
-                src="/images/portfolio/why-choose-us-bathroom.webp"
-                alt="Red & White Cleaning residential cleaner detailing a bathroom in a Kitchener-area home"
+                src="/images/portfolio/residential-sink-after.webp"
+                alt="Cleaned kitchen sink cabinet in a Kitchener-area home by Red & White Cleaning"
                 fill
                 sizes="(min-width: 1024px) 480px, 100vw"
                 loading="lazy"

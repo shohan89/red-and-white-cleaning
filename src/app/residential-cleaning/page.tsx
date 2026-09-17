@@ -15,7 +15,7 @@ import { Footer } from "@/components/residential-cleaning/Footer";
 import styles from "@/components/deep-cleaning/deep-cleaning.module.css";
 
 const PAGE_URL = `${SITE.url}/residential-cleaning`;
-const OG_IMAGE = `${SITE.url}/images/portfolio/residential-kitchen-ba.webp`;
+const OG_IMAGE = `${SITE.url}/images/portfolio/why-choose-us-bathroom.webp`;
 
 export const metadata: Metadata = {
   title: "Residential House Cleaning Services | Kitchener, Waterloo, Guelph ON",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     title: "Residential House Cleaning Services | Red & White Cleaning Services",
     description:
       "House cleaning, move-in/move-out cleaning, pre-sale cleans, deep cleaning and recurring home cleaning across Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London & Brantford. Fully insured crews that work around your life.",
-    images: [{ url: OG_IMAGE, width: 1920, height: 1080 }],
+    images: [{ url: OG_IMAGE, width: 1000, height: 1250 }],
   },
   twitter: {
     card: "summary_large_image",
