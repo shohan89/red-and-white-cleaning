@@ -11,8 +11,8 @@ export function Hero() {
     <section className={styles.hero} aria-label="Residential cleaning services hero">
       <div className={styles.heroBgWrap}>
         <Image
-          src="/images/portfolio/why-choose-us-bathroom.webp"
-          alt="Freshly cleaned bathroom with glass shower in a Kitchener-area home, cleaned by Red & White Cleaning"
+          src="/images/portfolio/residential-hero-livingroom.webp"
+          alt="Bright, freshly cleaned living room with hardwood floors in a Kitchener-area home, cleaned by Red & White Cleaning"
           fill
           priority
           sizes="100vw"
