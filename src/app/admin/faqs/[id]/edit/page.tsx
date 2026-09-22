@@ -21,9 +21,10 @@ export const metadata = { title: "Edit FAQ" }
 
 export default async function EditFaqPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const [faq, categories] = await Promise.all([
+  const [faq, categories, services] = await Promise.all([
     prisma.faq.findUnique({ where: { id } }),
     prisma.faqCategory.findMany({ orderBy: { sortOrder: "asc" } }),
+    prisma.service.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true } }),
   ]).catch((err: unknown) => {
     console.error("[admin/faqs/edit] DB error:", err)
     throw err
@@ -36,8 +37,15 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
     const question = formData.get("question") as string
     const answer = formData.get("answer") as string
     const categoryId = formData.get("categoryId") as string
+    const serviceId = formData.get("serviceId") as string
     const featuredOnHome = formData.get("featuredOnHome") === "on"
-    await updateFaq(id, { question, answer, categoryId, featuredOnHome })
+    await updateFaq(id, {
+      question,
+      answer,
+      categoryId,
+      serviceId: serviceId && serviceId !== "none" ? serviceId : null,
+      featuredOnHome,
+    })
     redirect("/admin/faqs")
   }
 
@@ -72,6 +80,30 @@ export default async function EditFaqPage({ params }: { params: Promise<{ id: st
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="serviceId">Service (optional)</Label>
+          <Select
+            name="serviceId"
+            defaultValue={(faq.serviceId as string | null) ?? "none"}
+            items={{ none: "— None —", ...Object.fromEntries(services.map((s) => [s.id, s.name])) }}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">— None —</SelectItem>
+              {services.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            If set, this FAQ also appears on that service&apos;s individual page.
+          </p>
         </div>
 
         <div className="space-y-1.5">

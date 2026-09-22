@@ -151,6 +151,8 @@ model Faq {
   answer         String      @db.Text
   categoryId     String
   category       FaqCategory @relation(fields: [categoryId], references: [id])
+  serviceId      String?
+  service        Service?    @relation(fields: [serviceId], references: [id], onDelete: SetNull)
   sortOrder      Int         @default(0)
   published      Boolean     @default(true)
   featuredOnHome Boolean     @default(false)
@@ -158,6 +160,7 @@ model Faq {
   updatedAt      DateTime    @updatedAt
 
   @@index([categoryId])
+  @@index([serviceId])
   @@index([sortOrder])
   @@index([published])
   @@index([featuredOnHome])
@@ -181,6 +184,8 @@ model Service {
   phases             ServicePhase[]
   includedItems      ServiceIncludedItem[]
   images             ServiceImage[]
+  detailSections     ServiceDetailSection[]
+  faqs               Faq[]
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
 
@@ -223,6 +228,18 @@ model ServiceImage {
   caption        String?
   objectPosition String?
   sortOrder      Int     @default(0)
+
+  @@index([serviceId])
+}
+
+model ServiceDetailSection {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  title     String
+  body      String  @db.Text
+  icon      String?
+  sortOrder Int     @default(0)
 
   @@index([serviceId])
 }

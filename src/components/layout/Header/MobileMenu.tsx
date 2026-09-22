@@ -2,16 +2,17 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, Phone } from "lucide-react";
+import { Menu, Phone, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { buttonVariants } from "@/components/ui/button";
-import { NAV_LINKS } from "@/config/nav";
+import { NAV_LINKS, SERVICE_LINKS } from "@/config/nav";
 import { SITE } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
+  const [servicesExpanded, setServicesExpanded] = useState(false);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -45,16 +46,53 @@ export function MobileMenu() {
 
           {/* Nav links */}
           <nav className="flex-1 px-6 py-6 flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpen(false)}
-                className="flex items-center px-3 py-3 rounded-md text-gray-700 hover:text-brand-red hover:bg-brand-red/5 transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) =>
+              "children" in link ? (
+                <div key={link.href}>
+                  <div className="flex items-center">
+                    <Link
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className="flex-1 flex items-center px-3 py-3 rounded-md text-gray-700 hover:text-brand-red hover:bg-brand-red/5 transition-colors font-medium"
+                    >
+                      {link.label}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => setServicesExpanded((v) => !v)}
+                      aria-expanded={servicesExpanded}
+                      aria-label="Toggle services submenu"
+                      className="p-3 text-gray-500 hover:text-brand-red"
+                    >
+                      <ChevronDown className={`h-4 w-4 transition-transform ${servicesExpanded ? "rotate-180" : ""}`} aria-hidden="true" />
+                    </button>
+                  </div>
+                  {servicesExpanded && (
+                    <div className="flex flex-col gap-0.5 pl-6 pb-1">
+                      {SERVICE_LINKS.map((s) => (
+                        <Link
+                          key={s.href}
+                          href={s.href}
+                          onClick={() => setOpen(false)}
+                          className="px-3 py-2 rounded-md text-sm text-gray-600 hover:text-brand-red hover:bg-brand-red/5 transition-colors"
+                        >
+                          {s.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center px-3 py-3 rounded-md text-gray-700 hover:text-brand-red hover:bg-brand-red/5 transition-colors font-medium"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </nav>
 
           {/* Footer CTAs */}

@@ -8,6 +8,8 @@ import { ChevronRight } from 'lucide-react';
 import { prisma } from "@/lib/prisma";
 import { SITE } from "@/config/site";
 import { ServiceSection, type ServiceSectionData } from '@/components/sections/services/ServiceSection';
+import { ServiceDetailSections, type ServiceDetailSectionData } from '@/components/sections/services/ServiceDetailSections';
+import { ServiceFaqSection, type ServiceFaqData } from '@/components/sections/services/ServiceFaqSection';
 import { ServicesCTA } from '@/components/sections/services/ServicesCTA';
 
 async function getService(slug: string) {
@@ -18,6 +20,7 @@ async function getService(slug: string) {
         phases: { orderBy: { sortOrder: "asc" } },
         includedItems: { orderBy: { sortOrder: "asc" } },
         images: { orderBy: { sortOrder: "asc" } },
+        detailSections: { orderBy: { sortOrder: "asc" } },
       },
     })
   } catch (err) {
@@ -35,6 +38,19 @@ async function getOtherServices(excludeSlug: string) {
     })
   } catch (err) {
     console.error("[services/slug] DB error (related):", err)
+    return []
+  }
+}
+
+async function getServiceFaqs(serviceId: string) {
+  try {
+    return await prisma.faq.findMany({
+      where: { serviceId, published: true },
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, question: true, answer: true },
+    })
+  } catch (err) {
+    console.error("[services/slug] DB error (faqs):", err)
     return []
   }
 }
@@ -76,6 +92,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   if (!service) notFound()
 
   const otherServices = await getOtherServices(slug)
+  const faqs = await getServiceFaqs(service.id as string)
   const url = `${SITE.url}/services/${slug}`
 
   const serviceSchema = {
@@ -103,6 +120,16 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
     ],
   }
 
+  const faqSchema = faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  } : null
+
   return (
     <main className="flex min-h-screen flex-col">
       <script
@@ -113,6 +140,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       <nav aria-label="Breadcrumb" className="border-b border-border bg-muted/30">
         <div className="container mx-auto px-4 md:px-6 py-3 flex items-center gap-1.5 text-sm text-muted-foreground">
@@ -125,6 +158,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
       </nav>
 
       <ServiceSection service={service as unknown as ServiceSectionData} index={0} />
+
+      <ServiceDetailSections sections={service.detailSections as unknown as ServiceDetailSectionData[]} />
 
       {otherServices.length > 0 && (
         <section className="py-16 bg-muted/30 border-y border-border" aria-label="Other services">
@@ -152,6 +187,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
           </div>
         </section>
       )}
+
+      <ServiceFaqSection faqs={faqs as unknown as ServiceFaqData[]} serviceName={service.name as string} />
 
       <ServicesCTA />
     </main>

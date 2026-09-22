@@ -20,8 +20,10 @@ export const metadata = { title: "New FAQ" }
 
 export default async function NewFaqPage() {
   let categories: Array<{ id: string; name: string }> = []
+  let services: Array<{ id: string; name: string }> = []
   try {
     categories = await prisma.faqCategory.findMany({ orderBy: { sortOrder: "asc" } })
+    services = await prisma.service.findMany({ orderBy: { sortOrder: "asc" }, select: { id: true, name: true } })
   } catch (err) {
     console.error("[admin/faqs/new] DB error:", err)
   }
@@ -31,8 +33,9 @@ export default async function NewFaqPage() {
     const question = formData.get("question") as string
     const answer = formData.get("answer") as string
     const categoryId = formData.get("categoryId") as string
+    const serviceId = formData.get("serviceId") as string
     if (!question || !answer || !categoryId) return
-    await createFaq({ question, answer, categoryId, published: true })
+    await createFaq({ question, answer, categoryId, serviceId: serviceId && serviceId !== "none" ? serviceId : undefined, published: true })
     redirect("/admin/faqs")
   }
 
@@ -67,6 +70,30 @@ export default async function NewFaqPage() {
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="serviceId">Service (optional)</Label>
+          <Select
+            name="serviceId"
+            defaultValue="none"
+            items={{ none: "— None —", ...Object.fromEntries(services.map((s) => [s.id, s.name])) }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Not linked to a service" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">— None —</SelectItem>
+              {services.map((s) => (
+                <SelectItem key={s.id} value={s.id}>
+                  {s.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">
+            If set, this FAQ also appears on that service&apos;s individual page.
+          </p>
         </div>
 
         <div className="space-y-1.5">

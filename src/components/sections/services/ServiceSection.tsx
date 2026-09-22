@@ -3,7 +3,7 @@ import Image from 'next/image';
 import {
   HardHat, Eye, Key, Building2, Briefcase, Sparkles, CalendarClock, CalendarCheck2,
   Home, Truck, CalendarCheck, Building, Tag, CheckCircle2,
-  Wrench, Star, Shield, Clock, Users,
+  Wrench, Star, Shield, ShieldCheck, Clock, Users, HelpCircle,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -24,11 +24,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
   wrench: Wrench,
   star: Star,
   shield: Shield,
+  'shield-check': ShieldCheck,
   clock: Clock,
   users: Users,
+  'help-circle': HelpCircle,
 };
 
-function resolveIcon(name?: string | null): LucideIcon {
+export function resolveIcon(name?: string | null): LucideIcon {
   return (name && ICON_MAP[name]) || Sparkles;
 }
 

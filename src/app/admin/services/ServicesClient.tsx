@@ -2,7 +2,7 @@
 
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { deleteServiceIncludedItem, deleteServicePhase, deleteServiceImage } from "@/actions/services"
+import { deleteServiceIncludedItem, deleteServicePhase, deleteServiceImage, deleteServiceDetailSection } from "@/actions/services"
 import { Button } from "@/components/ui/button"
 import { Trash2, Loader2 } from "lucide-react"
 
@@ -69,6 +69,29 @@ export function DeleteServiceImageButton({ id }: { id: string }) {
       }
     >
       {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+    </Button>
+  )
+}
+
+export function DeleteServiceDetailSectionButton({ id }: { id: string }) {
+  const router = useRouter()
+  const [pending, startTransition] = useTransition()
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      disabled={pending}
+      onClick={() => {
+        if (!confirm("Delete this section?")) return
+        startTransition(async () => {
+          await deleteServiceDetailSection(id)
+          router.refresh()
+        })
+      }}
+      className="text-destructive hover:text-destructive"
+    >
+      {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
     </Button>
   )
 }

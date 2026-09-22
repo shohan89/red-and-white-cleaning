@@ -141,3 +141,33 @@ export async function deleteServiceImage(id: string) {
   await prisma.serviceImage.delete({ where: { id } })
   revalidateService()
 }
+
+interface ServiceDetailSectionFields {
+  title: string
+  body: string
+  icon?: string
+}
+
+export async function createServiceDetailSection(serviceId: string, data: ServiceDetailSectionFields) {
+  await requireAdmin()
+  const maxSort = await prisma.serviceDetailSection.aggregate({
+    _max: { sortOrder: true },
+    where: { serviceId },
+  })
+  await prisma.serviceDetailSection.create({
+    data: { serviceId, ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
+  })
+  revalidateService()
+}
+
+export async function updateServiceDetailSection(id: string, data: Partial<ServiceDetailSectionFields>) {
+  await requireAdmin()
+  await prisma.serviceDetailSection.update({ where: { id }, data })
+  revalidateService()
+}
+
+export async function deleteServiceDetailSection(id: string) {
+  await requireAdmin()
+  await prisma.serviceDetailSection.delete({ where: { id } })
+  revalidateService()
+}

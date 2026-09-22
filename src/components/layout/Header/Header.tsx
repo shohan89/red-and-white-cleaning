@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { NAV_LINKS } from "@/config/nav";
 import { SITE } from "@/config/site";
 import { MobileMenu } from "./MobileMenu";
+import { ServicesDropdown } from "./ServicesDropdown";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -27,15 +28,19 @@ export function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-6 lg:gap-8" aria-label="Main navigation">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-gray-700 hover:text-brand-red transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((link) =>
+            "children" in link ? (
+              <ServicesDropdown key={link.href} />
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-gray-700 hover:text-brand-red transition-colors"
+              >
+                {link.label}
+              </Link>
+            )
+          )}
         </nav>
 
         {/* Desktop CTA + Mobile trigger */}

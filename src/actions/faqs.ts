@@ -14,6 +14,7 @@ function revalidateFaqs(id?: string) {
   if (id) revalidatePath(`/admin/faqs/${id}/edit`)
   revalidatePath("/faq")
   revalidatePath("/")
+  revalidatePath("/services/[slug]", "page")
   refresh()
 }
 
@@ -46,6 +47,7 @@ export async function createFaq(data: {
   question: string
   answer: string
   categoryId: string
+  serviceId?: string | null
   published?: boolean
   featuredOnHome?: boolean
 }) {
@@ -63,7 +65,14 @@ export async function createFaq(data: {
 
 export async function updateFaq(
   id: string,
-  data: { question?: string; answer?: string; categoryId?: string; published?: boolean; featuredOnHome?: boolean }
+  data: {
+    question?: string
+    answer?: string
+    categoryId?: string
+    serviceId?: string | null
+    published?: boolean
+    featuredOnHome?: boolean
+  }
 ) {
   await requireAdmin()
   const faq = await prisma.faq.update({

@@ -8,6 +8,8 @@ import {
   createServicePhase,
   updateServicePhase,
   createServiceImage,
+  createServiceDetailSection,
+  updateServiceDetailSection,
 } from "@/actions/services"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/admin/SubmitButton"
@@ -23,6 +25,7 @@ import {
   DeletePhaseButton,
   DeleteServiceButton,
   DeleteServiceImageButton,
+  DeleteServiceDetailSectionButton,
 } from "../ServicesClient"
 import { SaveStatus } from "@/components/admin/SaveStatus"
 
@@ -41,6 +44,7 @@ export default async function ServiceEditorPage({
       includedItems: { orderBy: { sortOrder: "asc" } },
       phases: { orderBy: { sortOrder: "asc" } },
       images: { orderBy: { sortOrder: "asc" } },
+      detailSections: { orderBy: { sortOrder: "asc" } },
     },
   }).catch((err: unknown) => {
     console.error("[admin/services/slug] DB error:", err)
@@ -131,6 +135,25 @@ export default async function ServiceEditorPage({
       frequency: frequency || undefined,
       bestFor: bestFor || undefined,
     })
+  }
+
+  async function handleAddDetailSection(formData: FormData) {
+    "use server"
+    const title = formData.get("title") as string
+    const body = formData.get("body") as string
+    const icon = formData.get("icon") as string
+    if (!title?.trim() || !body?.trim()) return
+    await createServiceDetailSection(service!.id, { title: title.trim(), body: body.trim(), icon: icon || undefined })
+  }
+
+  async function handleUpdateDetailSection(formData: FormData) {
+    "use server"
+    const sectionId = formData.get("sectionId") as string
+    const title = formData.get("title") as string
+    const body = formData.get("body") as string
+    const icon = formData.get("icon") as string
+    if (!sectionId || !title?.trim() || !body?.trim()) return
+    await updateServiceDetailSection(sectionId, { title: title.trim(), body: body.trim(), icon: icon || undefined })
   }
 
   async function handleAddImage(formData: FormData) {
@@ -408,6 +431,70 @@ export default async function ServiceEditorPage({
               </div>
             </div>
             <Button type="submit" variant="outline" size="sm">Add Photo</Button>
+          </form>
+        </div>
+      </section>
+
+      {/* Detail Sections — extra long-form content blocks on the individual /services/{slug} page */}
+      <section className="bg-white rounded-lg border p-6 space-y-4">
+        <h2 className="text-sm font-semibold text-gray-900 border-b pb-2">
+          Service Details ({service.detailSections.length})
+        </h2>
+        <p className="text-xs text-muted-foreground -mt-2">
+          Extra sections shown only on this service&apos;s individual page (
+          <code className="bg-gray-100 px-1 py-0.5 rounded">/services/{service.slug}</code>), after the main
+          content and before the FAQ. Use for things like &quot;Our Process&quot;, &quot;Benefits&quot;, or
+          &quot;Why Choose This Service&quot;.
+        </p>
+        {service.detailSections.length > 0 && (
+          <div className="space-y-3">
+            {service.detailSections.map((section) => (
+              <form
+                key={section.id as string}
+                action={handleUpdateDetailSection}
+                className="p-4 rounded-lg border bg-gray-50 space-y-3"
+              >
+                <input type="hidden" name="sectionId" value={section.id as string} />
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="col-span-2 space-y-1.5">
+                    <Label className="text-xs">Heading</Label>
+                    <Input name="title" defaultValue={section.title as string} className="text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">Icon</Label>
+                    <Input name="icon" defaultValue={(section.icon as string) ?? ""} className="text-sm" placeholder="e.g. shield-check" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Body</Label>
+                  <Textarea name="body" rows={4} defaultValue={section.body as string} className="text-sm" />
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <Button type="submit" variant="outline" size="sm">Save</Button>
+                  <DeleteServiceDetailSectionButton id={section.id as string} />
+                </div>
+              </form>
+            ))}
+          </div>
+        )}
+        <div className="border-t pt-4 space-y-3">
+          <p className="text-xs font-medium text-gray-600">Add Section</p>
+          <form action={handleAddDetailSection} className="space-y-3">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="col-span-2 space-y-1.5">
+                <Label htmlFor="sectionTitle" className="text-xs">Heading</Label>
+                <Input id="sectionTitle" name="title" placeholder="e.g. Our Process" className="text-sm" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="sectionIcon" className="text-xs">Icon</Label>
+                <Input id="sectionIcon" name="icon" placeholder="e.g. shield-check" className="text-sm" />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="sectionBody" className="text-xs">Body</Label>
+              <Textarea id="sectionBody" name="body" rows={4} placeholder="Section content…" className="text-sm" />
+            </div>
+            <Button type="submit" variant="outline" size="sm">Add Section</Button>
           </form>
         </div>
       </section>

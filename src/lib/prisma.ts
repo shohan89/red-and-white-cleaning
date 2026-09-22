@@ -29,9 +29,9 @@ async function runQuery(
 }
 
 // Tables without updatedAt
-const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "Redirect", "PortfolioImage"])
+const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection", "Redirect", "PortfolioImage"])
 // Tables without createdAt
-const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent", "PortfolioImage", "ServicePhase", "ServiceIncludedItem", "ServiceImage"])
+const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent", "PortfolioImage", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection"])
 
 // Relationship definitions for include resolution
 const RELATIONS: Record<string, Record<string, {
@@ -63,6 +63,8 @@ const RELATIONS: Record<string, Record<string, {
     phases: { type: "hasMany", table: "ServicePhase", foreignKey: "serviceId", selfKey: "id" },
     includedItems: { type: "hasMany", table: "ServiceIncludedItem", foreignKey: "serviceId", selfKey: "id" },
     images: { type: "hasMany", table: "ServiceImage", foreignKey: "serviceId", selfKey: "id" },
+    detailSections: { type: "hasMany", table: "ServiceDetailSection", foreignKey: "serviceId", selfKey: "id" },
+    faqs: { type: "hasMany", table: "Faq", foreignKey: "serviceId", selfKey: "id" },
   },
   Lead: {
     timeline: { type: "hasMany", table: "LeadEvent", foreignKey: "leadId", selfKey: "id" },
@@ -475,6 +477,7 @@ export const prisma = {
   servicePhase: makeModel("ServicePhase"),
   serviceIncludedItem: makeModel("ServiceIncludedItem"),
   serviceImage: makeModel("ServiceImage"),
+  serviceDetailSection: makeModel("ServiceDetailSection"),
   mediaAsset: makeModel("MediaAsset"),
   pageContent: makeModel("PageContent"),
   globalSeo: makeModel("GlobalSeo"),
