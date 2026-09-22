@@ -9,6 +9,17 @@ async function requireAdmin() {
   if (!session?.user) throw new Error("Unauthorized")
 }
 
+/** Ensures a URL string has a scheme and no trailing slash, so `new URL()` never throws on it downstream. */
+function normalizeSiteUrl(url: string | undefined): string | undefined {
+  if (url === undefined) return undefined
+  const trimmed = url.trim().replace(/\/+$/, "")
+  if (!trimmed) return trimmed
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+}
+
+// Pages whose metadata is driven by getPageMetadata() and therefore depend on GlobalSeo.
+const SEO_DRIVEN_PAGES = ["/", "/services", "/portfolio", "/faq", "/about", "/contact", "/privacy"]
+
 export async function saveGlobalSeo(data: {
   siteName?: string
   siteUrl?: string
@@ -25,13 +36,15 @@ export async function saveGlobalSeo(data: {
   googleBusinessUrl?: string
 }) {
   await requireAdmin()
+  const normalized = { ...data, siteUrl: normalizeSiteUrl(data.siteUrl) }
   const existing = await prisma.globalSeo.findFirst()
   if (existing) {
-    await prisma.globalSeo.update({ where: { id: existing.id }, data })
+    await prisma.globalSeo.update({ where: { id: existing.id }, data: normalized })
   } else {
-    await prisma.globalSeo.create({ data })
+    await prisma.globalSeo.create({ data: normalized })
   }
   revalidatePath("/admin/seo")
+  for (const page of SEO_DRIVEN_PAGES) revalidatePath(page)
   refresh()
 }
 
@@ -52,13 +65,14 @@ export async function savePageSeo(
   }
 ) {
   await requireAdmin()
+  const normalized = { ...data, canonicalUrl: normalizeSiteUrl(data.canonicalUrl) }
   await prisma.pageSeo.upsert({
     where: { pageKey },
-    create: { pageKey, ...data },
-    update: data,
+    create: { pageKey, ...normalized },
+    update: normalized,
   })
   revalidatePath("/admin/seo/pages")
-  revalidatePath("/")
+  revalidatePath(pageKey === "home" ? "/" : `/${pageKey}`)
   refresh()
 }
 
