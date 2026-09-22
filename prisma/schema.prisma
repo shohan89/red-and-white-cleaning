@@ -175,6 +175,9 @@ model Service {
   targetAudienceText String?               @db.Text
   sortOrder          Int                   @default(0)
   icon               String?
+  seoTitle           String?
+  seoDesc            String?               @db.Text
+  ogImage            String?
   phases             ServicePhase[]
   includedItems      ServiceIncludedItem[]
   images             ServiceImage[]

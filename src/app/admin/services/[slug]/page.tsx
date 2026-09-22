@@ -63,6 +63,16 @@ export default async function ServiceEditorPage({
     redirect(`/admin/services/${formData.get("slug")}?saved=basic`)
   }
 
+  async function handleUpdateSeo(formData: FormData) {
+    "use server"
+    await updateService(service!.id, {
+      seoTitle: formData.get("seoTitle") as string,
+      seoDesc: formData.get("seoDesc") as string,
+      ogImage: formData.get("ogImage") as string,
+    })
+    redirect(`/admin/services/${slug}?saved=seo`)
+  }
+
   async function handleDeleteService() {
     "use server"
     await deleteService(service!.id)
@@ -198,6 +208,43 @@ export default async function ServiceEditorPage({
           </div>
           <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
             Save Basic Info
+          </SubmitButton>
+        </form>
+      </section>
+
+      {/* SEO — controls the standalone /services/{slug} page's metadata */}
+      <section className="bg-white rounded-lg border p-6 space-y-4">
+        <h2 className="text-sm font-semibold text-gray-900 border-b pb-2">
+          SEO &amp; Individual Page
+        </h2>
+        <p className="text-xs text-muted-foreground -mt-2">
+          Controls the title, description and social preview image for this service&apos;s own page at
+          {" "}
+          <code className="bg-gray-100 px-1 py-0.5 rounded">/services/{service.slug}</code>. Leave blank to fall
+          back to the Page Title / Description above.
+        </p>
+        <form action={handleUpdateSeo} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="seoTitle">SEO Title</Label>
+            <Input id="seoTitle" name="seoTitle" defaultValue={service.seoTitle ?? ""} placeholder={service.title} />
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="seoDesc">SEO Description</Label>
+            <Textarea
+              id="seoDesc"
+              name="seoDesc"
+              rows={3}
+              defaultValue={service.seoDesc ?? ""}
+              placeholder={(service.description as string)?.slice(0, 160)}
+            />
+          </div>
+          <div className="space-y-1.5">
+            <Label>Social Share Image (OG Image)</Label>
+            <ImageUploadField fieldName="ogImage" defaultValue={service.ogImage ?? ""} />
+            <p className="text-xs text-muted-foreground">Falls back to the first image below if left blank.</p>
+          </div>
+          <SubmitButton className="bg-brand-red hover:bg-brand-red/90 text-white">
+            Save SEO
           </SubmitButton>
         </form>
       </section>

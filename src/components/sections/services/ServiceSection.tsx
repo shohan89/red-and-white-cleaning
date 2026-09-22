@@ -380,11 +380,11 @@ function IconHeroLayout({ service, alt }: { service: ServiceSectionData; alt: bo
 // ─── Layout selection ───────────────────────────────────────────────────────
 
 const LAYOUT_BY_SLUG: Record<string, "phases-split" | "text-split" | "centered-grid" | "icon-hero"> = {
-  'post-construction': 'phases-split',
+  'post-construction-cleaning': 'phases-split',
   residential: 'phases-split',
-  commercial: 'text-split',
+  'commercial-cleaning': 'text-split',
   'deep-cleaning': 'centered-grid',
-  'ongoing-contracts': 'icon-hero',
+  'ongoing-maintenance-cleaning': 'icon-hero',
 };
 
 export function ServiceSection({ service, index }: { service: ServiceSectionData; index: number }) {

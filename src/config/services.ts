@@ -6,7 +6,7 @@ export const SERVICES = [
     shortDescription:
       "We remove dust, debris, and construction residue so your site is move-in ready. Perfect for general contractors and developers on tight timelines.",
     audience: "For: General Contractors · Developers · Project Managers",
-    href: "/services#post-construction",
+    href: "/services/post-construction-cleaning",
     icon: "hard-hat",
   },
   {
@@ -16,7 +16,7 @@ export const SERVICES = [
     shortDescription:
       "Offices, retail spaces, Airbnb, warehouses — regular or one-time. We keep your business clean and presentable without disrupting your operations.",
     audience: "For: Property Managers · Business Owners · Facility Teams",
-    href: "/services#commercial",
+    href: "/services/commercial-cleaning",
     icon: "building-2",
   },
   {
@@ -26,7 +26,7 @@ export const SERVICES = [
     shortDescription:
       "When a space needs more than a surface clean. We go top to bottom so every corner is covered.",
     audience: "For: Property Managers · Landlords · Real Estate Agents",
-    href: "/services#deep-cleaning",
+    href: "/services/deep-cleaning",
     icon: "sparkles",
   },
   {
@@ -36,7 +36,7 @@ export const SERVICES = [
     shortDescription:
       "Need consistent cleaning on a schedule? We offer weekly, bi-weekly, and monthly contracts for commercial properties and residential homes.",
     audience: "For: Facility Managers · Property Owners · Homeowners",
-    href: "/services#ongoing-contracts",
+    href: "/services/ongoing-maintenance-cleaning",
     icon: "calendar-check",
     ctaLabel: "Get a Quote",
   },
@@ -47,7 +47,7 @@ export const SERVICES = [
     shortDescription:
       "Full home cleans for move-ins, move-outs, regular maintenance, and everything in between. Whether you just bought a house, are listing it for sale, or want a spotless home on a schedule — we've got you covered.",
     audience: "For: Homeowners · New Buyers · Home Sellers · Landlords",
-    href: "/services#residential",
+    href: "/services/residential",
     icon: "home",
   },
 ] as const;

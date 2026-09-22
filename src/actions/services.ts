@@ -13,6 +13,8 @@ function revalidateService() {
   revalidatePath("/admin/services")
   revalidatePath("/admin/services/[slug]", "page")
   revalidatePath("/services")
+  revalidatePath("/services/[slug]", "page")
+  revalidatePath("/sitemap.xml")
   refresh()
 }
 
@@ -24,6 +26,9 @@ interface ServiceFields {
   description: string
   targetAudienceText?: string
   icon?: string
+  seoTitle?: string
+  seoDesc?: string
+  ogImage?: string
 }
 
 export async function createService(data: ServiceFields) {

@@ -31,6 +31,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   } catch {}
 
+  let serviceRoutes: MetadataRoute.Sitemap = []
+  try {
+    const services = await prisma.service.findMany({
+      select: { slug: true, updatedAt: true },
+    })
+    serviceRoutes = services.map((service) => ({
+      url: `${baseUrl}/services/${service.slug}`,
+      lastModified: service.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    }))
+  } catch {}
+
   try {
     // DB-managed sitemap entries (overrides)
     const dbEntries = await prisma.sitemapEntry.findMany({
@@ -47,9 +60,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           priority: entry.priority,
         })),
         ...blogRoutes,
+        ...serviceRoutes,
       ]
     }
   } catch {}
 
-  return [...staticRoutes, ...blogRoutes]
+  return [...staticRoutes, ...blogRoutes, ...serviceRoutes]
 }
