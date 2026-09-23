@@ -13,11 +13,16 @@ import { SITE } from "@/config/site";
 import { prisma } from "@/lib/prisma";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return getPageMetadata("home", {
+  const meta = await getPageMetadata("home", {
     title: `${SITE.name} | Post-Construction & Commercial Cleaning Southern Ontario`,
     description: "Licensed and insured post-construction and commercial cleaning services for contractors, property managers, and developers across Kitchener, Waterloo, Cambridge, Guelph, Hamilton, London, and Brantford, Ontario.",
     canonical: "/",
   })
+  // Next.js always collapses a root-path canonical ("/") to the bare origin
+  // (no trailing slash) — this is documented, intentional framework behavior,
+  // not something the metadata API can override. Suppress the auto-generated
+  // tag here and render the exact canonical URL manually in the page below.
+  return { ...meta, alternates: { canonical: undefined } }
 }
 
 export default async function HomePage() {
@@ -62,6 +67,11 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* Manual canonical tag: Next.js's metadata API collapses a root-path
+          canonical to the bare origin (no trailing slash) — see generateMetadata
+          above. Rendered directly so the exact URL (with trailing slash) is used. */}
+      <link rel="canonical" href={`${SITE.url}/`} />
+
       {/* 1. Hero */}
       <HeroSection heroContent={heroContent} trustContent={trustContent} />
 
