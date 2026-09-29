@@ -61,7 +61,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] flex flex-col">
+      <DialogContent className="max-w-6xl w-[95vw] h-[88vh] max-h-[88vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Media Library</DialogTitle>
         </DialogHeader>
@@ -94,7 +94,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-[300px]">
+        <div className="flex-1 overflow-y-auto min-h-75">
           {loading ? (
             <div className="flex items-center justify-center h-full py-16">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -105,7 +105,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
               <p className="text-sm">No images found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
               {assets.map((asset) => (
                 <button
                   key={asset.id}
