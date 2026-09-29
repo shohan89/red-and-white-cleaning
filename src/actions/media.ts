@@ -118,6 +118,37 @@ export async function updateMediaAltText(id: string, altText: string) {
   revalidatePath("/admin/media")
 }
 
+export interface MediaAssetPickerItem {
+  id: string
+  url: string
+  filename: string
+  mimeType: string
+  altText: string | null
+  title: string | null
+  caption: string | null
+}
+
+export async function listMediaAssets(q?: string): Promise<MediaAssetPickerItem[]> {
+  await requireAdmin()
+  const assets = await prisma.mediaAsset.findMany({
+    where: q ? { filename: { contains: q, mode: "insensitive" } } : undefined,
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  })
+  return assets as unknown as MediaAssetPickerItem[]
+}
+
+export async function syncMediaMetaByUrl(
+  url: string,
+  fields: { altText?: string; title?: string; caption?: string }
+) {
+  await requireAdmin()
+  const asset = await prisma.mediaAsset.findFirst({ where: { url } })
+  if (!asset) return
+  await prisma.mediaAsset.update({ where: { id: asset.id as string }, data: fields })
+  revalidatePath("/admin/media")
+}
+
 export async function updateMediaSeoFields(
   id: string,
   fields: { altText?: string; title?: string; caption?: string }

@@ -10,6 +10,7 @@ import {
   Bold, Italic, Strikethrough, List, ListOrdered, Quote, Undo, Redo,
   Heading2, Heading3, LinkIcon, ImageIcon, Code,
 } from "lucide-react"
+import { MediaPickerModal } from "@/components/admin/MediaPickerModal"
 
 function ToolbarButton({
   onClick,
@@ -50,6 +51,7 @@ export function RichTextEditor({
   placeholder?: string
 }) {
   const [html, setHtml] = useState(defaultValue)
+  const [mediaPickerOpen, setMediaPickerOpen] = useState(false)
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -121,11 +123,8 @@ export function RichTextEditor({
           <LinkIcon className="h-4 w-4" />
         </ToolbarButton>
         <ToolbarButton
-          title="Image (URL)"
-          onClick={() => {
-            const url = window.prompt("Image URL:")
-            if (url) editor.chain().focus().setImage({ src: url }).run()
-          }}
+          title="Insert image from Media Library"
+          onClick={() => setMediaPickerOpen(true)}
         >
           <ImageIcon className="h-4 w-4" />
         </ToolbarButton>
@@ -139,6 +138,14 @@ export function RichTextEditor({
       </div>
       <EditorContent editor={editor} className="bg-white" />
       <input type="hidden" name={name} value={html} />
+
+      <MediaPickerModal
+        open={mediaPickerOpen}
+        onOpenChange={setMediaPickerOpen}
+        onSelect={(asset) => {
+          editor.chain().focus().setImage({ src: asset.url, alt: asset.altText ?? asset.title ?? undefined }).run()
+        }}
+      />
     </div>
   )
 }

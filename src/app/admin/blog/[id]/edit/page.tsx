@@ -1,12 +1,14 @@
 import { notFound, redirect } from "next/navigation"
 import { prisma } from "@/lib/prisma"
 import { updateBlogPost } from "@/actions/blog"
+import { syncMediaMetaByUrl } from "@/actions/media"
 import { Button } from "@/components/ui/button"
 import { SubmitButton } from "@/components/admin/SubmitButton"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ImageUploadField } from "@/components/admin/portfolio/ImageUploadField"
+import { CoverImageField } from "@/components/admin/blog/CoverImageField"
 import { RichTextEditor } from "@/components/admin/RichTextEditor"
 import { SaveStatus } from "@/components/admin/SaveStatus"
 import Link from "next/link"
@@ -33,6 +35,13 @@ export default async function EditBlogPostPage({
 
   if (!post) notFound()
 
+  const coverAsset = post.coverImage
+    ? await prisma.mediaAsset.findFirst({
+        where: { url: post.coverImage as string },
+        select: { title: true, caption: true },
+      }).catch(() => null)
+    : null
+
   async function handleUpdate(formData: FormData) {
     "use server"
     const title = formData.get("title") as string
@@ -41,6 +50,8 @@ export default async function EditBlogPostPage({
     const content = formData.get("content") as string
     const coverImage = formData.get("coverImage") as string
     const coverImageAlt = formData.get("coverImageAlt") as string
+    const coverImageMetaTitle = formData.get("coverImageMetaTitle") as string
+    const coverImageMetaCaption = formData.get("coverImageMetaCaption") as string
     const authorName = formData.get("authorName") as string
     const categoryId = formData.get("categoryId") as string
     const tagsRaw = formData.get("tags") as string
@@ -64,6 +75,13 @@ export default async function EditBlogPostPage({
       seoDesc: seoDesc || undefined,
       ogImage: ogImage || undefined,
     }, post!.status as string)
+    if (coverImage) {
+      await syncMediaMetaByUrl(coverImage, {
+        altText: coverImageAlt || "",
+        title: coverImageMetaTitle || "",
+        caption: coverImageMetaCaption || "",
+      })
+    }
     redirect(`/admin/blog/${id}/edit?saved=1`)
   }
 
@@ -144,14 +162,12 @@ export default async function EditBlogPostPage({
 
         <div className="border-t pt-5 space-y-4">
           <p className="text-sm font-semibold text-gray-700">Cover Image</p>
-          <div className="space-y-1.5">
-            <Label>Image</Label>
-            <ImageUploadField fieldName="coverImage" defaultValue={(post.coverImage as string) ?? ""} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="coverImageAlt">Alt Text</Label>
-            <Input id="coverImageAlt" name="coverImageAlt" defaultValue={(post.coverImageAlt as string) ?? ""} />
-          </div>
+          <CoverImageField
+            defaultUrl={(post.coverImage as string) ?? ""}
+            defaultAlt={(post.coverImageAlt as string) ?? ""}
+            defaultTitle={(coverAsset?.title as string) ?? ""}
+            defaultCaption={(coverAsset?.caption as string) ?? ""}
+          />
         </div>
 
         <div className="space-y-1.5">
