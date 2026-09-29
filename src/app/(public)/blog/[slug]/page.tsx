@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft } from "lucide-react";
+import { BlogSidebar } from "@/components/blog/BlogSidebar";
 
 async function getPost(slug: string) {
   try {
@@ -63,57 +64,65 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <main className="flex min-h-screen flex-col">
       <article className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto">
-            <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-brand-red transition-colors mb-8">
-              <ChevronLeft className="h-4 w-4" />
-              Back to Blog
-            </Link>
+          <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-3 items-start">
+            <div className="lg:col-span-2 max-w-3xl">
+              <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-brand-red transition-colors mb-8">
+                <ChevronLeft className="h-4 w-4" />
+                Back to Blog
+              </Link>
 
-            {post.category && (
-              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-brand-red mb-3">
-                {post.category.name as string}
-              </span>
-            )}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-4">
-              {post.title as string}
-            </h1>
-            <div className="flex items-center gap-3 text-sm text-muted-foreground mb-8">
-              {post.authorName && <span>{post.authorName as string}</span>}
-              {post.authorName && post.publishedAt ? <span aria-hidden="true">&middot;</span> : null}
-              {post.publishedAt && (
-                <time dateTime={new Date(post.publishedAt as unknown as string).toISOString()}>
-                  {new Date(post.publishedAt as unknown as string).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}
-                </time>
+              {post.category && (
+                <span className="inline-block text-xs font-semibold uppercase tracking-wider text-brand-red mb-3">
+                  {post.category.name as string}
+                </span>
+              )}
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground mb-4">
+                {post.title as string}
+              </h1>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mb-8">
+                {post.authorName && <span>{post.authorName as string}</span>}
+                {post.authorName && post.publishedAt ? <span aria-hidden="true">&middot;</span> : null}
+                {post.publishedAt && (
+                  <time dateTime={new Date(post.publishedAt as unknown as string).toISOString()}>
+                    {new Date(post.publishedAt as unknown as string).toLocaleDateString("en-CA", { year: "numeric", month: "long", day: "numeric" })}
+                  </time>
+                )}
+              </div>
+
+              {post.coverImage && (
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-border">
+                  <Image
+                    src={post.coverImage as string}
+                    alt={(post.coverImageAlt as string) || (post.title as string)}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 768px"
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+              )}
+
+              <div
+                className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-brand-red"
+                dangerouslySetInnerHTML={{ __html: post.content as string }}
+              />
+
+              {((post.tags as string[]) ?? []).length > 0 && (
+                <div className="mt-10 flex flex-wrap gap-2 pt-8 border-t border-border">
+                  {(post.tags as string[]).map((tag) => (
+                    <Link
+                      key={tag}
+                      href={`/blog?tag=${encodeURIComponent(tag)}`}
+                      className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full hover:bg-brand-red/10 hover:text-brand-red transition-colors"
+                    >
+                      #{tag}
+                    </Link>
+                  ))}
+                </div>
               )}
             </div>
 
-            {post.coverImage && (
-              <div className="relative w-full aspect-video rounded-2xl overflow-hidden mb-10 border border-border">
-                <Image
-                  src={post.coverImage as string}
-                  alt={(post.coverImageAlt as string) || (post.title as string)}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 768px"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            )}
-
-            <div
-              className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-brand-red"
-              dangerouslySetInnerHTML={{ __html: post.content as string }}
-            />
-
-            {((post.tags as string[]) ?? []).length > 0 && (
-              <div className="mt-10 flex flex-wrap gap-2 pt-8 border-t border-border">
-                {(post.tags as string[]).map((tag) => (
-                  <span key={tag} className="text-xs font-medium text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            <BlogSidebar currentSlug={slug} activeCategorySlug={post.category?.slug as string | undefined} />
           </div>
         </div>
       </article>

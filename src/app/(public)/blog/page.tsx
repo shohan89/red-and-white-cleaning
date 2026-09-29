@@ -6,7 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getPageMetadata } from "@/lib/metadata";
 import { prisma } from "@/lib/prisma";
-import { FileText } from "lucide-react";
+import { FileText, X } from "lucide-react";
+import { BlogSidebar } from "@/components/blog/BlogSidebar";
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("blog", {
@@ -16,7 +17,13 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default async function BlogIndexPage() {
+export default async function BlogIndexPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ category?: string; tag?: string; q?: string }>
+}) {
+  const { category, tag, q } = await searchParams
+
   let posts: Array<{
     id: string
     title: string
@@ -25,17 +32,37 @@ export default async function BlogIndexPage() {
     coverImage: string | null
     coverImageAlt: string | null
     publishedAt: Date | null
-    category: { name: string } | null
+    tags: string[] | null
+    category: { name: string; slug: string } | null
   }> = []
 
   try {
     posts = await prisma.blogPost.findMany({
       where: { status: "PUBLISHED" },
       orderBy: { publishedAt: "desc" },
-      include: { category: { select: { name: true } } },
+      include: { category: { select: { name: true, slug: true } } },
     })
   } catch (err) {
     console.error("[blog] DB error:", err)
+  }
+
+  if (category) posts = posts.filter((p) => p.category?.slug === category)
+  if (tag) posts = posts.filter((p) => (p.tags ?? []).includes(tag))
+  if (q) {
+    const needle = q.toLowerCase()
+    posts = posts.filter(
+      (p) => p.title.toLowerCase().includes(needle) || (p.excerpt ?? "").toLowerCase().includes(needle)
+    )
+  }
+
+  let activeFilterLabel: string | null = null
+  if (category) {
+    const cat = await prisma.blogCategory.findFirst({ where: { slug: category }, select: { name: true } }).catch(() => null)
+    activeFilterLabel = `Category: ${(cat?.name as string | undefined) ?? category}`
+  } else if (tag) {
+    activeFilterLabel = `Tag: #${tag}`
+  } else if (q) {
+    activeFilterLabel = `Search: "${q}"`
   }
 
   return (
@@ -57,13 +84,25 @@ export default async function BlogIndexPage() {
 
       <section className="py-20 lg:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
+          <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-3 items-start">
+          <div className="lg:col-span-2">
+          {activeFilterLabel && (
+            <div className="mb-8 flex items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-muted px-4 py-1.5 text-sm font-medium text-foreground">
+                {activeFilterLabel}
+                <Link href="/blog" aria-label="Clear filter" className="text-muted-foreground hover:text-brand-red">
+                  <X className="h-3.5 w-3.5" />
+                </Link>
+              </span>
+            </div>
+          )}
           {posts.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <FileText className="h-10 w-10 mx-auto mb-3 text-gray-300" />
-              <p>No posts published yet. Check back soon.</p>
+              <p>No posts found.</p>
             </div>
           ) : (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+            <div className="grid gap-8 sm:grid-cols-2">
               {posts.map((post) => (
                 <Link
                   key={post.id}
@@ -107,6 +146,10 @@ export default async function BlogIndexPage() {
               ))}
             </div>
           )}
+          </div>
+
+          <BlogSidebar activeCategorySlug={category} activeTag={tag} />
+          </div>
         </div>
       </section>
     </main>
