@@ -4,21 +4,11 @@ import { useState, type FormEvent } from "react";
 import { CheckCircle2, Loader2, ShieldCheck } from "lucide-react";
 import styles from "../deep-cleaning/deep-cleaning.module.css";
 
-const SERVICE_OPTIONS = [
-  "Recurring House Cleaning",
-  "One-Time Deep Clean",
-  "Move-In / Move-Out Cleaning",
-  "Pre-Sale / Pre-Listing Clean",
-  "Post-Renovation Reset",
-  "Other",
-];
-
 interface FormErrors {
   name?: string;
   phone?: string;
   email?: string;
-  location?: string;
-  service?: string;
+  locationService?: string;
 }
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -49,14 +39,12 @@ export function LeadForm() {
     const name = String(data.get("name") ?? "").trim();
     const phone = String(data.get("phone") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
-    const location = String(data.get("location") ?? "").trim();
-    const service = String(data.get("service") ?? "").trim();
+    const locationService = String(data.get("locationService") ?? "").trim();
 
     if (name.length < 2) next.name = "Please enter your full name";
     if (phone.length < 7) next.phone = "Please enter a valid phone number";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = "Please enter a valid email";
-    if (location.length < 2) next.location = "Please enter your city or town";
-    if (!service) next.service = "Please select a service";
+    if (locationService.length < 3) next.locationService = "Please tell us your location and the service you need";
 
     return next;
   };
@@ -77,6 +65,7 @@ export function LeadForm() {
     if (Object.keys(validationErrors).length > 0) return;
 
     setStatus("submitting");
+    const locationService = String(data.get("locationService") ?? "");
     try {
       const res = await fetch("/api/residential-cleaning-lead", {
         method: "POST",
@@ -85,12 +74,12 @@ export function LeadForm() {
           name: data.get("name"),
           phone: data.get("phone"),
           email: data.get("email"),
-          location: data.get("location"),
-          service: data.get("service"),
+          location: locationService,
+          service: locationService,
         }),
       });
       if (!res.ok) throw new Error("Request failed");
-      trackLead(String(data.get("service") ?? ""));
+      trackLead(locationService);
       setStatus("success");
       form.reset();
     } catch {
@@ -172,40 +161,17 @@ export function LeadForm() {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="location" className={styles.glassLabel}>
-            Your Location <span className={styles.glassRequired}>*</span>
+          <label htmlFor="locationService" className={styles.glassLabel}>
+            Your Location &amp; Service Needed <span className={styles.glassRequired}>*</span>
           </label>
           <input
-            id="location"
-            name="location"
+            id="locationService"
+            name="locationService"
             type="text"
-            placeholder="Kitchener, ON"
-            autoComplete="address-level2"
-            className={`${styles.glassInput} ${errors.location ? styles.glassInputError : ""}`}
+            placeholder="e.g. Kitchener, ON — Recurring House Cleaning"
+            className={`${styles.glassInput} ${errors.locationService ? styles.glassInputError : ""}`}
           />
-          {errors.location && <p className={styles.glassErrorText}>{errors.location}</p>}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="service" className={styles.glassLabel}>
-            Service Needed <span className={styles.glassRequired}>*</span>
-          </label>
-          <select
-            id="service"
-            name="service"
-            defaultValue=""
-            className={`${styles.glassSelect} ${errors.service ? styles.glassInputError : ""}`}
-          >
-            <option value="" disabled>
-              Select a service...
-            </option>
-            {SERVICE_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          {errors.service && <p className={styles.glassErrorText}>{errors.service}</p>}
+          {errors.locationService && <p className={styles.glassErrorText}>{errors.locationService}</p>}
         </div>
 
         {status === "error" && (

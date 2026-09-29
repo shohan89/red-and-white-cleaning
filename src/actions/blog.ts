@@ -9,6 +9,14 @@ async function requireAdmin() {
   if (!session?.user) throw new Error("Unauthorized")
 }
 
+function slugify(input: string): string {
+  return input
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
 function revalidateBlog(slug?: string) {
   revalidatePath("/admin/blog")
   revalidatePath("/admin/blog/[id]/edit", "page")
@@ -62,6 +70,7 @@ export async function createBlogPost(data: BlogPostFields) {
   const post = await prisma.blogPost.create({
     data: {
       ...data,
+      slug: slugify(data.slug),
       status,
       publishedAt: status === "PUBLISHED" ? new Date() : null,
     },
@@ -73,6 +82,7 @@ export async function createBlogPost(data: BlogPostFields) {
 export async function updateBlogPost(id: string, data: Partial<BlogPostFields>, currentStatus?: string) {
   await requireAdmin()
   const update: Record<string, unknown> = { ...data }
+  if (data.slug) update.slug = slugify(data.slug)
   if (data.status && data.status !== currentStatus) {
     update.publishedAt = data.status === "PUBLISHED" ? new Date() : null
   }
