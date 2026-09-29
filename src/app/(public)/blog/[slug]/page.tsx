@@ -64,13 +64,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <main className="flex min-h-screen flex-col">
       <article className="py-16 lg:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="mx-auto max-w-6xl grid gap-12 lg:grid-cols-3 items-start">
-            <div className="lg:col-span-2 max-w-3xl">
-              <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-brand-red transition-colors mb-8">
-                <ChevronLeft className="h-4 w-4" />
-                Back to Blog
-              </Link>
+          <div className="mx-auto max-w-6xl">
+            <Link href="/blog" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-brand-red transition-colors mb-8">
+              <ChevronLeft className="h-4 w-4" />
+              Back to Blog
+            </Link>
 
+            <div className="grid gap-12 lg:grid-cols-3 items-start">
+            <div className="lg:col-span-2 max-w-3xl">
               {post.category && (
                 <span className="inline-block text-xs font-semibold uppercase tracking-wider text-brand-red mb-3">
                   {post.category.name as string}
@@ -123,6 +124,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             </div>
 
             <BlogSidebar currentSlug={slug} activeCategorySlug={post.category?.slug as string | undefined} />
+            </div>
           </div>
         </div>
       </article>
