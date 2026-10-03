@@ -10,7 +10,7 @@ async function requireAdmin() {
   if (!session?.user) throw new Error("Unauthorized")
 }
 
-function revalidateService() {
+function revalidateService(quiet = false) {
   revalidatePath("/admin/services")
   revalidatePath("/admin/service-pages")
   revalidatePath("/admin/services/[slug]", "page")
@@ -18,7 +18,8 @@ function revalidateService() {
   revalidatePath("/services")
   revalidatePath("/services/[slug]", "page")
   revalidatePath("/sitemap.xml")
-  refresh()
+  // quiet: caller is a client component that updates its own state; skip full page re-render
+  if (!quiet) refresh()
 }
 
 interface ServiceFields {
@@ -44,10 +45,10 @@ export async function createService(data: ServiceFields) {
   return service
 }
 
-export async function updateService(id: string, data: Partial<ServiceFields>) {
+export async function updateService(id: string, data: Partial<ServiceFields>, quiet = false) {
   await requireAdmin()
   await prisma.service.update({ where: { id }, data })
-  revalidateService()
+  revalidateService(quiet)
 }
 
 export async function deleteService(id: string) {
@@ -56,28 +57,29 @@ export async function deleteService(id: string) {
   revalidateService()
 }
 
-export async function createServiceIncludedItem(serviceId: string, text: string) {
+export async function createServiceIncludedItem(serviceId: string, text: string, quiet = false) {
   await requireAdmin()
   const maxSort = await prisma.serviceIncludedItem.aggregate({
     _max: { sortOrder: true },
     where: { serviceId },
   })
-  await prisma.serviceIncludedItem.create({
-    data: { serviceId, text, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
+  const row = await prisma.serviceIncludedItem.create({
+    data: { serviceId, text, sortOrder: ((maxSort._max as { sortOrder: number | null }).sortOrder ?? -1) + 1 },
   })
-  revalidateService()
+  revalidateService(quiet)
+  return { id: row.id as string, text: row.text as string }
 }
 
-export async function updateServiceIncludedItem(id: string, text: string) {
+export async function updateServiceIncludedItem(id: string, text: string, quiet = false) {
   await requireAdmin()
   await prisma.serviceIncludedItem.update({ where: { id }, data: { text } })
-  revalidateService()
+  revalidateService(quiet)
 }
 
-export async function deleteServiceIncludedItem(id: string) {
+export async function deleteServiceIncludedItem(id: string, quiet = false) {
   await requireAdmin()
   await prisma.serviceIncludedItem.delete({ where: { id } })
-  revalidateService()
+  revalidateService(quiet)
 }
 
 interface ServicePhaseFields {
@@ -176,6 +178,7 @@ export async function deleteServiceDetailSection(id: string) {
 }
 
 // ─── Page sections (dedicated service page content editor) ──────────────────
+// These return data and skip refresh() so the client editor can update instantly.
 
 function assertSectionKey(key: string): asserts key is ServicePageSectionKey {
   if (!(SERVICE_PAGE_SECTION_KEYS as readonly string[]).includes(key)) throw new Error("Invalid section")
@@ -198,7 +201,7 @@ export async function saveServicePageSection(
     update: values,
     create: { serviceId, key, ...values },
   })
-  revalidateService()
+  revalidateService(true)
 }
 
 interface ServicePageItemFields {
@@ -207,65 +210,69 @@ interface ServicePageItemFields {
   url?: string
 }
 
-export async function createServicePageItem(serviceId: string, sectionKey: string, data: ServicePageItemFields) {
+export interface ServicePageItemRow {
+  id: string
+  title: string
+  body: string | null
+  url: string | null
+}
+
+function toRow(r: Record<string, unknown>): ServicePageItemRow {
+  return { id: r.id as string, title: r.title as string, body: (r.body as string) ?? null, url: (r.url as string) ?? null }
+}
+
+export async function createServicePageItem(
+  serviceId: string,
+  sectionKey: string,
+  data: ServicePageItemFields,
+): Promise<ServicePageItemRow> {
   await requireAdmin()
   assertSectionKey(sectionKey)
   const maxSort = await prisma.servicePageItem.aggregate({
     _max: { sortOrder: true },
     where: { serviceId, sectionKey },
   })
-  await prisma.servicePageItem.create({
+  const row = await prisma.servicePageItem.create({
     data: {
       serviceId,
       sectionKey,
       title: data.title,
       body: data.body || null,
       url: data.url || null,
-      sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
+      sortOrder: ((maxSort._max as { sortOrder: number | null }).sortOrder ?? -1) + 1,
     },
   })
-  revalidateService()
+  revalidateService(true)
+  return toRow(row)
 }
 
-export async function updateServicePageItem(id: string, data: ServicePageItemFields) {
+export async function updateServicePageItem(id: string, data: ServicePageItemFields): Promise<ServicePageItemRow> {
   await requireAdmin()
-  await prisma.servicePageItem.update({
+  const row = await prisma.servicePageItem.update({
     where: { id },
     data: { title: data.title, body: data.body || null, url: data.url || null },
   })
-  revalidateService()
+  revalidateService(true)
+  return toRow(row ?? { id, ...data })
 }
 
 export async function deleteServicePageItem(id: string) {
   await requireAdmin()
   await prisma.servicePageItem.delete({ where: { id } })
-  revalidateService()
+  revalidateService(true)
 }
 
-// Swap sortOrder with the neighbouring item in the same section.
-export async function moveServicePageItem(id: string, direction: "up" | "down") {
+// Persist the full order of a section in one round trip.
+export async function reorderServicePageItems(orderedIds: string[]) {
   await requireAdmin()
-  const item = await prisma.servicePageItem.findUnique({ where: { id } })
-  if (!item) return
-  const siblings = await prisma.servicePageItem.findMany({
-    where: { serviceId: item.serviceId, sectionKey: item.sectionKey },
-    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
-  })
-  const i = siblings.findIndex((s) => s.id === id)
-  const j = direction === "up" ? i - 1 : i + 1
-  if (j < 0 || j >= siblings.length) return
-  const reordered = [...siblings]
-  ;[reordered[i], reordered[j]] = [reordered[j], reordered[i]]
-  for (let idx = 0; idx < reordered.length; idx++) {
-    if (reordered[idx].sortOrder !== idx) {
-      await prisma.servicePageItem.update({ where: { id: reordered[idx].id }, data: { sortOrder: idx } })
-    }
-  }
-  revalidateService()
+  await Promise.all(
+    orderedIds.map((id, idx) => prisma.servicePageItem.update({ where: { id }, data: { sortOrder: idx } })),
+  )
+  revalidateService(true)
 }
 
 export async function saveServiceRelatedPosts(serviceId: string, postIds: string[]) {
   await requireAdmin()
   await prisma.service.update({ where: { id: serviceId }, data: { relatedPostIds: postIds } })
-  revalidateService()
+  revalidateService(true)
 }
