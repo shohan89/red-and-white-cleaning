@@ -268,7 +268,7 @@ export default async function ServiceContentEditorPage({
                   <div className="max-h-56 overflow-y-auto rounded border p-2 space-y-1">
                     {posts.map((p) => (
                       <label key={p.id} className="flex items-center gap-2 text-sm">
-                        <input type="checkbox" name="postIds" value={p.id} defaultChecked={service.relatedPostIds.includes(p.id)} className="h-4 w-4" />
+                        <input type="checkbox" name="postIds" value={p.id} defaultChecked={(service.relatedPostIds ?? []).includes(p.id)} className="h-4 w-4" />
                         {p.title}
                       </label>
                     ))}
