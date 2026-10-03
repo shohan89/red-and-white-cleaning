@@ -9,7 +9,8 @@ const authProxy = NextAuth(() => ({ ...authConfig })).auth as unknown as (
 
 const LOCAL_HOSTNAMES = new Set(["localhost", "127.0.0.1"])
 
-export default function proxy(request: NextRequest) {
+// Must stay middleware.ts (Edge runtime): OpenNext Cloudflare rejects Next 16's proxy.ts (Node runtime).
+export default function middleware(request: NextRequest) {
   if (request.nextUrl.protocol === "http:" && !LOCAL_HOSTNAMES.has(request.nextUrl.hostname)) {
     const httpsUrl = request.nextUrl.clone()
     httpsUrl.protocol = "https:"
