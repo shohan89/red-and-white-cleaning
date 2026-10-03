@@ -1,31 +1,33 @@
-import { Client } from "pg"
+import { Pool } from "pg"
+import { cache } from "react"
 
-// Fresh Client per query — no connection pool. A pooled connection was tried
-// (module-level `pg.Pool` reused across requests) to cut handshake overhead,
-// but in production on Cloudflare Workers it made things *worse*: Worker
-// isolates can be frozen and thawed between requests, and a pooled socket
-// that went stale while frozen doesn't fail fast — it hangs until the OS-level
-// TCP timeout (20s+), which is exactly the multi-second/timeout page loads
-// this caused. A fresh Client always connects cleanly, and a short
-// `connectionTimeoutMillis` below bounds the worst case. Point DATABASE_URL at
-// the Supabase transaction-mode pooler (port 6543) so each new connection is
-// cheap.
+// One small Pool *per request* (React `cache` is request-scoped), not per query.
+// History: a fresh Client per query paid a full TCP+TLS+auth handshake to the
+// (distant) Supabase pooler on every query, so a page with 5-7 queries spent
+// seconds just connecting. A module-level pool shared across requests was also
+// tried and failed on Cloudflare Workers: isolates are frozen between requests
+// and a pooled socket from an earlier request goes stale and hangs until the OS
+// TCP timeout. A request-scoped pool gets both: connections are reused by the
+// queries of one request (and run in parallel up to `max`), and nothing outlives
+// the request. Point DATABASE_URL at the Supabase transaction pooler (6543).
+const getPool = cache(() => {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    max: 4,
+    connectionTimeoutMillis: 8_000,
+    query_timeout: 10_000,
+    idleTimeoutMillis: 2_000,
+  })
+  pool.on("error", () => {})
+  return pool
+})
+
 async function runQuery(
   sql: string,
   params: Params
 ): Promise<{ rows: Record<string, unknown>[]; rowCount: number | null }> {
-  const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    connectionTimeoutMillis: 8_000,
-    query_timeout: 10_000,
-  })
-  try {
-    await client.connect()
-    const result = await client.query(sql, params as never[])
-    return result as { rows: Record<string, unknown>[]; rowCount: number | null }
-  } finally {
-    client.end().catch(() => {})
-  }
+  const result = await getPool().query(sql, params as never[])
+  return result as { rows: Record<string, unknown>[]; rowCount: number | null }
 }
 
 // Tables without updatedAt

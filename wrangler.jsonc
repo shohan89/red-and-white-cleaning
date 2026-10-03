@@ -5,6 +5,9 @@
 	"account_id": "45626a3f0c852a113bc5c894686e9195",
 	"compatibility_date": "2026-06-15",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	// Run the Worker near the database (Supabase, Tokyo) instead of near the visitor:
+	// pages make several sequential DB round trips, so DB proximity matters most.
+	"placement": { "mode": "smart" },
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
