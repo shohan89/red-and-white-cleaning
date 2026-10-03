@@ -65,14 +65,11 @@ export default async function ServicesAdminPage() {
                     </Badge>
                   </div>
                 </div>
-                <Button size="sm" asChild className="bg-brand-red hover:bg-brand-red/90 text-white">
-                  <Link href={`/admin/services/${service.slug}/content`}>
-                    <Pencil className="h-3.5 w-3.5 mr-1.5" />
-                    Edit Page Content
-                  </Link>
-                </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href={`/admin/services/${service.slug}`}>Settings &amp; SEO</Link>
+                  <Link href={`/admin/services/${service.slug}`}>
+                    <Pencil className="h-3.5 w-3.5 mr-1.5" />
+                    Edit
+                  </Link>
                 </Button>
               </li>
             ))}

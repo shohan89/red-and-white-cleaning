@@ -186,7 +186,7 @@ export default async function ServiceEditorPage({
         </div>
         <div className="flex items-center gap-2">
           <Button asChild className="bg-brand-red hover:bg-brand-red/90 text-white" size="sm">
-            <Link href={`/admin/services/${service.slug}/content`}>Edit Page Content</Link>
+            <Link href={`/admin/service-pages/${service.slug}`}>Edit Page Content</Link>
           </Button>
           <form action={handleDeleteService}>
             <DeleteServiceButton />

@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { SaveStatus } from "@/components/admin/SaveStatus"
 import { ServicePageItemButtons } from "@/components/admin/services/ServicePageItemButtons"
-import { DeleteIncludedItemButton } from "../../ServicesClient"
+import { DeleteIncludedItemButton } from "../../services/ServicesClient"
 import { ChevronLeft, ExternalLink } from "lucide-react"
 
 export const metadata = { title: "Service Page Content" }
@@ -87,7 +87,7 @@ export default async function ServiceContentEditorPage({
   ])
 
   const serviceId = service.id
-  const back = `/admin/services/${slug}/content`
+  const back = `/admin/service-pages/${slug}`
 
   async function handleHero(formData: FormData) {
     "use server"
@@ -186,19 +186,27 @@ export default async function ServiceContentEditorPage({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" asChild>
-            <Link href={`/admin/services/${slug}`}>
+            <Link href="/admin/service-pages">
               <ChevronLeft className="h-4 w-4 mr-1" />
-              Service Settings
+              Service Pages
             </Link>
           </Button>
           <h1 className="text-xl font-heading font-bold text-brand-dark">{service.name} — Page Content</h1>
         </div>
+        <div className="flex gap-2">
+        <Button variant="outline" size="sm" asChild>
+          <Link href={`/admin/services/${slug}`}>Photos, Phases &amp; SEO</Link>
+        </Button>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/admin/faqs">FAQs</Link>
+        </Button>
         <Button variant="outline" size="sm" asChild>
           <Link href={`/services/${slug}`} target="_blank">
             <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
             View Page
           </Link>
         </Button>
+        </div>
       </div>
 
       <section className="bg-white rounded-lg border p-6 space-y-4">

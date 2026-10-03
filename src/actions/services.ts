@@ -12,8 +12,9 @@ async function requireAdmin() {
 
 function revalidateService() {
   revalidatePath("/admin/services")
+  revalidatePath("/admin/service-pages")
   revalidatePath("/admin/services/[slug]", "page")
-  revalidatePath("/admin/services/[slug]/content", "page")
+  revalidatePath("/admin/service-pages/[slug]", "page")
   revalidatePath("/services")
   revalidatePath("/services/[slug]", "page")
   revalidatePath("/sitemap.xml")

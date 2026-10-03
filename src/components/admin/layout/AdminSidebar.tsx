@@ -48,6 +48,7 @@ const NAV_SECTIONS = [
       { title: "Portfolio", href: "/admin/portfolio", icon: Images },
       { title: "Categories", href: "/admin/categories", icon: FolderOpen },
       { title: "Services", href: "/admin/services", icon: Wrench },
+      { title: "Service Pages", href: "/admin/service-pages", icon: FileText },
       { title: "FAQs", href: "/admin/faqs", icon: HelpCircle },
       { title: "Page: Home", href: "/admin/content/home", icon: Home },
       { title: "Page: About", href: "/admin/content/about", icon: Info },
