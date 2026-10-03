@@ -3,6 +3,7 @@
 import { revalidatePath, refresh } from "next/cache"
 import { prisma } from "@/lib/prisma"
 import { auth } from "@/lib/auth"
+import { SERVICE_PAGE_SECTION_KEYS, type ServicePageSectionKey } from "@/lib/service-page-sections"
 
 async function requireAdmin() {
   const session = await auth()
@@ -12,6 +13,7 @@ async function requireAdmin() {
 function revalidateService() {
   revalidatePath("/admin/services")
   revalidatePath("/admin/services/[slug]", "page")
+  revalidatePath("/admin/services/[slug]/content", "page")
   revalidatePath("/services")
   revalidatePath("/services/[slug]", "page")
   revalidatePath("/sitemap.xml")
@@ -169,5 +171,100 @@ export async function updateServiceDetailSection(id: string, data: Partial<Servi
 export async function deleteServiceDetailSection(id: string) {
   await requireAdmin()
   await prisma.serviceDetailSection.delete({ where: { id } })
+  revalidateService()
+}
+
+// ─── Page sections (dedicated service page content editor) ──────────────────
+
+function assertSectionKey(key: string): asserts key is ServicePageSectionKey {
+  if (!(SERVICE_PAGE_SECTION_KEYS as readonly string[]).includes(key)) throw new Error("Invalid section")
+}
+
+export async function saveServicePageSection(
+  serviceId: string,
+  key: string,
+  data: { heading?: string; intro?: string; enabled: boolean },
+) {
+  await requireAdmin()
+  assertSectionKey(key)
+  const values = {
+    heading: data.heading?.trim() || null,
+    intro: data.intro?.trim() || null,
+    enabled: data.enabled,
+  }
+  await prisma.servicePageSection.upsert({
+    where: { serviceId_key: { serviceId, key } },
+    update: values,
+    create: { serviceId, key, ...values },
+  })
+  revalidateService()
+}
+
+interface ServicePageItemFields {
+  title: string
+  body?: string
+  url?: string
+}
+
+export async function createServicePageItem(serviceId: string, sectionKey: string, data: ServicePageItemFields) {
+  await requireAdmin()
+  assertSectionKey(sectionKey)
+  const maxSort = await prisma.servicePageItem.aggregate({
+    _max: { sortOrder: true },
+    where: { serviceId, sectionKey },
+  })
+  await prisma.servicePageItem.create({
+    data: {
+      serviceId,
+      sectionKey,
+      title: data.title,
+      body: data.body || null,
+      url: data.url || null,
+      sortOrder: (maxSort._max.sortOrder ?? -1) + 1,
+    },
+  })
+  revalidateService()
+}
+
+export async function updateServicePageItem(id: string, data: ServicePageItemFields) {
+  await requireAdmin()
+  await prisma.servicePageItem.update({
+    where: { id },
+    data: { title: data.title, body: data.body || null, url: data.url || null },
+  })
+  revalidateService()
+}
+
+export async function deleteServicePageItem(id: string) {
+  await requireAdmin()
+  await prisma.servicePageItem.delete({ where: { id } })
+  revalidateService()
+}
+
+// Swap sortOrder with the neighbouring item in the same section.
+export async function moveServicePageItem(id: string, direction: "up" | "down") {
+  await requireAdmin()
+  const item = await prisma.servicePageItem.findUnique({ where: { id } })
+  if (!item) return
+  const siblings = await prisma.servicePageItem.findMany({
+    where: { serviceId: item.serviceId, sectionKey: item.sectionKey },
+    orderBy: [{ sortOrder: "asc" }, { id: "asc" }],
+  })
+  const i = siblings.findIndex((s) => s.id === id)
+  const j = direction === "up" ? i - 1 : i + 1
+  if (j < 0 || j >= siblings.length) return
+  const reordered = [...siblings]
+  ;[reordered[i], reordered[j]] = [reordered[j], reordered[i]]
+  for (let idx = 0; idx < reordered.length; idx++) {
+    if (reordered[idx].sortOrder !== idx) {
+      await prisma.servicePageItem.update({ where: { id: reordered[idx].id }, data: { sortOrder: idx } })
+    }
+  }
+  revalidateService()
+}
+
+export async function saveServiceRelatedPosts(serviceId: string, postIds: string[]) {
+  await requireAdmin()
+  await prisma.service.update({ where: { id: serviceId }, data: { relatedPostIds: postIds } })
   revalidateService()
 }

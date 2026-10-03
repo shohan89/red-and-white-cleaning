@@ -67,6 +67,10 @@ export interface ServiceSectionData {
   phases: ServicePhaseData[];
   includedItems: ServiceIncludedItemData[];
   images: ServiceImageData[];
+  /** Individual service page: render title as H1 and card headings as H2. */
+  standalone?: boolean;
+  includedHeading?: string;
+  showIncluded?: boolean;
 }
 
 function paragraphs(text: string): string[] {
@@ -84,13 +88,13 @@ function Badge({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   );
 }
 
-function IncludedItemsCard({ items, twoCol }: { items: ServiceIncludedItemData[]; twoCol?: boolean }) {
+function IncludedItemsCard({ items, twoCol, heading = "What's Included", H = 'h3' }: { items: ServiceIncludedItemData[]; twoCol?: boolean; heading?: string; H?: 'h2' | 'h3' }) {
   return (
     <div className="group relative overflow-hidden bg-card p-8 rounded-2xl border border-border shadow-sm hover:border-brand-red/30 transition-all duration-300 hover:shadow-md">
-      <h3 className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
+      <H className="text-2xl font-bold text-foreground mb-6 flex items-center gap-3">
         <span className="h-8 w-1.5 rounded bg-brand-red" />
-        What&apos;s Included
-      </h3>
+        {heading}
+      </H>
       <ul className={twoCol ? 'grid sm:grid-cols-2 gap-4' : 'space-y-4'}>
         {items.map((item) => (
           <li key={item.id} className="flex items-start gap-3 text-muted-foreground group/item hover:text-foreground transition-colors duration-200">
@@ -103,22 +107,22 @@ function IncludedItemsCard({ items, twoCol }: { items: ServiceIncludedItemData[]
   );
 }
 
-function WhoItsForCard({ text }: { text: string }) {
+function WhoItsForCard({ text, H = 'h3' }: { text: string; H?: 'h2' | 'h3' }) {
   return (
     <div className="group relative overflow-hidden bg-brand-red/[0.03] p-8 rounded-2xl border border-brand-red/10 shadow-sm transition-all duration-300 hover:border-brand-red/30 hover:bg-brand-red/[0.06] hover:shadow-md">
       <div className="absolute inset-0 bg-gradient-to-br from-brand-red/[0.02] to-transparent pointer-events-none" />
       <div className="relative z-10">
-        <h3 className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
+        <H className="text-xl font-bold text-foreground mb-3 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-brand-red animate-pulse" />
           Who It&apos;s For
-        </h3>
+        </H>
         <p className="text-muted-foreground leading-relaxed">{text}</p>
       </div>
     </div>
   );
 }
 
-function WhoItsForInline({ text }: { text: string }) {
+function WhoItsForInline({ text, H = 'h3' }: { text: string; H?: 'h2' | 'h3' }) {
   return (
     <div className="mt-8 group relative overflow-hidden bg-card p-6 rounded-2xl border border-border shadow-sm hover:border-brand-red/30 transition-all duration-300 hover:shadow-md">
       <div className="absolute inset-0 bg-gradient-to-br from-brand-red/[0.01] to-transparent pointer-events-none" />
@@ -127,9 +131,9 @@ function WhoItsForInline({ text }: { text: string }) {
           <Briefcase className="h-5 w-5 text-brand-red group-hover:scale-115 transition-transform" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-foreground mb-2 group-hover:text-brand-red transition-colors duration-200">
+          <H className="text-lg font-bold text-foreground mb-2 group-hover:text-brand-red transition-colors duration-200">
             Who It&apos;s For
-          </h3>
+          </H>
           <p className="text-muted-foreground">{text}</p>
         </div>
       </div>
@@ -137,13 +141,13 @@ function WhoItsForInline({ text }: { text: string }) {
   );
 }
 
-function ExamplesGrid({ images }: { images: ServiceImageData[] }) {
+function ExamplesGrid({ images, H = 'h3' }: { images: ServiceImageData[]; H?: 'h2' | 'h3' }) {
   return (
     <div className="mt-20">
-      <h3 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
+      <H className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
         <span className="h-8 w-1.5 rounded bg-brand-red" />
         Phase Clean Examples
-      </h3>
+      </H>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {images.map((img) => (
           <div key={img.id} className="group rounded-2xl overflow-hidden border border-border shadow-sm hover:shadow-lg hover:border-brand-red/40 transition-all duration-300">
@@ -173,15 +177,18 @@ function ExamplesGrid({ images }: { images: ServiceImageData[] }) {
 
 function PhasesSplitLayout({ service, alt }: { service: ServiceSectionData; alt: boolean }) {
   const BadgeIcon = resolveIcon(service.icon);
+  const TitleTag = service.standalone ? 'h1' : 'h2';
+  const H = service.standalone ? 'h2' : 'h3';
+  const showIncluded = service.includedItems.length > 0 && service.showIncluded !== false;
   const paras = paragraphs(service.description);
   return (
     <section id={service.slug} className={`py-20 lg:py-32 relative overflow-hidden ${alt ? 'bg-muted/30 border-y border-border' : 'bg-background'}`}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="mb-16">
           <Badge icon={BadgeIcon} label={service.label ?? service.title} />
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <TitleTag className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
             {service.title}
-          </h2>
+          </TitleTag>
           {paras.map((p, i) => (
             <p key={i} className="mt-4 text-lg text-muted-foreground">
               {p}
@@ -216,12 +223,12 @@ function PhasesSplitLayout({ service, alt }: { service: ServiceSectionData; alt:
           </div>
 
           <div className="space-y-12">
-            {service.includedItems.length > 0 && <IncludedItemsCard items={service.includedItems} />}
-            {service.targetAudienceText && <WhoItsForCard text={service.targetAudienceText} />}
+            {showIncluded && <IncludedItemsCard items={service.includedItems} heading={service.includedHeading} H={H} />}
+            {service.targetAudienceText && <WhoItsForCard text={service.targetAudienceText} H={H} />}
           </div>
         </div>
 
-        {service.images.length > 0 && <ExamplesGrid images={service.images} />}
+        {service.images.length > 0 && <ExamplesGrid images={service.images} H={H} />}
       </div>
     </section>
   );
@@ -231,6 +238,9 @@ function PhasesSplitLayout({ service, alt }: { service: ServiceSectionData; alt:
 
 function TextSplitLayout({ service, alt }: { service: ServiceSectionData; alt: boolean }) {
   const BadgeIcon = resolveIcon(service.icon);
+  const TitleTag = service.standalone ? 'h1' : 'h2';
+  const H = service.standalone ? 'h2' : 'h3';
+  const showIncluded = service.includedItems.length > 0 && service.showIncluded !== false;
   const paras = paragraphs(service.description);
   return (
     <section id={service.slug} className={`py-20 lg:py-32 relative overflow-hidden ${alt ? 'bg-muted/30 border-y border-border' : 'bg-background'}`}>
@@ -238,21 +248,21 @@ function TextSplitLayout({ service, alt }: { service: ServiceSectionData; alt: b
         <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
           <div className="lg:w-1/2">
             <Badge icon={BadgeIcon} label={service.label ?? service.title} />
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
+            <TitleTag className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
               {service.title}
-            </h2>
+            </TitleTag>
             <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
               {paras.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
             </div>
-            {service.targetAudienceText && <WhoItsForInline text={service.targetAudienceText} />}
+            {service.targetAudienceText && <WhoItsForInline text={service.targetAudienceText} H={H} />}
           </div>
 
-          {service.includedItems.length > 0 && (
+          {showIncluded && (
             <div className="lg:w-1/2">
               <div className="h-full">
-                <IncludedItemsCard items={service.includedItems} twoCol />
+                <IncludedItemsCard items={service.includedItems} twoCol heading={service.includedHeading} H={H} />
               </div>
             </div>
           )}
@@ -266,15 +276,17 @@ function TextSplitLayout({ service, alt }: { service: ServiceSectionData; alt: b
 
 function CenteredGridLayout({ service, alt }: { service: ServiceSectionData; alt: boolean }) {
   const BadgeIcon = resolveIcon(service.icon);
+  const TitleTag = service.standalone ? 'h1' : 'h2';
+  const showStandaloneIncluded = service.standalone && service.includedItems.length > 0 && service.showIncluded !== false;
   const paras = paragraphs(service.description);
   return (
     <section id={service.slug} className={`py-20 lg:py-32 relative overflow-hidden ${alt ? 'bg-muted/30 border-y border-border' : 'bg-background'}`}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <Badge icon={BadgeIcon} label={service.label ?? service.title} />
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
+          <TitleTag className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-6">
             {service.title}
-          </h2>
+          </TitleTag>
           {paras.map((p, i) => (
             <p key={i} className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
               {p}
@@ -304,6 +316,11 @@ function CenteredGridLayout({ service, alt }: { service: ServiceSectionData; alt
             );
           })}
         </div>
+        {showStandaloneIncluded && (
+          <div className="max-w-5xl mx-auto mt-12">
+            <IncludedItemsCard items={service.includedItems} twoCol heading={service.includedHeading} H="h2" />
+          </div>
+        )}
       </div>
     </section>
   );
@@ -313,6 +330,8 @@ function CenteredGridLayout({ service, alt }: { service: ServiceSectionData; alt
 
 function IconHeroLayout({ service, alt }: { service: ServiceSectionData; alt: boolean }) {
   const HeroIcon = resolveIcon(service.icon);
+  const TitleTag = service.standalone ? 'h1' : 'h2';
+  const showStandaloneIncluded = service.standalone && service.includedItems.length > 0 && service.showIncluded !== false;
   const paras = paragraphs(service.description);
   const [intro, tagline] = paras;
   return (
@@ -334,9 +353,9 @@ function IconHeroLayout({ service, alt }: { service: ServiceSectionData; alt: bo
               <CalendarCheck2 className="h-4 w-4" />
               {service.label ?? service.title}
             </div>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-4">
+            <TitleTag className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-4">
               {service.title}
-            </h2>
+            </TitleTag>
             {intro && <p className="text-lg text-muted-foreground leading-relaxed mb-6">{intro}</p>}
             {tagline && (
               <p className="text-lg font-semibold text-foreground flex items-center gap-2">
@@ -374,6 +393,11 @@ function IconHeroLayout({ service, alt }: { service: ServiceSectionData; alt: bo
             </div>
           ))}
         </div>
+        {showStandaloneIncluded && (
+          <div className="max-w-5xl mx-auto mt-12">
+            <IncludedItemsCard items={service.includedItems} twoCol heading={service.includedHeading} H="h2" />
+          </div>
+        )}
       </div>
     </section>
   );

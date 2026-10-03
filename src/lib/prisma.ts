@@ -29,9 +29,9 @@ async function runQuery(
 }
 
 // Tables without updatedAt
-const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection", "Redirect", "PortfolioImage"])
+const NO_UPDATED_AT = new Set(["LeadEvent", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection", "ServicePageSection", "ServicePageItem", "Redirect", "PortfolioImage"])
 // Tables without createdAt
-const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent", "PortfolioImage", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection"])
+const NO_CREATED_AT = new Set(["GlobalSeo", "PageSeo", "SchemaConfig", "SitemapEntry", "RobotsConfig", "SiteSettings", "EmailTemplate", "PageContent", "PortfolioImage", "ServicePhase", "ServiceIncludedItem", "ServiceImage", "ServiceDetailSection", "ServicePageSection", "ServicePageItem"])
 
 // Relationship definitions for include resolution
 const RELATIONS: Record<string, Record<string, {
@@ -64,6 +64,8 @@ const RELATIONS: Record<string, Record<string, {
     includedItems: { type: "hasMany", table: "ServiceIncludedItem", foreignKey: "serviceId", selfKey: "id" },
     images: { type: "hasMany", table: "ServiceImage", foreignKey: "serviceId", selfKey: "id" },
     detailSections: { type: "hasMany", table: "ServiceDetailSection", foreignKey: "serviceId", selfKey: "id" },
+    pageSections: { type: "hasMany", table: "ServicePageSection", foreignKey: "serviceId", selfKey: "id" },
+    pageItems: { type: "hasMany", table: "ServicePageItem", foreignKey: "serviceId", selfKey: "id" },
     faqs: { type: "hasMany", table: "Faq", foreignKey: "serviceId", selfKey: "id" },
   },
   Lead: {
@@ -478,6 +480,8 @@ export const prisma = {
   serviceIncludedItem: makeModel("ServiceIncludedItem"),
   serviceImage: makeModel("ServiceImage"),
   serviceDetailSection: makeModel("ServiceDetailSection"),
+  servicePageSection: makeModel("ServicePageSection"),
+  servicePageItem: makeModel("ServicePageItem"),
   mediaAsset: makeModel("MediaAsset"),
   pageContent: makeModel("PageContent"),
   globalSeo: makeModel("GlobalSeo"),

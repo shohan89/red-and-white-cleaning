@@ -185,6 +185,9 @@ model Service {
   includedItems      ServiceIncludedItem[]
   images             ServiceImage[]
   detailSections     ServiceDetailSection[]
+  pageSections       ServicePageSection[]
+  pageItems          ServicePageItem[]
+  relatedPostIds     String[]
   faqs               Faq[]
   createdAt          DateTime              @default(now())
   updatedAt          DateTime              @updatedAt
@@ -242,6 +245,34 @@ model ServiceDetailSection {
   sortOrder Int     @default(0)
 
   @@index([serviceId])
+}
+
+// Per-service page section settings (heading / intro / visibility).
+// key: included | how-we-work | industries | why-choose | service-areas | related
+model ServicePageSection {
+  id        String  @id @default(cuid())
+  serviceId String
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  key       String
+  heading   String?
+  intro     String? @db.Text
+  enabled   Boolean @default(true)
+
+  @@unique([serviceId, key])
+}
+
+// Items inside a page section (steps, industries, reasons, areas, internal links).
+model ServicePageItem {
+  id         String  @id @default(cuid())
+  serviceId  String
+  service    Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  sectionKey String
+  title      String
+  body       String? @db.Text
+  url        String?
+  sortOrder  Int     @default(0)
+
+  @@index([serviceId, sectionKey])
 }
 
 // ─── MEDIA LIBRARY ────────────────────────────────────────────────────────────

@@ -10,6 +10,8 @@ import { SITE } from "@/config/site";
 import { ServiceSection, type ServiceSectionData } from '@/components/sections/services/ServiceSection';
 import { ServiceDetailSections, type ServiceDetailSectionData } from '@/components/sections/services/ServiceDetailSections';
 import { ServiceFaqSection, type ServiceFaqData } from '@/components/sections/services/ServiceFaqSection';
+import { ServicePageSections } from '@/components/sections/services/ServicePageSections';
+import { resolveSection } from '@/lib/service-page-sections';
 import { ServicesCTA } from '@/components/sections/services/ServicesCTA';
 
 async function getService(slug: string) {
@@ -21,6 +23,8 @@ async function getService(slug: string) {
         includedItems: { orderBy: { sortOrder: "asc" } },
         images: { orderBy: { sortOrder: "asc" } },
         detailSections: { orderBy: { sortOrder: "asc" } },
+        pageSections: true,
+        pageItems: { orderBy: [{ sortOrder: "asc" }, { id: "asc" }] },
       },
     })
   } catch (err) {
@@ -38,6 +42,20 @@ async function getOtherServices(excludeSlug: string) {
     })
   } catch (err) {
     console.error("[services/slug] DB error (related):", err)
+    return []
+  }
+}
+
+async function getRelatedPosts(ids: string[]) {
+  if (ids.length === 0) return []
+  try {
+    const posts = await prisma.blogPost.findMany({
+      where: { id: { in: ids }, status: "PUBLISHED" },
+      select: { id: true, title: true, slug: true, excerpt: true },
+    })
+    return ids.map((id) => posts.find((p) => p.id === id)).filter((p): p is NonNullable<typeof p> => Boolean(p))
+  } catch (err) {
+    console.error("[services/slug] DB error (related posts):", err)
     return []
   }
 }
@@ -93,6 +111,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   const otherServices = await getOtherServices(slug)
   const faqs = await getServiceFaqs(service.id as string)
+  const relatedPosts = await getRelatedPosts((service.relatedPostIds as string[] | null) ?? [])
+  const included = resolveSection(service.pageSections, 'included')
   const url = `${SITE.url}/services/${slug}`
 
   const serviceSchema = {
@@ -157,7 +177,17 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         </div>
       </nav>
 
-      <ServiceSection service={service as unknown as ServiceSectionData} index={0} />
+      <ServiceSection
+        service={{
+          ...(service as unknown as ServiceSectionData),
+          standalone: true,
+          includedHeading: included.heading,
+          showIncluded: included.enabled,
+        }}
+        index={0}
+      />
+
+      <ServicePageSections sections={service.pageSections} items={service.pageItems} relatedPosts={relatedPosts} />
 
       <ServiceDetailSections sections={service.detailSections as unknown as ServiceDetailSectionData[]} />
 
