@@ -95,6 +95,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   <Image
                     src={post.coverImage as string}
                     alt={(post.coverImageAlt as string) || (post.title as string)}
+                    title={(post.coverImageAlt as string) || (post.title as string)}
                     fill
                     sizes="(max-width: 768px) 100vw, 768px"
                     className="object-cover"

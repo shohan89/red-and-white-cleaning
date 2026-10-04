@@ -143,7 +143,7 @@ export function RichTextEditor({
         open={mediaPickerOpen}
         onOpenChange={setMediaPickerOpen}
         onSelect={(asset) => {
-          editor.chain().focus().setImage({ src: asset.url, alt: asset.altText ?? asset.title ?? undefined }).run()
+          editor.chain().focus().setImage({ src: asset.url, alt: asset.altText ?? asset.title ?? undefined, title: asset.title ?? undefined }).run()
         }}
       />
     </div>

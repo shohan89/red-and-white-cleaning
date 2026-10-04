@@ -48,7 +48,7 @@ export default async function NewBlogPostPage() {
       excerpt: excerpt || undefined,
       content,
       coverImage: coverImage || undefined,
-      coverImageAlt: coverImageAlt || undefined,
+      coverImageAlt: coverImage ? coverImageAlt || "" : "",
       authorName: authorName || undefined,
       categoryId: categoryId || undefined,
       tags: tagsRaw ? tagsRaw.split(",").map((t) => t.trim()).filter(Boolean) : [],

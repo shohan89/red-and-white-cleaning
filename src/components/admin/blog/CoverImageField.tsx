@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal"
+import { compressImage } from "@/lib/compress-image"
 import type { MediaAssetPickerItem } from "@/actions/media"
 
 interface CoverImageFieldProps {
@@ -32,9 +33,9 @@ export function CoverImageField({
 
   function applyAsset(asset: MediaAssetPickerItem | { url: string; altText?: string | null; title?: string | null; caption?: string | null }) {
     setUrl(asset.url)
-    if (asset.altText) setAltText(asset.altText)
-    if (asset.title) setTitle(asset.title)
-    if (asset.caption) setCaption(asset.caption)
+    setAltText(asset.altText ?? "")
+    setTitle(asset.title ?? "")
+    setCaption(asset.caption ?? "")
   }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -43,11 +44,14 @@ export function CoverImageField({
     setUploading(true)
     try {
       const formData = new FormData()
-      formData.append("files", file)
+      formData.append("files", await compressImage(file))
       const res = await fetch("/api/admin/media/upload", { method: "POST", body: formData })
       const data = await res.json()
       if (data.uploaded?.[0]?.url) {
         setUrl(data.uploaded[0].url)
+        setAltText("")
+        setTitle("")
+        setCaption("")
         toast.success("Image uploaded")
       } else {
         toast.error(data.errors?.[0] ?? "Upload failed")

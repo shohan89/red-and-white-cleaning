@@ -16,7 +16,7 @@ export async function deleteMediaAsset(id: string) {
   if (!asset) throw new Error("Asset not found")
 
   // Static public images: delete DB record only, no Supabase Storage to remove
-  if (asset.bucket !== "static") {
+  if (asset.bucket !== "static" && asset.bucket !== "external") {
     const { error } = await supabaseAdmin.storage.from(asset.bucket).remove([asset.path])
     if (error) throw new Error(`Storage delete failed: ${error.message}`)
   }
@@ -144,8 +144,22 @@ export async function syncMediaMetaByUrl(
 ) {
   await requireAdmin()
   const asset = await prisma.mediaAsset.findFirst({ where: { url } })
-  if (!asset) return
-  await prisma.mediaAsset.update({ where: { id: asset.id as string }, data: fields })
+  if (asset) {
+    await prisma.mediaAsset.update({ where: { id: asset.id as string }, data: fields })
+  } else {
+    // Externally hosted / manually typed URL: register it so the metadata is stored.
+    await prisma.mediaAsset.create({
+      data: {
+        url,
+        filename: url.split("/").pop()?.split("?")[0] || url,
+        mimeType: "image/jpeg",
+        size: 0,
+        bucket: "external",
+        path: url,
+        ...fields,
+      },
+    })
+  }
   revalidatePath("/admin/media")
 }
 

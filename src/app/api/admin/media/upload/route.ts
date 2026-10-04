@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
   const uploaded: object[] = []
   const errors: string[] = []
 
-  for (const file of files) {
+  await Promise.all(files.map(async (file) => {
     try {
       const bytes = await file.arrayBuffer()
       const buffer = Buffer.from(bytes)
 
       const timestamp = Date.now()
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_")
-      const storagePath = `${timestamp}-${safeName}`
+      const storagePath = `${timestamp}-${Math.random().toString(36).slice(2, 8)}-${safeName}`
 
       const { error: uploadError } = await supabaseAdmin.storage
         .from("media")
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
 
       if (uploadError) {
         errors.push(`${file.name}: ${uploadError.message}`)
-        continue
+        return
       }
 
       const { data: urlData } = supabaseAdmin.storage.from("media").getPublicUrl(storagePath)
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     } catch (err) {
       errors.push(`${file.name}: ${err instanceof Error ? err.message : "Unknown error"}`)
     }
-  }
+  }))
 
   return NextResponse.json({ uploaded, errors })
 }

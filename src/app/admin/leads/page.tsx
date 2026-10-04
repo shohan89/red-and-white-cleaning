@@ -91,7 +91,7 @@ export default async function LeadsPage({
       <LeadsFilters />
 
       <div className="rounded-lg border bg-white overflow-hidden">
-        <Table>
+        <Table className="table-fixed [&_td]:whitespace-normal [&_td]:break-words [&_th]:whitespace-normal">
           <TableHeader>
             <TableRow className="bg-gray-50">
               <TableHead>Name</TableHead>

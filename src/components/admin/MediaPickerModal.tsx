@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import Image from "next/image"
 import { Loader2, Search, Upload, FileImage } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -11,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { compressImage } from "@/lib/compress-image"
 import { listMediaAssets, type MediaAssetPickerItem } from "@/actions/media"
 
 interface MediaPickerModalProps {
@@ -41,7 +41,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
     setUploading(true)
     try {
       const formData = new FormData()
-      formData.append("files", file)
+      formData.append("files", await compressImage(file))
       const res = await fetch("/api/admin/media/upload", { method: "POST", body: formData })
       const data = await res.json()
       if (data.uploaded?.[0]) {
@@ -61,7 +61,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-6xl w-[95vw] h-[88vh] max-h-[88vh] flex flex-col">
+      <DialogContent className="sm:max-w-6xl w-[95vw] h-[88vh] max-h-[88vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Media Library</DialogTitle>
         </DialogHeader>
@@ -105,7 +105,7 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
               <p className="text-sm">No images found.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {assets.map((asset) => (
                 <button
                   key={asset.id}
@@ -117,12 +117,13 @@ export function MediaPickerModal({ open, onOpenChange, onSelect }: MediaPickerMo
                   className="group relative aspect-square rounded-lg border border-border overflow-hidden bg-gray-50 hover:border-brand-red/50 hover:ring-2 hover:ring-brand-red/30 transition-all"
                   title={asset.title || asset.filename}
                 >
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={asset.url}
                     alt={asset.altText ?? asset.filename}
-                    fill
-                    sizes="150px"
-                    className="object-cover"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 h-full w-full object-cover"
                   />
                 </button>
               ))}

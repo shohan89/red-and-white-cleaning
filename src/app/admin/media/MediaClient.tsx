@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Trash2, Loader2, Copy, Check, Upload, RefreshCw, Wand2, X, FileText } from "lucide-react"
 import { toast } from "sonner"
+import { compressImage } from "@/lib/compress-image"
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`
@@ -27,7 +28,7 @@ export function UploadButton() {
     if (!files || !files.length) return
     setUploading(true)
     const formData = new FormData()
-    for (const f of Array.from(files)) formData.append("files", f)
+    for (const f of await Promise.all(Array.from(files).map(compressImage))) formData.append("files", f)
 
     try {
       const res = await fetch("/api/admin/media/upload", { method: "POST", body: formData })
