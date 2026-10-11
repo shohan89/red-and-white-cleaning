@@ -35,8 +35,15 @@ interface ServiceFields {
   ogImage?: string
 }
 
+function normalizeSlug(slug: string) {
+  const s = slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")
+  if (!s) throw new Error("Invalid slug")
+  return s
+}
+
 export async function createService(data: ServiceFields) {
   await requireAdmin()
+  data = { ...data, slug: normalizeSlug(data.slug) }
   const maxSort = await prisma.service.aggregate({ _max: { sortOrder: true } })
   const service = await prisma.service.create({
     data: { ...data, sortOrder: (maxSort._max.sortOrder ?? -1) + 1 },
@@ -47,6 +54,7 @@ export async function createService(data: ServiceFields) {
 
 export async function updateService(id: string, data: Partial<ServiceFields>, quiet = false) {
   await requireAdmin()
+  if (data.slug !== undefined) data = { ...data, slug: normalizeSlug(data.slug) }
   await prisma.service.update({ where: { id }, data })
   revalidateService(quiet)
 }
