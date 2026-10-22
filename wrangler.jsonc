@@ -12,6 +12,12 @@
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
 	},
+	"images": {
+		// Enables next/image optimization (resize/re-encode) on Workers —
+		// without this, /_next/image serves the original file unresized
+		// regardless of the requested width.
+		"binding": "IMAGES"
+	},
 	"vars": {
 		"NEXT_PUBLIC_SITE_URL": "https://redandwhitecleaningservices.com",
 		"NEXT_PUBLIC_SUPABASE_URL": "https://yunjsitjhhjxpkrgjmgp.supabase.co",
