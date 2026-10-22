@@ -5,9 +5,12 @@
 	"account_id": "45626a3f0c852a113bc5c894686e9195",
 	"compatibility_date": "2026-06-15",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-	// Run the Worker near the database (Supabase, Tokyo) instead of near the visitor:
-	// pages make several sequential DB round trips, so DB proximity matters most.
-	"placement": { "mode": "smart" },
+	// Smart placement (near the DB in Tokyo) made sense when every page hit
+	// Supabase on every request. Public pages are now ISR-cached (DB hit at
+	// most every 5 min), so pinning the Worker to Tokyo instead costs every
+	// visitor (mostly Southern Ontario) a transoceanic round trip just to
+	// serve cached HTML. Run near the visitor instead; the request-scoped
+	// pool still keeps the remaining DB-heavy admin/dynamic routes fast.
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS"
