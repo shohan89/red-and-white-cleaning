@@ -19,7 +19,7 @@ export function Header() {
             alt="Red and White Cleaning Services Logo"
             width={40}
             height={40}
-            className="rounded-full object-cover border border-white/20"
+            className="h-10 w-10 rounded-full object-cover border border-white/20"
           />
           <span className="text-base font-heading font-extrabold text-brand-red leading-none whitespace-nowrap">
             Red &amp; White Cleaning Services Ltd

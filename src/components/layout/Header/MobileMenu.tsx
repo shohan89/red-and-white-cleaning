@@ -37,7 +37,7 @@ export function MobileMenu() {
               alt="Red and White Cleaning Logo"
               width={32}
               height={32}
-              className="rounded-full object-cover border border-gray-200"
+              className="h-8 w-8 rounded-full object-cover border border-gray-200"
             />
             <span className="text-base font-heading font-extrabold text-brand-red leading-none whitespace-nowrap">
               Red &amp; White Cleaning Services Ltd

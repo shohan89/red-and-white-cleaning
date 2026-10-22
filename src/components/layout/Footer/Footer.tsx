@@ -18,7 +18,7 @@ export function Footer() {
                 alt="Red and White Cleaning Services Logo"
                 width={48}
                 height={48}
-                className="rounded-full object-cover border border-white/20"
+                className="h-12 w-12 rounded-full object-cover border border-white/20"
               />
               <div>
                 <span className="text-lg font-heading font-bold text-white tracking-tight leading-none block">
