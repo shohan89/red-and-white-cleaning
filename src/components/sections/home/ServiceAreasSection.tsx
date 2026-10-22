@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/Link";
 import { MapPin } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { SERVICE_CITIES } from "@/config/cities";

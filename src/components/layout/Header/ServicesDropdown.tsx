@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/Link";
 import { useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { SERVICE_LINKS } from "@/config/nav";

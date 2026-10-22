@@ -1,4 +1,4 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 import type { Metadata } from "next";
 import { getPageMetadata } from "@/lib/metadata";
@@ -71,6 +71,9 @@ export default async function HomePage() {
           canonical to the bare origin (no trailing slash) — see generateMetadata
           above. Rendered directly so the exact URL (with trailing slash) is used. */}
       <link rel="canonical" href={`${SITE.url}/`} />
+
+      {/* LCP hero image — only on the route that renders it */}
+      <link rel="preload" as="image" href="/images/hero-bg.webp" fetchPriority="high" />
 
       {/* 1. Hero */}
       <HeroSection heroContent={heroContent} trustContent={trustContent} />

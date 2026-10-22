@@ -1,9 +1,9 @@
-﻿export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 import React from "react";
 import { Metadata } from "next";
 import { getPageMetadata } from "@/lib/metadata";
-import Link from "next/link";
+import Link from "@/components/shared/Link";
 import Image from "next/image";
 import { FAQSection } from "@/components/sections/faq/FAQSection";
 import { ArrowRight, Phone } from "lucide-react";

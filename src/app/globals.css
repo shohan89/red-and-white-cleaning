@@ -128,3 +128,38 @@
     @apply font-heading;
   }
 }
+
+/* TipTap table editing UI (editor only — frontend table look comes from @tailwindcss/typography) */
+.tiptap table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+.tiptap td,
+.tiptap th {
+  border: 1px solid var(--border);
+  padding: 0.375rem 0.6rem;
+  vertical-align: top;
+  position: relative;
+}
+.tiptap th {
+  background-color: var(--muted);
+  font-weight: 600;
+  text-align: left;
+}
+.tiptap .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, var(--primary) 15%, transparent);
+  pointer-events: none;
+}
+.tiptap .column-resize-handle {
+  position: absolute;
+  right: -1px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--primary);
+  pointer-events: none;
+}

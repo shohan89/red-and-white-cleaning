@@ -1,9 +1,9 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import Link from '@/components/shared/Link';
 import Image from 'next/image';
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft } from "lucide-react";

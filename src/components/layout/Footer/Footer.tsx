@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/Link";
 import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { NAV_LINKS } from "@/config/nav";

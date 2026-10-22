@@ -1,8 +1,8 @@
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 import React from 'react';
 import { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/components/shared/Link';
 import Image from 'next/image';
 import { getPageMetadata } from "@/lib/metadata";
 import { prisma } from "@/lib/prisma";

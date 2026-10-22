@@ -5,10 +5,11 @@ import StarterKit from "@tiptap/starter-kit"
 import Link from "@tiptap/extension-link"
 import ImageExt from "@tiptap/extension-image"
 import Placeholder from "@tiptap/extension-placeholder"
+import { TableKit } from "@tiptap/extension-table"
 import { useState } from "react"
 import {
   Bold, Italic, Strikethrough, List, ListOrdered, Quote, Undo, Redo,
-  Heading2, Heading3, LinkIcon, ImageIcon, Code,
+  Heading2, Heading3, LinkIcon, ImageIcon, Code, Table as TableIcon,
 } from "lucide-react"
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal"
 
@@ -60,6 +61,7 @@ export function RichTextEditor({
       Link.configure({ openOnClick: false, autolink: true }),
       ImageExt,
       Placeholder.configure({ placeholder }),
+      TableKit.configure({ table: { resizable: true } }),
     ],
     content: defaultValue,
     editorProps: {
@@ -127,6 +129,13 @@ export function RichTextEditor({
           onClick={() => setMediaPickerOpen(true)}
         >
           <ImageIcon className="h-4 w-4" />
+        </ToolbarButton>
+        <ToolbarButton
+          title="Insert table"
+          active={editor.isActive("table")}
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+        >
+          <TableIcon className="h-4 w-4" />
         </ToolbarButton>
         <div className="w-px h-5 bg-gray-300 mx-1" />
         <ToolbarButton title="Undo" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>

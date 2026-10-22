@@ -9,6 +9,7 @@ interface BeforeAfterSliderProps {
   beforeAlt?: string;
   afterAlt?: string;
   className?: string;
+  priority?: boolean;
 }
 
 export function BeforeAfterSlider({
@@ -17,6 +18,7 @@ export function BeforeAfterSlider({
   beforeAlt = "Before cleaning",
   afterAlt = "After cleaning",
   className = "",
+  priority = false,
 }: BeforeAfterSliderProps) {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
@@ -84,7 +86,7 @@ export function BeforeAfterSlider({
           fill
           sizes="(max-w-768px) 100vw, 50vw"
           className="object-cover"
-          priority
+          priority={priority}
         />
         {/* Floating before label */}
         <span className="absolute bottom-4 left-4 z-10 rounded bg-brand-dark/70 px-3 py-1 text-xs font-semibold text-brand-white uppercase tracking-wider backdrop-blur-sm pointer-events-none">
@@ -104,7 +106,7 @@ export function BeforeAfterSlider({
             fill
             sizes="(max-w-768px) 100vw, 50vw"
             className="object-cover"
-            priority
+            priority={priority}
           />
         </div>
         {/* Floating after label */}

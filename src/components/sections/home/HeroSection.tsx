@@ -1,9 +1,6 @@
-"use client";
-
-import Link from "next/link";
+import Link from "@/components/shared/Link";
 import Image from "next/image";
-import { Phone, CheckCircle2, ChevronDown } from "lucide-react";
-import { motion } from "framer-motion";
+import { CheckCircle2, ChevronDown } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { SITE } from "@/config/site";
 import { cn } from "@/lib/utils";
@@ -71,42 +68,30 @@ export function HeroSection({
         <div className="max-w-2xl xl:max-w-3xl">
 
           {/* Eyebrow */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-5 inline-flex items-center gap-2 text-xs font-heading font-semibold uppercase tracking-[0.12em] text-brand-red"
+          <p
+            className="mb-5 inline-flex items-center gap-2 text-xs font-heading font-semibold uppercase tracking-[0.12em] text-brand-red animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 [animation-delay:100ms]"
           >
             <span className="h-px w-6 bg-brand-red" aria-hidden="true" />
             Licensed &amp; Insured · Serving Southern Ontario
-          </motion.p>
+          </p>
 
           {/* H1 */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, delay: 0.25 }}
-            className="mb-6 font-heading text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem]"
+          <h1
+            className="mb-6 font-heading text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-[4rem] animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 [animation-delay:250ms]"
           >
             {heading}
-          </motion.h1>
+          </h1>
 
           {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mb-9 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl"
+          <p
+            className="mb-9 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 [animation-delay:400ms]"
           >
             {subheading}
-          </motion.p>
+          </p>
 
           {/* CTA buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.55 }}
-            className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4"
+          <div
+            className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 animate-in fade-in slide-in-from-bottom-2 fill-mode-both duration-500 [animation-delay:550ms]"
           >
             <Link
               href="/contact"
@@ -126,14 +111,11 @@ export function HeroSection({
             >
               {cta2Text}
             </Link>
-          </motion.div>
+          </div>
 
           {/* Trust signals */}
-          <motion.ul
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.7 }}
-            className="flex flex-wrap gap-x-5 gap-y-2"
+          <ul
+            className="flex flex-wrap gap-x-5 gap-y-2 animate-in fade-in fill-mode-both duration-500 [animation-delay:700ms]"
             aria-label="Key trust signals"
           >
             {TRUST_SIGNALS.map((signal) => (
@@ -142,25 +124,19 @@ export function HeroSection({
                 {signal}
               </li>
             ))}
-          </motion.ul>
+          </ul>
         </div>
       </div>
 
       {/* Scroll chevron */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.5 }}
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-in fade-in fill-mode-both duration-500 [animation-delay:1200ms]"
         aria-hidden="true"
       >
-        <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ repeat: Infinity, duration: 1.6 }}
-        >
+        <div className="animate-bounce">
           <ChevronDown className="h-6 w-6 text-white/30" />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
-import Link from 'next/link';
+import Link from '@/components/shared/Link';
 import { CheckCircle2, ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {

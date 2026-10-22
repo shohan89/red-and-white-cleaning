@@ -3,7 +3,7 @@ export const revalidate = 3600
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import Link from '@/components/shared/Link';
 import { ChevronRight } from 'lucide-react';
 import { prisma } from "@/lib/prisma";
 import { SITE } from "@/config/site";

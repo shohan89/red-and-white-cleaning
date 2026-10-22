@@ -140,7 +140,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
         </div>
 
         <div className="grid gap-8 lg:grid-cols-2 max-w-6xl mx-auto">
-          {filteredItems.map((item) => {
+          {filteredItems.map((item, index) => {
             const isBeforeAfter = !!(item.beforeImage && item.afterImage);
 
             if (isBeforeAfter) {
@@ -155,6 +155,7 @@ export function PortfolioGallery({ items }: PortfolioGalleryProps) {
                       afterImage={item.afterImage!}
                       beforeAlt={item.beforeAlt}
                       afterAlt={item.afterAlt}
+                      priority={index === 0}
                     />
                   </div>
                   <div className="pt-2 px-2">
