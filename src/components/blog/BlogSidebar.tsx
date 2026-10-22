@@ -1,4 +1,4 @@
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import Image from "next/image";
 import { Search, FileText, Sparkles } from "lucide-react";
 import { prisma } from "@/lib/prisma";

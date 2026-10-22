@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '@/components/shared/Link';
+import Link from 'next/link';
 import { ArrowRight, CheckCircle2, MapPin } from 'lucide-react';
 import type { ServicePageSectionRow } from '@/lib/service-page-sections';
 import { resolveSection } from '@/lib/service-page-sections';

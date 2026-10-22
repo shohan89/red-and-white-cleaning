@@ -1,5 +1,5 @@
 import React from 'react';
-import Link from '@/components/shared/Link';
+import Link from 'next/link';
 import { Phone, ArrowRight } from 'lucide-react';
 
 export function AboutCTA() {

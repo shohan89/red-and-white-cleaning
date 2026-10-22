@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import {
   Accordion,

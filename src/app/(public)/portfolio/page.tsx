@@ -3,7 +3,7 @@ export const revalidate = 300
 import React from "react";
 import { Metadata } from "next";
 import { getPageMetadata } from "@/lib/metadata";
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import Image from "next/image";
 import { PortfolioGallery } from "@/components/sections/portfolio/PortfolioGallery";
 import { ArrowRight, Mail } from "lucide-react";

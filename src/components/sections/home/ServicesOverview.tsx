@@ -1,4 +1,4 @@
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import { HardHat, Building2, Sparkles, CalendarCheck, Home, ArrowRight } from "lucide-react";
 import { SectionWrapper } from "@/components/shared/SectionWrapper";
 import { SERVICES } from "@/config/services";

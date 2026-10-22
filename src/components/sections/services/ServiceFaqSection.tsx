@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Link from '@/components/shared/Link';
+import Link from 'next/link';
 
 export interface ServiceFaqData {
   id: string;

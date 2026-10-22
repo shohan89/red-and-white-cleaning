@@ -3,11 +3,12 @@ export const revalidate = 300
 import React from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from '@/components/shared/Link';
+import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from "@/lib/prisma";
 import { ChevronLeft } from "lucide-react";
 import { BlogSidebar } from "@/components/blog/BlogSidebar";
+import { openLinksInNewTab } from "@/lib/html";
 
 async function getPost(slug: string) {
   try {
@@ -106,7 +107,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
               <div
                 className="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-brand-red"
-                dangerouslySetInnerHTML={{ __html: post.content as string }}
+                dangerouslySetInnerHTML={{ __html: openLinksInNewTab(post.content as string) }}
               />
 
               {((post.tags as string[]) ?? []).length > 0 && (

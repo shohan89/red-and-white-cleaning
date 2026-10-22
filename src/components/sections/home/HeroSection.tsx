@@ -1,4 +1,4 @@
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import Image from "next/image";
 import { CheckCircle2, ChevronDown } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";

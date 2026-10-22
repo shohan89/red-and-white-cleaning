@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import Image from "next/image";
 import { Menu, Phone, ChevronDown } from "lucide-react";
 import { useState } from "react";

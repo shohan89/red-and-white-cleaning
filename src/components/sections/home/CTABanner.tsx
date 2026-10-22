@@ -1,4 +1,4 @@
-import Link from "@/components/shared/Link";
+import Link from "next/link";
 import { Phone } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { SITE } from "@/config/site";
