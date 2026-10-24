@@ -91,6 +91,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         {/* End Google Tag Manager (noscript) */}
         {children}
         <Toaster />
+        <Script
+          src="https://app.h2m.marketing/widget.js"
+          data-key="AuzGjJX3KNqZfvxj3xkz2qvw"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );
