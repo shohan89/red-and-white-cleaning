@@ -10,6 +10,7 @@ import { useState } from "react"
 import {
   Bold, Italic, Strikethrough, List, ListOrdered, Quote, Undo, Redo,
   Heading2, Heading3, LinkIcon, ImageIcon, Code, Table as TableIcon,
+  Rows3, Columns3, Trash2,
 } from "lucide-react"
 import { MediaPickerModal } from "@/components/admin/MediaPickerModal"
 
@@ -133,10 +134,30 @@ export function RichTextEditor({
         <ToolbarButton
           title="Insert table"
           active={editor.isActive("table")}
+          disabled={editor.isActive("table")}
           onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
         >
           <TableIcon className="h-4 w-4" />
         </ToolbarButton>
+        {editor.isActive("table") && (
+          <>
+            <ToolbarButton title="Add row" onClick={() => editor.chain().focus().addRowAfter().run()}>
+              <Rows3 className="h-4 w-4" />
+            </ToolbarButton>
+            <ToolbarButton title="Add column" onClick={() => editor.chain().focus().addColumnAfter().run()}>
+              <Columns3 className="h-4 w-4" />
+            </ToolbarButton>
+            <ToolbarButton title="Delete row" onClick={() => editor.chain().focus().deleteRow().run()}>
+              <Rows3 className="h-4 w-4 opacity-60" />
+            </ToolbarButton>
+            <ToolbarButton title="Delete column" onClick={() => editor.chain().focus().deleteColumn().run()}>
+              <Columns3 className="h-4 w-4 opacity-60" />
+            </ToolbarButton>
+            <ToolbarButton title="Delete table" onClick={() => editor.chain().focus().deleteTable().run()}>
+              <Trash2 className="h-4 w-4" />
+            </ToolbarButton>
+          </>
+        )}
         <div className="w-px h-5 bg-gray-300 mx-1" />
         <ToolbarButton title="Undo" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>
           <Undo className="h-4 w-4" />

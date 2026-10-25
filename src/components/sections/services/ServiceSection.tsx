@@ -267,6 +267,8 @@ function TextSplitLayout({ service, alt }: { service: ServiceSectionData; alt: b
             </div>
           )}
         </div>
+
+        {service.images.length > 0 && <ExamplesGrid images={service.images} H={H} />}
       </div>
     </section>
   );
@@ -277,6 +279,7 @@ function TextSplitLayout({ service, alt }: { service: ServiceSectionData; alt: b
 function CenteredGridLayout({ service, alt }: { service: ServiceSectionData; alt: boolean }) {
   const BadgeIcon = resolveIcon(service.icon);
   const TitleTag = service.standalone ? 'h1' : 'h2';
+  const H = service.standalone ? 'h2' : 'h3';
   const showStandaloneIncluded = service.standalone && service.includedItems.length > 0 && service.showIncluded !== false;
   const paras = paragraphs(service.description);
   return (
@@ -321,6 +324,8 @@ function CenteredGridLayout({ service, alt }: { service: ServiceSectionData; alt
             <IncludedItemsCard items={service.includedItems} twoCol heading={service.includedHeading} H="h2" />
           </div>
         )}
+
+        {service.images.length > 0 && <ExamplesGrid images={service.images} H="h2" />}
       </div>
     </section>
   );
@@ -398,6 +403,8 @@ function IconHeroLayout({ service, alt }: { service: ServiceSectionData; alt: bo
             <IncludedItemsCard items={service.includedItems} twoCol heading={service.includedHeading} H="h2" />
           </div>
         )}
+
+        {service.images.length > 0 && <ExamplesGrid images={service.images} H="h2" />}
       </div>
     </section>
   );
