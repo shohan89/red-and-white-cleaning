@@ -34,17 +34,11 @@ export default async function BlogIndexPage({
     publishedAt: Date | null
     tags: string[] | null
     category: { name: string; slug: string } | null
-  }> = []
-
-  try {
-    posts = await prisma.blogPost.findMany({
-      where: { status: "PUBLISHED" },
-      orderBy: { publishedAt: "desc" },
-      include: { category: { select: { name: true, slug: true } } },
-    })
-  } catch (err) {
-    console.error("[blog] DB error:", err)
-  }
+  }> = await prisma.blogPost.findMany({
+    where: { status: "PUBLISHED" },
+    orderBy: { publishedAt: "desc" },
+    include: { category: { select: { name: true, slug: true } } },
+  })
 
   if (category) posts = posts.filter((p) => p.category?.slug === category)
   if (tag) posts = posts.filter((p) => (p.tags ?? []).includes(tag))

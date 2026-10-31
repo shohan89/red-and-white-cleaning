@@ -11,15 +11,18 @@ import { BlogSidebar } from "@/components/blog/BlogSidebar";
 import { openLinksInNewTab } from "@/lib/html";
 
 async function getPost(slug: string) {
-  try {
-    return await prisma.blogPost.findFirst({
-      where: { slug, status: "PUBLISHED" },
-      include: { category: { select: { name: true, slug: true } } },
-    })
-  } catch (err) {
-    console.error("[blog/slug] DB error:", err)
-    return null
-  }
+  return prisma.blogPost.findFirst({
+    where: { slug, status: "PUBLISHED" },
+    include: { category: { select: { name: true, slug: true } } },
+  })
+}
+
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    where: { status: "PUBLISHED" },
+    select: { slug: true },
+  })
+  return posts.map((post) => ({ slug: post.slug as string }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {

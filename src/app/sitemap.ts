@@ -52,16 +52,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
 
     if (dbEntries.length > 0) {
-      return [
-        ...dbEntries.map((entry) => ({
-          url: entry.url.startsWith("http") ? entry.url : `${baseUrl}${entry.url}`,
-          lastModified: entry.updatedAt,
-          changeFrequency: entry.changeFrequency as MetadataRoute.Sitemap[0]["changeFrequency"],
-          priority: entry.priority,
-        })),
-        ...blogRoutes,
-        ...serviceRoutes,
-      ]
+      const dbRoutes: MetadataRoute.Sitemap = dbEntries.map((entry) => ({
+        url: entry.url.startsWith("http") ? entry.url : `${baseUrl}${entry.url}`,
+        lastModified: entry.updatedAt,
+        changeFrequency: entry.changeFrequency as MetadataRoute.Sitemap[0]["changeFrequency"],
+        priority: entry.priority,
+      }))
+      const dbUrls = new Set(dbRoutes.map((r) => r.url))
+      const missingStaticRoutes = staticRoutes.filter((r) => !dbUrls.has(r.url))
+
+      return [...dbRoutes, ...missingStaticRoutes, ...blogRoutes, ...serviceRoutes]
     }
   } catch {}
 

@@ -73,6 +73,11 @@ async function getServiceFaqs(serviceId: string) {
   }
 }
 
+export async function generateStaticParams() {
+  const services = await prisma.service.findMany({ select: { slug: true } })
+  return services.map((service) => ({ slug: service.slug as string }))
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const service = await getService(slug)
@@ -109,9 +114,11 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const service = await getService(slug)
   if (!service) notFound()
 
-  const otherServices = await getOtherServices(slug)
-  const faqs = await getServiceFaqs(service.id as string)
-  const relatedPosts = await getRelatedPosts((service.relatedPostIds as string[] | null) ?? [])
+  const [otherServices, faqs, relatedPosts] = await Promise.all([
+    getOtherServices(slug),
+    getServiceFaqs(service.id as string),
+    getRelatedPosts((service.relatedPostIds as string[] | null) ?? []),
+  ])
   const included = resolveSection(service.pageSections, 'included')
   const url = `${SITE.url}/services/${slug}`
 

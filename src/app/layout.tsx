@@ -58,6 +58,25 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: SITE.url,
+  telephone: SITE.phone,
+  email: SITE.email,
+  address: {
+    "@type": "PostalAddress",
+    ...(SITE.address.street ? { streetAddress: SITE.address.street } : {}),
+    addressLocality: SITE.address.city,
+    addressRegion: SITE.address.province,
+    ...(SITE.address.postalCode ? { postalCode: SITE.address.postalCode } : {}),
+    addressCountry: SITE.address.country,
+  },
+  areaServed: ["Kitchener", "Waterloo", "Cambridge", "Guelph", "Hamilton", "London", "Brantford"],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -67,6 +86,10 @@ export default function RootLayout({
       className={`${montserrat.variable} ${inter.variable} h-full scroll-smooth`}
     >
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

@@ -10,36 +10,36 @@ interface BlogSidebarProps {
 }
 
 async function getSidebarData(currentSlug?: string) {
-  const categories = (await prisma.blogCategory.findMany({
-    orderBy: { sortOrder: "asc" },
-  })) as Array<{ id: string; name: string; slug: string }>;
+  const [categories, recentPosts, allPosts] = await Promise.all([
+    prisma.blogCategory.findMany({
+      orderBy: { sortOrder: "asc" },
+    }) as Promise<Array<{ id: string; name: string; slug: string }>>,
+    prisma.blogPost.findMany({
+      where: currentSlug
+        ? { status: "PUBLISHED", slug: { not: currentSlug } }
+        : { status: "PUBLISHED" },
+      orderBy: { publishedAt: "desc" },
+      take: 5,
+      select: { id: true, slug: true, title: true, coverImage: true, coverImageAlt: true, publishedAt: true },
+    }) as Promise<Array<{
+      id: string;
+      slug: string;
+      title: string;
+      coverImage: string | null;
+      coverImageAlt: string | null;
+      publishedAt: Date | null;
+    }>>,
+    prisma.blogPost.findMany({
+      where: { status: "PUBLISHED" },
+      select: { tags: true },
+    }) as Promise<Array<{ tags: string[] | null }>>,
+  ]);
 
   const categoryCounts = await Promise.all(
     categories.map((cat) =>
       prisma.blogPost.count({ where: { categoryId: cat.id, status: "PUBLISHED" } })
     )
   );
-
-  const recentPosts = (await prisma.blogPost.findMany({
-    where: currentSlug
-      ? { status: "PUBLISHED", slug: { not: currentSlug } }
-      : { status: "PUBLISHED" },
-    orderBy: { publishedAt: "desc" },
-    take: 5,
-    select: { id: true, slug: true, title: true, coverImage: true, coverImageAlt: true, publishedAt: true },
-  })) as Array<{
-    id: string;
-    slug: string;
-    title: string;
-    coverImage: string | null;
-    coverImageAlt: string | null;
-    publishedAt: Date | null;
-  }>;
-
-  const allPosts = (await prisma.blogPost.findMany({
-    where: { status: "PUBLISHED" },
-    select: { tags: true },
-  })) as Array<{ tags: string[] | null }>;
 
   const tagCounts = new Map<string, number>();
   for (const p of allPosts) {
